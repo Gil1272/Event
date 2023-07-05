@@ -175,6 +175,10 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        /**
+         * Mongodb Service Provider
+         */
+        Jenssegers\Mongodb\MongodbServiceProvider::class,
     ],
 
     /*
@@ -203,7 +207,8 @@ return [
         'Crypt' => Illuminate\Support\Facades\Crypt::class,
         'Date' => Illuminate\Support\Facades\Date::class,
         'DB' => Illuminate\Support\Facades\DB::class,
-        'Eloquent' => Illuminate\Database\Eloquent\Model::class,
+        // 'Eloquent' => Illuminate\Database\Eloquent\Model::class,
+        'Eloquent' => Jenssegers\Mongodb\Eloquent\Model::class,
         'Event' => Illuminate\Support\Facades\Event::class,
         'File' => Illuminate\Support\Facades\File::class,
         'Gate' => Illuminate\Support\Facades\Gate::class,
