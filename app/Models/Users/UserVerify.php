@@ -2,18 +2,19 @@
 
 namespace App\Models\Users;
 
-use Illuminate\Database\Eloquent\Model;
+use Jenssegers\Mongodb\Eloquent\Model;
 
 class UserVerify extends Model
 {
+    // protected $connection = 'mongodb';
+    protected $primaryKey = '_id';
 
     protected $fillable = [
-        "id",
         "token",
-        "user_id",
+        "user",
     ];
 
-    public $timestamps = false;
+    public $timestamps = true;
 
     public function user(){
         $this->belongsTo(User::class);

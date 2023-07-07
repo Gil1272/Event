@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -38,4 +39,13 @@ class Handler extends ExceptionHandler
             //
         });
     }
+
+    // protected function renderHttpException(HttpExceptionInterface $exception){
+    //     if ($this->isHttpException($exception) && $exception->getStatusCode() === 404) {
+    //         return response()->json(['error' => 'Route not found'], 404);
+    //     }
+
+    //     return parent::renderHttpException($exception);
+    // }
+
 }

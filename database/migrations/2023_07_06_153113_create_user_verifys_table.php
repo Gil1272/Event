@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\Schema;
 use Jenssegers\Mongodb\Schema\Blueprint;
 
-class CreateUsersTable extends Migration
+class CreateUserVerifysTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,8 @@ class CreateUsersTable extends Migration
      */
     public function up()
     {
-        Schema::create('users', function (Blueprint $collection) {
-            $collection->unique('email');
-            $collection->unique('phone_number');
+        Schema::create('user_verifys', function (Blueprint $collection) {
+            $collection->unique("token");
             $collection->timestamps();
         });
     }
@@ -27,6 +26,6 @@ class CreateUsersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('user_verifys');
     }
 }

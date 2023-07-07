@@ -11,24 +11,31 @@ class User extends Authenticatable implements JWTSubject
 {
     use HasFactory, Notifiable;
 
+    protected $primaryKey = '_id';
+
+    // protected $connection = 'mongodb';
+
     protected $hidden = [
         "password"
     ];
 
+    protected $casts = ['birthday' => 'datetime'];
+
     protected $fillable = [
-        "id",
         "user_type",
         "name",
         "firstname",
         "password",
         "email",
         "phone_number",
+        'active',
+        'locked',
         "civility",
         "entreprise",
         "country"
     ];
 
-    // Rest omitted for brevity
+    public $timestamps = true;
 
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.
@@ -50,8 +57,6 @@ class User extends Authenticatable implements JWTSubject
         return [];
     }
 
-    public $timestamps = false;
-
     // /**
     //  * The attributes that should be cast.
     //  *
@@ -61,13 +66,13 @@ class User extends Authenticatable implements JWTSubject
     //     'email_verified_at' => 'datetime',
     // ];
 
-    public function event(){
-        return $this->hasMany(Event::class);
-    }
+    // public function event(){
+    //     return $this->hasMany(Event::class);
+    // }
 
-    public function notification(){
-        return $this->hasMany(Notification::class);
-    }
+    // public function notification(){
+    //     return $this->hasMany(Notification::class);
+    // }
 
     public function userVerify(){
         return $this->hasOne(UserVerify::class);
