@@ -156,7 +156,7 @@ return [
         Illuminate\Pipeline\PipelineServiceProvider::class,
         Illuminate\Queue\QueueServiceProvider::class,
         Illuminate\Redis\RedisServiceProvider::class,
-        Illuminate\Auth\Passwords\PasswordResetServiceProvider::class,
+        // Illuminate\Auth\Passwords\PasswordResetServiceProvider::class,
         Illuminate\Session\SessionServiceProvider::class,
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
@@ -175,6 +175,16 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        /**
+         * Mongodb Service Provider
+         */
+        Jenssegers\Mongodb\MongodbServiceProvider::class,
+        Jenssegers\Mongodb\MongodbQueueServiceProvider::class,
+        Jenssegers\Mongodb\Auth\PasswordResetServiceProvider::class,
+        /**
+         * Jwt Authenticate
+         */
+        Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
     ],
 
     /*
@@ -203,7 +213,8 @@ return [
         'Crypt' => Illuminate\Support\Facades\Crypt::class,
         'Date' => Illuminate\Support\Facades\Date::class,
         'DB' => Illuminate\Support\Facades\DB::class,
-        'Eloquent' => Illuminate\Database\Eloquent\Model::class,
+        // 'Eloquent' => Illuminate\Database\Eloquent\Model::class,
+        'Eloquent' => Jenssegers\Mongodb\Eloquent\Model::class,
         'Event' => Illuminate\Support\Facades\Event::class,
         'File' => Illuminate\Support\Facades\File::class,
         'Gate' => Illuminate\Support\Facades\Gate::class,

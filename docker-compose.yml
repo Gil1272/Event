@@ -1,0 +1,36 @@
+version: "3.7"
+
+services:
+    app:
+        build:
+            context: ./
+            # args:
+            #     user: appuser
+            #     uid: 1000
+            dockerfile: Dockerfile
+        image: eventapp-image
+        user: 'www-data:www-data'
+        container_name: eventapp-api
+        restart: unless-stopped
+        working_dir: /var/www/
+        volumes:
+        - ./:/var/www
+        networks:
+        - eventapp-network
+
+    nginx:
+        image: nginx:1.17-alpine
+        container_name: eventapp-nginx
+        restart: unless-stopped
+        ports:
+        - 9000:80
+        - "443:443"
+        volumes:
+        - ./:/var/www
+        - ./docker-compose/nginx:/etc/nginx/conf.d
+        networks:
+        - eventapp-network
+
+networks:
+  eventapp-network:
+    driver: bridge
