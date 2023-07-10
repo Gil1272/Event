@@ -12,9 +12,9 @@ node {
            sh 'docker compose build --no-cache'
         }
         stage('Deploy docker') {
-            //docker compose exec app chown -R www-data:www-data /var/www/storage
             sh 'docker compose down'
             sh 'docker compose up -d'
+            sh 'docker compose exec app chown -R www-data:www-data /var/www/storage'
         }
     } catch (e) {
         currentBuild.result = 'FAILED'
