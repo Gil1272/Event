@@ -9,7 +9,8 @@ node {
             url: 'git@gitlab.com:gemini-and-co/event-show/laravel-api.git'
         }
         stage('Build docker') {
-           sh 'docker compose build --no-cache'
+           sh 'docker compose build'
+        //    sh 'docker compose build --no-cache'
         }
         stage('Deploy docker') {
             sh 'docker compose down'
