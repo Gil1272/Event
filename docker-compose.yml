@@ -24,7 +24,7 @@ services:
         restart: unless-stopped
         ports:
         - 9000:80
-        - "443:443"
+        # - "443:443"
         volumes:
         - ./:/var/www
         - ./docker-compose/nginx:/etc/nginx/conf.d
