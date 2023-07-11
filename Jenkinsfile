@@ -8,6 +8,9 @@ node {
             poll: false,
             url: 'git@gitlab.com:gemini-and-co/event-show/laravel-api.git'
         }
+        // environment {
+        //     COMPOSER_ALLOW_SUPERUSER = '1'
+        // }
         stage('Build docker') {
            sh 'docker compose build'
         //    sh 'docker compose build --no-cache'
