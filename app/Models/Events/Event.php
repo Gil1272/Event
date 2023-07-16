@@ -2,6 +2,7 @@
 
 namespace App\Models\Events;
 
+use App\Models\Users\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Jenssegers\Mongodb\Eloquent\Model;
 
@@ -16,11 +17,11 @@ class Event extends Model
         "description",
         "country",
         "place",
-        "date_since",
-        "date_end",
+        "start_date",
+        "end_date",
         "time_end",
         "user",
-        "event_type",
+        "type",
         "status",
         "published",
         "private",
@@ -31,5 +32,7 @@ class Event extends Model
     ];
 
     //Événement Transport Conférences et formations ,Sport
-
+    public function user(){
+        return $this->belongsTo(User::class);
+    }
 }

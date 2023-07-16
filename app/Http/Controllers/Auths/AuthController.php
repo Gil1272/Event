@@ -13,7 +13,6 @@ use Illuminate\Support\Str;
 use App\Http\Controllers\Users\UserController;
 use App\Mail\Users\RegisterMail;
 use App\Models\Users\User;
-use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Mail;
 use Monarobase\CountryList\CountryListFacade;
 

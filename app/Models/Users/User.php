@@ -2,6 +2,7 @@
 
 namespace App\Models\Users;
 
+use App\Models\Events\Event;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
 use Jenssegers\Mongodb\Auth\User as Authenticatable;
@@ -76,5 +77,9 @@ class User extends Authenticatable implements JWTSubject
 
     public function userVerify(){
         return $this->hasOne(UserVerify::class);
+    }
+
+    public function events(){
+        return $this->hasMany(Event::class);
     }
 }

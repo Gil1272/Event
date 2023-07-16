@@ -17,7 +17,7 @@ class CorsConfig
      */
     public function handle(Request $request, Closure $next)
     {
-        $request->headers->set('Content-Type', 'application/json');
+        // $request->headers->set('Content-Type', 'application/json');
         return $next($request)
         ->header('Access-Control-Allow-Origin', '*')
         ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
