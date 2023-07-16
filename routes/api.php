@@ -44,9 +44,11 @@ Route::prefix("auth")->middleware([CorsConfig::class,Jwt::class])->group(functio
 Route::prefix("event/")->middleware([CorsConfig::class,Jwt::class])->group(function(){
 
     Route::post("",[EventController::class,"store"]);
-    Route::put("{id:id}",[EventController::class,"update"])->where(["id" => "[0-9]+"]);
+    Route::get("",[EventController::class,"getMyEvents"]);
+    Route::get("{id:id}",[EventController::class,"show"])->where(["id" => "[a-z0-9]{24}"]);
+    Route::put("{id:id}",[EventController::class,"update"])->where(["id" => "[a-z0-9]{24}"]);
     // Route::put("status/{id:id}/{state:state}",[EventController::class,"changeStatus"]);
     // Route::put("visibility/{id:id}/{state:state}",[EventController::class,"changeVisibility"]);
     // Route::post("clone/{id:id}",[EventController::class,"duplicate"]);
-    Route::delete("{id:id}",[EventController::class,"destroy"])->withoutMiddleware([VerifyCsrfToken::class])->where(["id" => "[0-9]+"]);
+    Route::delete("{id:id}",[EventController::class,"destroy"])->withoutMiddleware([VerifyCsrfToken::class])->where(["id" => "[a-z0-9]{24}"]);
 });

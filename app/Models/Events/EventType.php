@@ -29,6 +29,12 @@ enum EventType
         return array_key_exists($key, $types);
     }
 
+
+    public static function get_value(string $key): string{
+        $types = self::toArray();
+        return $types[$key];
+    }
+
     // Get all the types as an array
     public static function toArray(): array{
         $reflection = new ReflectionClass(__CLASS__);

@@ -28,6 +28,11 @@ enum EventStatus
         return array_key_exists($key, $statuses);
     }
 
+    public static function get_value(string $key): string{
+        $statuses = self::toArray();
+        return $statuses[$key];
+    }
+
     // Get all the statuses as an array
     public static function toArray(): array{
         $reflection = new ReflectionClass(__CLASS__);

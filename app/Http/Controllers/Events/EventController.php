@@ -66,10 +66,12 @@ class EventController extends Controller
         if(!EventType::key_exists($request->type)){
             return JsonResponse::send(true,$errorMessage,["type"=>"Le type d'évènement n'existe pas"],400);
         }
+        $data['type'] = EventType::get_value($request->type);
 
         if(!EventStatus::key_exists($request->status)){
             return JsonResponse::send(true,$errorMessage,["status"=>"Le status de l'évènement n'existe pas"],400);
         }
+        $data['status'] = EventStatus::get_value($request->status);
 
         $link_slug =  Str::slug($data['name'],'-','fr');
         $data['link'] = uniqid()."-".$link_slug;
@@ -108,6 +110,16 @@ class EventController extends Controller
         }
     }
 
+    public function getMyEvents(){
+
+        $user = User::find(Auth::id());
+        return JsonResponse::send(
+            false,
+            "La liste de mes évènements",
+            ["events" => $user->events]
+        );
+    }
+
     /**
      * Display the specified resource.
      *
@@ -116,18 +128,10 @@ class EventController extends Controller
      */
     public function show($id)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
+        $event =  Event::find($id);
+        if($event)
+            return JsonResponse::send(false,null,["event"=>$event]);
+        return JsonResponse::send(true,"Aucun évènement trouvé",null,404);
     }
 
     /**
@@ -150,6 +154,23 @@ class EventController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $event = Event::find($id);
+        // dd($event);
+        //think about delete all specifique photos and banners
+        // $photos = ltrim(parse_url($event->photos)['path'],"/");
+        // $banners = ltrim(parse_url($event->banners)['path'],"/");
+        // if (File::exists($photo)) {
+        //     File::delete($photo);
+        // }
+
+        // if (File::exists($banner)) {
+        //     File::delete($banner);
+        // }
+
+        if ($event) {
+            $event->where('user_id', Auth::id())->first()->delete();
+            return JsonResponse::send(false,"L'évènement a été supprimé !");
+        }
+        return JsonResponse::send(true,"L'évènement est introuvable !",null,404);
     }
 }
