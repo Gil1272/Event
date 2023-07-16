@@ -88,6 +88,22 @@ class AuthController extends UserController
         }
     }
 
+
+    /**
+     * Get the login username to be used by the controller.
+     *
+     * @return string
+     */
+    private function findUsername()
+    {
+        $login = request()->input('login');
+
+        $fieldType = filter_var($login, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
+
+        request()->merge([$fieldType => $login]);
+
+        return $fieldType;
+    }
     /**
      * Get a JWT via given credentials.
      *
@@ -95,30 +111,39 @@ class AuthController extends UserController
      */
     public function login(Request $request) {
 
-        $credentials = $request->only(['phone_number', 'password']);
+        $identify = request()->input('identify');
+
+        if(is_null($identify))
+
+        if(is_null($identify)){
+            return JsonResponse::send(true,"Vos informations de conection sont invalides",["identify"=>["identify est requit"]],400);
+        };
+
+        $fieldType = filter_var($identify, FILTER_VALIDATE_EMAIL) ? 'email' : 'phone_number';
+
+        request()->merge([$fieldType => $identify]);
+
+        $credentials = $request->only([$fieldType, 'password']);
+
+        $entity_message = $fieldType == 'email' ? "Votre mail n'est pas valide" : "votre numero de téléphone n'est pas valide";
 
         $validator =  Validator::make($credentials,[
-            'phone_number' => 'required|exists:users,phone_number',
+            $fieldType => "required|exists:users,$fieldType",
             'password' => 'required',
         ],[
-            'phone_number.required' => 'Votre numero n\'est pas valide',
-            'name.required' => 'Votre prénom est obligatoire',
+            $fieldType.".required" => $entity_message,
+            'password.required' => 'Votre mot de passe est obligatoire',
         ]);
 
         if ($validator->fails()) {
             return JsonResponse::send(true,"Vos informations de conection sont invalides",$validator->errors()->messages(),400);
         }
 
-        $user = User::where("phone_number", $credentials["phone_number"])->firstOrFail();
+        $user = User::where($fieldType, $credentials[$fieldType])->firstOrFail();
 
         $userVerify = $user->userVerify->token;
         if (!is_null($userVerify)) {
-            return new JsonResponse([
-                "error" => true,
-                "message" => "Veuillez consulter votre boîte mail .
-                    Vous avez sans doute reçu un message.
-                    Veuillez au besoin verifier vos spam. ",
-            ]);
+            return JsonResponse::send(true,"Veuillez consulter votre boîte mail. Vous avez sans doute reçu un message. Veuillez au besoin verifier vos spam. ");
         }
 
         if (! $token = JWTAuth::attempt($credentials)) {

@@ -9,7 +9,7 @@ class JsonResponse{
         return new LaravelJsonResponse([
             'error' => $error,
             'message' => $message,
-            'data' => $data
+            'data' => $data ?? []
         ],$status);
     }
 }
