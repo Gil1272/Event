@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auths\AuthController;
+use App\Http\Controllers\Utils\CountryController;
 use App\Http\Middleware\Api\CorsConfig;
 use App\Http\Middleware\Api\Jwt;
 use Illuminate\Http\Request;
@@ -22,6 +23,10 @@ Route::prefix("auth")->middleware([CorsConfig::class])->group(function(){
     Route::post("login",[AuthController::class,"login"]);
 
     Route::post("register",[AuthController::class,"register"]);
+});
+
+Route::prefix("node")->middleware([CorsConfig::class])->group(function(){
+    Route::get("country",[CountryController::class,'get']);
 });
 
 Route::prefix("auth")->middleware([CorsConfig::class,Jwt::class])->group(function(){

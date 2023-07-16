@@ -13,7 +13,9 @@ use Illuminate\Support\Str;
 use App\Http\Controllers\Users\UserController;
 use App\Mail\Users\RegisterMail;
 use App\Models\Users\User;
+use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Mail;
+use Monarobase\CountryList\CountryListFacade;
 
 class AuthController extends UserController
 {
@@ -52,7 +54,9 @@ class AuthController extends UserController
         if ($validator->fails()) {
             return JsonResponse::send(true,"Vos informations d'inscription sont incorrectes !",$validator->errors()->messages(),400);
         } else {
-
+            if(!array_key_exists($request->country,CountryListFacade::getList())){
+                return JsonResponse::send(true,"Vos informations d'inscription sont incorrectes !",["country"=>"pays code invalide"],400);
+            }
             $data["password"] = Hash::make($data['password']);
 
             $user_type = [self::USER];
@@ -70,6 +74,7 @@ class AuthController extends UserController
             $token = uniqid(Str::random(32), true);
 
             $user->userVerify()
+
             ->create(['token' => $token]);
 
             // Mail::to($data['email'])->send(new RegisterMail([
@@ -79,10 +84,7 @@ class AuthController extends UserController
             //     "linkText" => "Confirmer mon compte"
             // ]));
 
-            return new JsonResponse([
-                "error" => false,
-                "message" => "Merci d'avoir créé votre compte. Veuillez consulter votre boîte mail afin de confirmer votre compte et commencer à utiliser ".env("APP_NAME")
-            ]);
+            return JsonResponse::send(false,"Merci d'avoir créé votre compte. Veuillez consulter votre boîte mail afin de confirmer votre compte et commencer à utiliser ".env("APP_NAME"));
         }
     }
 

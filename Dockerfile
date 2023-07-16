@@ -58,5 +58,8 @@ COPY ./docker-compose/php/laravel.ini /usr/local/etc/php/conf.d/laravel.ini
 
 # Expose port 9000 and start php-fpm server
 EXPOSE 9000
+
+VOLUME /var/www
+
 CMD ["php-fpm"]
 
