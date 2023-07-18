@@ -9,17 +9,16 @@ node {
             url: 'git@gitlab.com:gemini-and-co/event-show/laravel-api.git'
         }
         stage('Build docker') {
-           sh 'docker compose build app --no-cache'
+           sh 'docker compose build app'
         //    sh 'docker compose build --no-cache'
         }
         stage('Deploy docker') {
             sh 'docker compose down'
             sh 'docker compose up -d'
-            // sh 'docker compose exec app chown -R www-data:www-data /var/www/storage'
         }
         stage('Laravel post deploy') {
             sh 'docker compose exec app ls -al'
-            sh 'docker compose exec app rm -rf vendor composer.lock'
+            sh 'docker compose exec -u root app rm -rf vendor composer.lock'
             sh 'docker compose exec app composer install'
             sh 'docker compose exec app cp .env.dev .env'
             sh 'docker compose exec app php artisan key:generate'
