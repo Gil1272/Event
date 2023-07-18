@@ -18,8 +18,8 @@ node {
         }
         stage('Laravel post deploy') {
             sh 'docker compose exec app ls -al'
-            sh 'docker compose exec -u www-data app rm -rf vendor composer.lock'
-            sh 'docker compose exec app composer install'
+            sh 'docker compose exec -u root app rm -rf vendor composer.lock'
+            sh 'docker compose exec -u root app composer install'
             sh 'docker compose exec app cp .env.dev .env'
             sh 'docker compose exec app php artisan key:generate'
         }
