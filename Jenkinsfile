@@ -8,17 +8,19 @@ node {
             poll: false,
             url: 'git@gitlab.com:gemini-and-co/event-show/laravel-api.git'
         }
-        // environment {
-        //     COMPOSER_ALLOW_SUPERUSER = '1'
-        // }
         stage('Build docker') {
-           sh 'docker compose build'
+           sh 'docker compose build app'
         //    sh 'docker compose build --no-cache'
         }
         stage('Deploy docker') {
             sh 'docker compose down'
             sh 'docker compose up -d'
             // sh 'docker compose exec app chown -R www-data:www-data /var/www/storage'
+        }
+        stage('Laravel post deploy') {
+            sh 'docker compose exec app rm -rf vendor composer.lock'
+            sh 'docker compose exec app composer install'
+            sh 'docker compose exec app php artisan key:generate'
         }
     } catch (e) {
         currentBuild.result = 'FAILED'
