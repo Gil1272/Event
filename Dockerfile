@@ -53,7 +53,7 @@ COPY ./docker-compose/php/laravel.ini /usr/local/etc/php/conf.d/laravel.ini
 WORKDIR /var/www/html/eventapi
 
 # Get the IP address of the host machine && # Replace the placeholder in the Nginx configuration template
-RUN HOST_IP=$(hostname -I | awk '{print $1}') && sed -i "s/\$HOST_IP/$HOST_IP/g" ./docker-compose/nginx/default.conf
+# RUN HOST_IP=$(hostname -I | awk '{print $1}') && sed -i "s/\$HOST_IP/$HOST_IP/g" ./docker-compose/nginx/default.conf
 
 # Expose port 9000 and start php-fpm server
 EXPOSE 9000
