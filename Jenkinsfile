@@ -18,8 +18,10 @@ node {
             // sh 'docker compose exec app chown -R www-data:www-data /var/www/storage'
         }
         stage('Laravel post deploy') {
+            sh 'docker compose exec app ls'
             sh 'docker compose exec app rm -rf vendor composer.lock'
             sh 'docker compose exec app composer install'
+            sh 'docker compose exec app cp .env.dev .env'
             sh 'docker compose exec app php artisan key:generate'
         }
     } catch (e) {
