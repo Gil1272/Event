@@ -1,5 +1,9 @@
 FROM php:8.2-fpm
 
+# Arguments defined in docker-compose.yml
+ARG user
+ARG uid
+
 RUN mkdir -p /var/www/html/eventapi
 RUN chmod -R 777 /var/www/html/eventapi
 
@@ -34,17 +38,14 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 COPY . /var/www/html/eventapi
 
-# Add UID '1000' to www-data
-RUN usermod -u 1000 www-data
+# Create system user to run Composer and Artisan Commands
+RUN useradd -G www-data,root -u $uid -d /home/$user $user
+RUN mkdir -p /home/$user/.composer && \
+    chown -R $user:$user /home/$user
 
-# Copy existing application directory permissions
-COPY --chown=www-data:www-data . /var/www/html/eventapi
-
-# Set proper permissions
-RUN chown -R www-data:www-data /var/www/.composer
 
 # Change current user to www
-USER www-data
+USER $user
 
 # RUN echo "memory_limit = 256M" > /usr/local/etc/php/conf.d/memory-limit.ini
 COPY ./docker-compose/php/laravel.ini /usr/local/etc/php/conf.d/laravel.ini

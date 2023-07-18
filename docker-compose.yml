@@ -4,9 +4,9 @@ services:
     app:
         build:
             context: ./
-            # args:
-            #     user: appuser
-            #     uid: 1000
+            args:
+                user: appuser
+                uid: 1000
             dockerfile: Dockerfile
         image: eventapp-image
         user: 'www-data:www-data'
