@@ -10,6 +10,7 @@ node {
         }
         stage('Build docker') {
         //    sh 'make stop'
+           sh 'cp .env.dev .env'
            sh 'make build'
         }
         stage('Deploy docker') {
