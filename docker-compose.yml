@@ -3,10 +3,10 @@ version: "3.7"
 services:
     app:
         build:
-            context: ./
             args:
                 user: appuser
                 uid: 1000
+            context: ./
             dockerfile: Dockerfile
         image: eventapp-image
         user: 'www-data:www-data'

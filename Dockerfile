@@ -28,15 +28,13 @@ RUN apt-get update && apt-get install -y \
 ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
 
 RUN chmod +x /usr/local/bin/install-php-extensions && \
-    install-php-extensions gd xdebug mongodb @composer mbstring exif pcntl bcmath
+    install-php-extensions gd xdebug mongodb mbstring exif pcntl bcmath
 
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Get latest Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-
-COPY . /var/www/html/eventapi
 
 # Create system user to run Composer and Artisan Commands
 RUN useradd -G www-data,root -u $uid -d /home/$user $user
@@ -56,7 +54,4 @@ WORKDIR /var/www/html/eventapi
 # RUN HOST_IP=$(hostname -I | awk '{print $1}') && sed -i "s/\$HOST_IP/$HOST_IP/g" ./docker-compose/nginx/default.conf
 
 # Expose port 9000 and start php-fpm server
-EXPOSE 9000
-
-CMD ["php-fpm"]
-
+USER $user

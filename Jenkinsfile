@@ -16,13 +16,13 @@ node {
             sh 'docker compose down'
             sh 'docker compose up -d'
         }
-        stage('Laravel post deploy') {
-            sh 'docker compose exec app ls -al'
-            sh 'docker compose exec app rm -rf vendor composer.lock'
-            sh 'docker compose exec app composer install'
-            sh 'docker compose exec app cp .env.dev .env'
-            sh 'docker compose exec app php artisan key:generate'
-        }
+        // stage('Laravel post deploy') {
+        //     sh 'docker compose exec app ls -al'
+        //     sh 'docker compose exec app rm -rf vendor composer.lock'
+        //     sh 'docker compose exec app composer install'
+        //     sh 'docker compose exec app cp .env.dev .env'
+        //     sh 'docker compose exec app php artisan key:generate'
+        // }
     } catch (e) {
         currentBuild.result = 'FAILED'
         throw e
