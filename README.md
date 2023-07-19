@@ -1,64 +1,170 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+1 .Build, start and install the docker images from your terminal:
+```bash
+make build
+make start
+make composer-install
+make env-dev
+```
+Note: If you want to change default docker configurations (web_port, etc...) - open `.env` file, edit necessary environment variable value and stop, rebuild, start docker containers.
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+5.Make sure that you have installed migrations/seeds:
+```bash
+make migrate
+make seed
+```
 
-## About Laravel
+6.Set key for application:
+```bash
+make key-generate
+```
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+7.In order to use this application, please open in your browser next urls:
+- [http://localhost](http://localhost)
+- [http://localhost:8025 (Mailpit)](http://localhost:8025)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Setting up STAGING environment locally
+1.You can clone this repository from GitHub or install via composer.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Note: Delete `storage/mysql-data` and `vendor` folder if it is exists.
 
-## Learning Laravel
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Note: If you want to change default docker configurations (web_port, etc...) - create uncommitted `.env` file, copy data from `.env.staging`, edit necessary environment variable value.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+2.Build, start and install the docker images from your terminal:
+```bash
+make build-staging
+make start-staging
+```
 
-## Laravel Sponsors
+3.Make sure that you have installed migrations:
+```bash
+make migrate-no-test
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+4.Set key for application:
+```bash
+make key-generate
+```
 
-### Premium Partners
+## Setting up PROD environment locally
+1.You can clone this repository from GitHub or install via composer.
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+Note: Delete `storage/mysql-data` and `vendor` folder if it is exists.
 
-## Contributing
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
 
-## Code of Conduct
+2.Edit `docker-compose-prod.yml` and set necessary user/password for MySQL.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+3.Edit `env.prod` and set necessary user/password for MySQL.
 
-## Security Vulnerabilities
+Note: If you want to change default docker configurations (web_port, etc...) - create uncommitted `.env` file, copy data from `.env.prod`, edit necessary environment variable value.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+4.Build, start and install the docker images from your terminal:
+```bash
+make build-prod
+make start-prod
+```
 
-## License
+5.Make sure that you have installed migrations:
+```bash
+make migrate-no-test
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+6.Set key for application:
+```bash
+make key-generate
+```
+
+## Getting shell to container
+After application will start (`make start`) and in order to get shell access inside laravel container you can run following command:
+```bash
+make ssh
+```
+Note 1: Please use next make commands in order to enter in other containers: `make ssh-nginx`, `make ssh-supervisord`, `make ssh-mysql`.
+
+Note 2: Please use `exit` command in order to return from container's shell to local shell.
+
+## Building containers
+In case you edited Dockerfile or other environment configuration you'll need to build containers again using next commands:
+```bash
+make stop
+make build
+make start
+```
+Note 1: Please use next command if you need to build staging environment `make build-staging` instead `make build`.
+
+Note 2: Please use next command if you need to build prod environment `make build-prod` instead `make build`.
+
+## Start and stop environment
+Please use next make commands in order to start and stop environment:
+```bash
+make start
+make stop
+```
+Note 1: For staging environment need to be used next make commands: `make start-staging`, `make stop-staging`.
+
+Note 2: For prod environment need to be used next make commands: `make start-prod`, `make stop-prod`.
+
+## Additional main command available
+```bash
+make build
+make build-test
+make build-staging
+make build-prod
+
+make start
+make start-test
+make start-staging
+make start-prod
+
+make stop
+make stop-test
+make stop-staging
+make stop-prod
+
+make restart
+make restart-test
+make restart-staging
+make restart-prod
+
+make env-dev
+make env-test-ci
+
+make ssh
+make ssh-root
+make ssh-nginx
+make ssh-supervisord
+make ssh-mysql
+
+make composer-install-no-dev
+make composer-install
+make composer-update
+
+make key-generate
+
+make info
+
+make logs
+make logs-nginx
+make logs-supervisord
+make logs-mysql
+
+make drop-migrate
+make migrate-no-test
+make migrate
+
+make seed
+
+make phpunit
+make report-code-coverage
+
+make phpcs
+make ecs
+make ecs-fix
+make phpmetrics
+make phpcpd
+make phpmd
+make phpstan
+make phpinsights
+
+```

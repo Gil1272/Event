@@ -7,7 +7,7 @@ services:
       build:
         context: ./docker/
         args:
-          BUILD_ARGUMENT_ENV: dev
+          BUILD_ARGUMENT_ENV: staging
         dockerfile: ./nginx/Dockerfile
       container_name: ${COMPOSE_PROJECT_NAME}-nginx
       restart: always
@@ -26,17 +26,14 @@ services:
       build:
         context: .
         args:
-          BUILD_ARGUMENT_ENV: dev
+          BUILD_ARGUMENT_ENV: staging
           HOST_UID: ${HOST_UID}
           HOST_GID: ${HOST_GID}
-          XDEBUG_CONFIG: ${XDEBUG_CONFIG}
         dockerfile: ./Dockerfile
       container_name: ${COMPOSE_PROJECT_NAME}-laravel
-      volumes:
-        - ./:/var/www/html:cached
-      depends_on:
-        # - mysql
-        - mail
+      restart: always
+      # depends_on:
+      #   - mysql
       networks:
         - laravel
 
@@ -46,16 +43,6 @@ services:
       container_name: ${COMPOSE_PROJECT_NAME}-supervisord
       expose: []
       command: ["/usr/bin/supervisord"]
-
-    mail:
-      image: axllent/mailpit:latest
-      container_name: ${COMPOSE_PROJECT_NAME}-mail
-      restart: always
-      ports:
-        - "8025:8025"
-        - "1025:1025"
-      networks:
-        - laravel
 
 networks:
   laravel:
