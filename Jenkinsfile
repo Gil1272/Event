@@ -9,12 +9,11 @@ node {
             url: 'git@gitlab.com:gemini-and-co/event-show/laravel-api.git'
         }
         stage('Build docker') {
-        //    sh 'make stop'
            sh 'cp .env.dev .env'
            sh 'make build'
         }
         stage('Deploy docker') {
-            sh 'make start'
+            sh 'make stop'
             sh 'make start'
         }
         stage('Laravel post deploy') {
