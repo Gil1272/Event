@@ -9,12 +9,12 @@ services:
             context: ./
             dockerfile: Dockerfile
         image: eventapp-image
-        user: 'www-data:www-data'
+        # user: 'www-data:www-data'
         container_name: eventapp-api
         restart: unless-stopped
-        working_dir: /var/www/html/eventapi
+        working_dir: /var/www
         volumes:
-        - ./:/var/www/html/eventapi
+        - ./:/var/www
         networks:
         - eventapp-network
 
@@ -26,7 +26,7 @@ services:
         - 9000:80
         # - "443:443"
         volumes:
-        - ./:/var/www/html/eventapi
+        - ./:/var/www
         - ./docker-compose/nginx:/etc/nginx/conf.d
         networks:
         - eventapp-network

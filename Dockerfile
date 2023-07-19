@@ -4,12 +4,6 @@ FROM php:8.2-fpm
 ARG user
 ARG uid
 
-RUN mkdir -p /var/www/html/eventapi
-RUN chmod -R 777 /var/www/html/eventapi
-
-# Create the cache directory
-RUN mkdir -p /var/www/.composer/cache/files/
-
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
@@ -46,9 +40,9 @@ RUN mkdir -p /home/$user/.composer && \
 USER $user
 
 # RUN echo "memory_limit = 256M" > /usr/local/etc/php/conf.d/memory-limit.ini
-COPY ./docker-compose/php/laravel.ini /usr/local/etc/php/conf.d/laravel.ini
+# COPY ./docker-compose/php/laravel.ini /usr/local/etc/php/conf.d/laravel.ini
 
-WORKDIR /var/www/html/eventapi
+WORKDIR /var/www
 
 # Get the IP address of the host machine && # Replace the placeholder in the Nginx configuration template
 # RUN HOST_IP=$(hostname -I | awk '{print $1}') && sed -i "s/\$HOST_IP/$HOST_IP/g" ./docker-compose/nginx/default.conf
