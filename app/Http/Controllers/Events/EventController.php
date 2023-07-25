@@ -9,6 +9,7 @@ use App\Models\Events\EventStatus;
 use App\Models\Events\EventType;
 use App\Models\Users\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Validator;
@@ -202,19 +203,53 @@ class EventController extends Controller
             /**
              * Ex :
              * create storage with user id;
-             *  if(Storage::disk('local')->exists($user_id)){
-             *     pass;
-             *   }
-             *  Storage::disk('local')->makeDirectory($user_id);
-             * $filename =  uniqid().$link_slug.'.'.$file->getClientOriginalExtension()
-             * $file->move(("assets/img/events"),$photo_db_name)
+             *   if(Storage::disk('local')->exists($user_id)){
+             *      pass;
+             *    }
+             *   Storage::disk('local')->makeDirectory($user_id);
+             *  $filename =  uniqid().$link_slug.'.'.$file->getClientOriginalExtension();
+             *  $file->move(("assets/img/events"),$filename);
+             * */
+            $user_id = AUth::id();
+            $directory = '/events';
+            if (!Storage::disk('local')->exists($user_id))
+            {
+                #create user directory
+                Storage::disk('local')->makeDirectory($user_id.$directory);
+
+            }
+            $file = $request->photos;
+            $filename =  uniqid().$link_slug.'.'.$file->getClientOriginalExtension();
+            $file->move(("assets/img/events"),$filename);
+            /**
+             * Resize image for different fomart
+             *
              */
+            $fomart = array(
+                1=>'500_x_700',
+                2=>'600_x_800'
+            );
+            foreach ($fomart as $key => $value)
+            {
+                $path = $user_id.$directory.'/'.$value[$key];
+                $width = Str::of($value[$key])->before('_x_');
+                $height = Str::of($value[$key])->after('_x_');
+                #Let's check if the folder exist ? create
+                if(!Storage::disk('local')->exists($path)){
+                    #create format directory
+                    Storage::disk('local')->makeDirectory($path);
+                }
+                $newpath = 'assets/img/events/'.$value[$key];
+                $file->move(($newpath),$filename);
+            }
+
+            $data["photos"] = $filename;
         }else{
-            $data["photos"] = []; #put default event app phots
+            $data["photos"] = []; #put default event app photos
         }
 
         if($request->hasFile("banners")){
-            //iterate throught and upload each file  NB : file shou b
+            //iterate thought and upload each file  NB : file shou b
         }else{
             $data["banners"] = []; #default event banner
         }

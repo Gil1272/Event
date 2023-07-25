@@ -176,6 +176,12 @@ return [
         App\Providers\RouteServiceProvider::class,
 
         /**
+         * Intervention Image Service provider
+         *
+         */
+        Intervention\Image\ImageServiceProvider::class,
+
+        /**
          * Mongodb Service Provider
          */
         Jenssegers\Mongodb\MongodbServiceProvider::class,
@@ -242,6 +248,7 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         'Countries' => Monarobase\CountryList\CountryListFacade::class,
+        'Image' => Intervention\Image\Facades\Image::class,
 
     ],
 
