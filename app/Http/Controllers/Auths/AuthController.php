@@ -14,6 +14,7 @@ use App\Http\Controllers\Users\UserController;
 use App\Mail\Users\RegisterMail;
 use App\Models\Users\User;
 use Illuminate\Support\Facades\Mail;
+use Monarobase\CountryList\CountryListFacade;
 
 class AuthController extends UserController
 {
@@ -52,7 +53,9 @@ class AuthController extends UserController
         if ($validator->fails()) {
             return JsonResponse::send(true,"Vos informations d'inscription sont incorrectes !",$validator->errors()->messages(),400);
         } else {
-
+            if(!array_key_exists($request->country,CountryListFacade::getList())){
+                return JsonResponse::send(true,"Vos informations d'inscription sont incorrectes !",["country"=>"pays code invalide"],400);
+            }
             $data["password"] = Hash::make($data['password']);
 
             $user_type = [self::USER];
@@ -70,6 +73,7 @@ class AuthController extends UserController
             $token = uniqid(Str::random(32), true);
 
             $user->userVerify()
+
             ->create(['token' => $token]);
 
             // Mail::to($data['email'])->send(new RegisterMail([
@@ -79,13 +83,26 @@ class AuthController extends UserController
             //     "linkText" => "Confirmer mon compte"
             // ]));
 
-            return new JsonResponse([
-                "error" => false,
-                "message" => "Merci d'avoir créé votre compte. Veuillez consulter votre boîte mail afin de confirmer votre compte et commencer à utiliser ".env("APP_NAME")
-            ]);
+            return JsonResponse::send(false,"Merci d'avoir créé votre compte. Veuillez consulter votre boîte mail afin de confirmer votre compte et commencer à utiliser ".env("APP_NAME"));
         }
     }
 
+
+    /**
+     * Get the login username to be used by the controller.
+     *
+     * @return string
+     */
+    private function findUsername()
+    {
+        $login = request()->input('login');
+
+        $fieldType = filter_var($login, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
+
+        request()->merge([$fieldType => $login]);
+
+        return $fieldType;
+    }
     /**
      * Get a JWT via given credentials.
      *
@@ -93,30 +110,39 @@ class AuthController extends UserController
      */
     public function login(Request $request) {
 
-        $credentials = $request->only(['phone_number', 'password']);
+        $identify = request()->input('identify');
+
+        if(is_null($identify))
+
+        if(is_null($identify)){
+            return JsonResponse::send(true,"Vos informations de conection sont invalides",["identify"=>["identify est requit"]],400);
+        };
+
+        $fieldType = filter_var($identify, FILTER_VALIDATE_EMAIL) ? 'email' : 'phone_number';
+
+        request()->merge([$fieldType => $identify]);
+
+        $credentials = $request->only([$fieldType, 'password']);
+
+        $entity_message = $fieldType == 'email' ? "Votre mail n'est pas valide" : "votre numero de téléphone n'est pas valide";
 
         $validator =  Validator::make($credentials,[
-            'phone_number' => 'required|exists:users,phone_number',
+            $fieldType => "required|exists:users,$fieldType",
             'password' => 'required',
         ],[
-            'phone_number.required' => 'Votre numero n\'est pas valide',
-            'name.required' => 'Votre prénom est obligatoire',
+            $fieldType.".required" => $entity_message,
+            'password.required' => 'Votre mot de passe est obligatoire',
         ]);
 
         if ($validator->fails()) {
             return JsonResponse::send(true,"Vos informations de conection sont invalides",$validator->errors()->messages(),400);
         }
 
-        $user = User::where("phone_number", $credentials["phone_number"])->firstOrFail();
+        $user = User::where($fieldType, $credentials[$fieldType])->firstOrFail();
 
         $userVerify = $user->userVerify->token;
         if (!is_null($userVerify)) {
-            return new JsonResponse([
-                "error" => true,
-                "message" => "Veuillez consulter votre boîte mail .
-                    Vous avez sans doute reçu un message.
-                    Veuillez au besoin verifier vos spam. ",
-            ]);
+            return JsonResponse::send(true,"Veuillez consulter votre boîte mail. Vous avez sans doute reçu un message. Veuillez au besoin verifier vos spam. ");
         }
 
         if (! $token = JWTAuth::attempt($credentials)) {

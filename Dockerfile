@@ -41,7 +41,7 @@ COPY ./ .
 # Get the IP address of the host machine && # Replace the placeholder in the Nginx configuration template
 RUN HOST_IP=$(hostname -I | awk '{print $1}') && sed -i "s/\$HOST_IP/$HOST_IP/g" ./docker-compose/nginx/default.conf
 
-RUN cp .env .env && rm -rf vendor composer.lock && composer install --no-interaction && php artisan key:generate
+RUN cp .env.dev .env && rm -rf vendor composer.lock && composer install --no-interaction && php artisan key:generate
 
 # Set directory permissions
 RUN chown -R www-data:www-data .

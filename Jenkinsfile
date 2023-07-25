@@ -9,12 +9,16 @@ node {
             url: 'git@gitlab.com:gemini-and-co/event-show/laravel-api.git'
         }
         stage('Build docker') {
-           sh 'docker compose build --no-cache'
+           sh 'cp .env.dev .env'
+           sh 'make build'
         }
         stage('Deploy docker') {
-            sh 'docker compose down'
-            sh 'docker compose up -d'
-            sh 'docker compose exec app chown -R www-data:www-data /var/www/storage'
+            sh 'make stop'
+            sh 'make start'
+        }
+        stage('Laravel post deploy') {
+            sh 'make env-dev'
+            sh 'make composer-install'
         }
     } catch (e) {
         currentBuild.result = 'FAILED'
