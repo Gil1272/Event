@@ -9,6 +9,7 @@ use App\Models\Events\EventStatus;
 use App\Models\Events\EventType;
 use App\Models\Users\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Validator;
@@ -48,6 +49,124 @@ class EventController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+    /**
+     * Create Event
+     * @OA\Post (
+     *     path="/event/",
+     *     tags={"Event"},
+     *     @OA\RequestBody(
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(
+     *                 @OA\Property(
+     *                      type="object",
+     *                      @OA\Property(
+     *                          property="name",
+     *                          type="string"
+     *                      ),
+     *                      @OA\Property(
+     *                          property="description",
+     *                          type="string"
+     *                      ),
+     *                      @OA\Property(
+     *                          property="country",
+     *                          type="string"
+     *                      ),
+     *                      @OA\Property(
+     *                          property="place",
+     *                          type="string"
+     *                      ),
+     *                      @OA\Property(
+     *                          property="start_date",
+     *                          type="string"
+     *                      ),
+     *                      @OA\Property(
+     *                          property="end_date",
+     *                          type="string"
+     *                      ),
+     *                      @OA\Property(
+     *                          property="time_end",
+     *                          type="string"
+     *                      ),
+     *                      @OA\Property(
+     *                          property="user",
+     *                          type="string"
+     *                      ),
+     *                      @OA\Property(
+     *                          property="type",
+     *                          type="string"
+     *                      ),
+     *                      @OA\Property(
+     *                          property="status",
+     *                          type="string"
+     *                      ),
+     *                      @OA\Property(
+     *                          property="published",
+     *                          type="string"
+     *                      ),
+     *                      @OA\Property(
+     *                          property="private",
+     *                          type="string"
+     *                      ),
+     *                      @OA\Property(
+     *                          property="verify",
+     *                          type="string"
+     *                      ),
+     *                      @OA\Property(
+     *                          property="link",
+     *                          type="string"
+     *                      ),
+     *                      @OA\Property(
+     *                          property="banners",
+     *                          type="string"
+     *                      ),
+     *                      @OA\Property(
+     *                          property="photos",
+     *                          type="string"
+     *                      )
+     *                 ),
+     *                 example={
+     *                     "name":"Event Api",
+     *                     "desccription":"Event Api description",
+     *                     "type":"WORKSHOP",
+     *                     "status":"PENDING",
+     *                     "place":"Cotonou,Bénin",
+     *                     "country":"BJ",
+     *                     "start_date":"2023-08-20",
+     *                     "end_date":"2023-09-22",
+     *                     "time_end":"14:30"
+     *                }
+     *             )
+     *         )
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="success",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="_id", type="String", example="64b7ba121179c7e2e005ad06"),
+     *              @OA\Property(property="name", type="string", example="Event Api"),
+     *              @OA\Property(property="description", type="string", example="Event Api description"),
+     *              @OA\Property(property="type", type="string", example="WORKSHOP"),
+     *              @OA\Property(property="status", type="string", example="PENDING"),
+     *              @OA\Property(property="place", type="string", example="Cotonou,Bénin"),
+     *              @OA\Property(property="country", type="string", example="BJ"),
+     *              @OA\Property(property="start_date", type="string", example="2023-08-20T09:25:53.000000Z"),
+     *              @OA\Property(property="end_date", type="string", example="2023-09-22T09:25:53.000000Z"),
+     *              @OA\Property(property="time_end", type="string", example="14:30"),
+     *              @OA\Property(property="user", type="string", example="Event Api description"),
+     *              @OA\Property(property="updated_at", type="string", example="2021-12-11T09:25:53.000000Z"),
+     *              @OA\Property(property="created_at", type="string", example="2021-12-11T09:25:53.000000Z"),
+     *          )
+     *      ),
+     *      @OA\Response(
+     *          response=400,
+     *          description="invalid",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="msg", type="string", example="fail"),
+     *          )
+     *      )
+     * )
+     */
     public function store(Request $request)
     {
         $data = $request->all();
@@ -84,19 +203,53 @@ class EventController extends Controller
             /**
              * Ex :
              * create storage with user id;
-             *  if(Storage::disk('local')->exists($user_id)){
-             *     pass;
-             *   }
-             *  Storage::disk('local')->makeDirectory($user_id);
-             * $filename =  uniqid().$link_slug.'.'.$file->getClientOriginalExtension()
-             * $file->move(("assets/img/events"),$photo_db_name)
+             *   if(Storage::disk('local')->exists($user_id)){
+             *      pass;
+             *    }
+             *   Storage::disk('local')->makeDirectory($user_id);
+             *  $filename =  uniqid().$link_slug.'.'.$file->getClientOriginalExtension();
+             *  $file->move(("assets/img/events"),$filename);
+             * */
+            $user_id = AUth::id();
+            $directory = '/events';
+            if (!Storage::disk('local')->exists($user_id))
+            {
+                #create user directory
+                Storage::disk('local')->makeDirectory($user_id.$directory);
+
+            }
+            $file = $request->photos;
+            $filename =  uniqid().$link_slug.'.'.$file->getClientOriginalExtension();
+            $file->move(("assets/img/events"),$filename);
+            /**
+             * Resize image for different fomart
+             *
              */
+            $fomart = array(
+                1=>'500_x_700',
+                2=>'600_x_800'
+            );
+            foreach ($fomart as $key => $value)
+            {
+                $path = $user_id.$directory.'/'.$value[$key];
+                $width = Str::of($value[$key])->before('_x_');
+                $height = Str::of($value[$key])->after('_x_');
+                #Let's check if the folder exist ? create
+                if(!Storage::disk('local')->exists($path)){
+                    #create format directory
+                    Storage::disk('local')->makeDirectory($path);
+                }
+                $newpath = 'assets/img/events/'.$value[$key];
+                $file->move(($newpath),$filename);
+            }
+
+            $data["photos"] = $filename;
         }else{
-            $data["photos"] = []; #put default event app phots
+            $data["photos"] = []; #put default event app photos
         }
 
         if($request->hasFile("banners")){
-            //iterate throught and upload each file  NB : file shou b
+            //iterate thought and upload each file  NB : file shou b
         }else{
             $data["banners"] = []; #default event banner
         }
