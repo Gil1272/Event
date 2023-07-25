@@ -48,6 +48,124 @@ class EventController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+    /**
+     * Create Event
+     * @OA\Post (
+     *     path="/event/",
+     *     tags={"Event"},
+     *     @OA\RequestBody(
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(
+     *                 @OA\Property(
+     *                      type="object",
+     *                      @OA\Property(
+     *                          property="name",
+     *                          type="string"
+     *                      ),
+     *                      @OA\Property(
+     *                          property="description",
+     *                          type="string"
+     *                      ),
+     *                      @OA\Property(
+     *                          property="country",
+     *                          type="string"
+     *                      ),
+     *                      @OA\Property(
+     *                          property="place",
+     *                          type="string"
+     *                      ),
+     *                      @OA\Property(
+     *                          property="start_date",
+     *                          type="string"
+     *                      ),
+     *                      @OA\Property(
+     *                          property="end_date",
+     *                          type="string"
+     *                      ),
+     *                      @OA\Property(
+     *                          property="time_end",
+     *                          type="string"
+     *                      ),
+     *                      @OA\Property(
+     *                          property="user",
+     *                          type="string"
+     *                      ),
+     *                      @OA\Property(
+     *                          property="type",
+     *                          type="string"
+     *                      ),
+     *                      @OA\Property(
+     *                          property="status",
+     *                          type="string"
+     *                      ),
+     *                      @OA\Property(
+     *                          property="published",
+     *                          type="string"
+     *                      ),
+     *                      @OA\Property(
+     *                          property="private",
+     *                          type="string"
+     *                      ),
+     *                      @OA\Property(
+     *                          property="verify",
+     *                          type="string"
+     *                      ),
+     *                      @OA\Property(
+     *                          property="link",
+     *                          type="string"
+     *                      ),
+     *                      @OA\Property(
+     *                          property="banners",
+     *                          type="string"
+     *                      ),
+     *                      @OA\Property(
+     *                          property="photos",
+     *                          type="string"
+     *                      )
+     *                 ),
+     *                 example={
+     *                     "name":"Event Api",
+     *                     "desccription":"Event Api description",
+     *                     "type":"WORKSHOP",
+     *                     "status":"PENDING",
+     *                     "place":"Cotonou,Bénin",
+     *                     "country":"BJ",
+     *                     "start_date":"2023-08-20",
+     *                     "end_date":"2023-09-22",
+     *                     "time_end":"14:30"
+     *                }
+     *             )
+     *         )
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="success",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="_id", type="String", example="64b7ba121179c7e2e005ad06"),
+     *              @OA\Property(property="name", type="string", example="Event Api"),
+     *              @OA\Property(property="description", type="string", example="Event Api description"),
+     *              @OA\Property(property="type", type="string", example="WORKSHOP"),
+     *              @OA\Property(property="status", type="string", example="PENDING"),
+     *              @OA\Property(property="place", type="string", example="Cotonou,Bénin"),
+     *              @OA\Property(property="country", type="string", example="BJ"),
+     *              @OA\Property(property="start_date", type="string", example="2023-08-20T09:25:53.000000Z"),
+     *              @OA\Property(property="end_date", type="string", example="2023-09-22T09:25:53.000000Z"),
+     *              @OA\Property(property="time_end", type="string", example="14:30"),
+     *              @OA\Property(property="user", type="string", example="Event Api description"),
+     *              @OA\Property(property="updated_at", type="string", example="2021-12-11T09:25:53.000000Z"),
+     *              @OA\Property(property="created_at", type="string", example="2021-12-11T09:25:53.000000Z"),
+     *          )
+     *      ),
+     *      @OA\Response(
+     *          response=400,
+     *          description="invalid",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="msg", type="string", example="fail"),
+     *          )
+     *      )
+     * )
+     */
     public function store(Request $request)
     {
         $data = $request->all();
