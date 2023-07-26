@@ -13,7 +13,11 @@ node {
            sh 'make build'
         }
         stage('Deploy docker') {
-            sh 'make stop'
+            try{
+                sh 'make stop'
+            }catch(e){
+                // pass
+            }
             sh 'make start'
         }
         stage('Laravel post deploy') {
