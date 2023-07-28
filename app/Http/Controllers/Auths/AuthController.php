@@ -44,6 +44,15 @@ class AuthController extends UserController
         ];
     }
 
+    /**
+     * @LRDparam phone_number required|unique:users,phone_number
+     * @LRDparam name string|required|
+     * @LRDparam firstname string|required
+     * @LRDparam password  string|required
+     * @LRDparam civility string|required
+     * @LRDparam country string|required
+     * @LRDparam email string|unique:users,email
+     */
     public function register(Request $request) {
 
         $data = $request->all();
@@ -107,6 +116,11 @@ class AuthController extends UserController
      * Get a JWT via given credentials.
      *
      * @return \Illuminate\Http\JsonResponse
+     */
+    /**
+     * @LRDparam phone_number unique:users,phone_number
+     * @LRDparam email string|unique:users,email
+     * @LRDparam password  string|required
      */
     public function login(Request $request) {
 

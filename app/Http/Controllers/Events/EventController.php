@@ -50,6 +50,16 @@ class EventController extends Controller
      * @return \Illuminate\Http\Response
      */
 
+    /**
+     * @LRDparam name string|required
+     * @LRDparam description string|required
+     * @LRDparam country string|required
+     * @LRDparam place String|required
+     * @LRDparam type string|required
+     * @LRDparam status string|required
+     * @LRDparam photos nullable
+     * @LRDparam banners nullable
+         */
     public function store(Request $request)
     {
         $data = $request->all();
