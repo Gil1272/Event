@@ -6,6 +6,7 @@ use App\Components\Api\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Models\Events\EventStatus;
 use App\Models\Events\EventType;
+use App\Models\Tickets\TicketType;
 use Illuminate\Http\Request;
 use Monarobase\CountryList\CountryListFacade;
 
@@ -22,5 +23,9 @@ class UtilsController extends Controller
 
     public function getEventType(){
         return response(EventType::toArray())->header('Content-Type', 'application/json');
+    }
+
+    public function getTicketType(){
+        return response(TicketType::toArray())->header('Content-Type', 'application/json');
     }
 }
