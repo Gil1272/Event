@@ -46,7 +46,7 @@ Route::prefix("event/")->middleware([CorsConfig::class,Jwt::class])->group(funct
     Route::post("",[EventController::class,"store"]);
     Route::get("",[EventController::class,"getMyEvents"]);
     Route::get("{id:id}",[EventController::class,"show"])->where(["id" => "[a-z0-9]{24}"]);
-    Route::put("{id:id}",[EventController::class,"update"])->where(["id" => "[a-z0-9]{24}"]);
+    Route::post("{id:id}",[EventController::class,"update"])->where(["id" => "[a-z0-9]{24}"]);
     // Route::put("status/{id:id}/{state:state}",[EventController::class,"changeStatus"]);
     // Route::put("visibility/{id:id}/{state:state}",[EventController::class,"changeVisibility"]);
     // Route::post("clone/{id:id}",[EventController::class,"duplicate"]);

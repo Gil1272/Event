@@ -210,7 +210,7 @@ class EventController extends Controller
              *  $filename =  uniqid().$link_slug.'.'.$file->getClientOriginalExtension();
              *  $file->move(("assets/img/events"),$filename);
              * */
-            $user_id = AUth::id();
+            $user_id = Auth::id();
             $directory = '/events';
             if (!Storage::disk('local')->exists($user_id))
             {
@@ -296,7 +296,38 @@ class EventController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $data = $request->all();
+
+        $validator =  Validator::make($data,EventController::rules());
+
+        $errorMessage = "vos donnés sont invalides";
+
+        if ($validator->fails()) {
+            return JsonResponse::send(true,$errorMessage,$validator->errors()->messages(),400);
+        }
+
+        $event = Event::findOrFail($id);
+
+        $link_slug =  Str::slug($data['name'],'-','fr');
+        $data['link'] = uniqid()."-".$link_slug;
+
+        #NB All old files should be delete if a new file is provide
+        if($request->hasFile("banners")){
+            //iterate thought and upload each file  NB : file shou b
+        }else{
+            $data["banners"] = []; #default event banner
+        }
+
+        if($request->hasFile("banners")){
+            //iterate thought and upload each file  NB : file shou b
+        }else{
+            $data["banners"] = []; #default event banner
+        }
+
+        $event = $event->update($data);
+
+        return JsonResponse::send(false,"Votre évènement a été modifié !",$event);
+
     }
 
     /**
