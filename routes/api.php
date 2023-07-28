@@ -1,12 +1,13 @@
 <?php
 
-use App\Http\Controllers\Auths\AuthController;
-use App\Http\Controllers\Events\EventController;
-use App\Http\Controllers\Utils\UtilsController;
-use App\Http\Middleware\Api\CorsConfig;
-use App\Http\Middleware\Api\Jwt;
 use Illuminate\Http\Request;
+use App\Http\Middleware\Api\Jwt;
 use Illuminate\Support\Facades\Route;
+use App\Http\Middleware\Api\CorsConfig;
+use App\Http\Controllers\Auths\AuthController;
+use App\Http\Controllers\Utils\UtilsController;
+use App\Http\Controllers\Events\EventController;
+use App\Http\Controllers\Tickets\TicketController;
 
 /*
 |--------------------------------------------------------------------------
@@ -51,4 +52,11 @@ Route::prefix("event/")->middleware([CorsConfig::class,Jwt::class])->group(funct
     // Route::put("visibility/{id:id}/{state:state}",[EventController::class,"changeVisibility"]);
     Route::put("clone/{id:id}",[EventController::class,"duplicate"])->where(["id" => "[a-z0-9]{24}"]);
     Route::delete("{id:id}",[EventController::class,"destroy"])->withoutMiddleware([VerifyCsrfToken::class])->where(["id" => "[a-z0-9]{24}"]);
+});
+
+Route::prefix("ticket")->group(function(){
+    // Route::patch("{id:id}",[TicketController::class,"update"])->where(["id" => "[0-9]+"]);
+    // Route::delete("{id:id}",[TicketController::class,"destroy"])->withoutMiddleware([VerifyCsrfToken::class])->where(["id" => "[0-9]+"]);
+    // Route::post("",[TicketController::class,"store"]);
+    Route::get("{id:id}",[TicketController::class,"show"])->where(["id" => "[0-9]+"]);
 });

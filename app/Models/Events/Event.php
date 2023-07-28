@@ -2,6 +2,7 @@
 
 namespace App\Models\Events;
 
+use App\Models\Tickets\Ticket;
 use App\Models\Users\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Jenssegers\Mongodb\Eloquent\Model;
@@ -34,5 +35,9 @@ class Event extends Model
     //Événement Transport Conférences et formations ,Sport
     public function user(){
         return $this->belongsTo(User::class);
+    }
+
+    public function tickets(){
+        return $this->hasMany(Ticket::class);
     }
 }
