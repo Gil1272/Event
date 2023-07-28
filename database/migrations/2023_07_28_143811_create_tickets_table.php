@@ -14,6 +14,7 @@ class CreateTicketsTable extends Migration
     public function up()
     {
         Schema::create('tickets', function (Blueprint $collection) {
+            $collection->string('qrid')->unique();
             $collection->timestamps();
         });
     }

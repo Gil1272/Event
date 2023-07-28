@@ -118,8 +118,7 @@ class AuthController extends UserController
      * @return \Illuminate\Http\JsonResponse
      */
     /**
-     * @LRDparam phone_number unique:users,phone_number
-     * @LRDparam email string|unique:users,email
+     * @LRDparam identify string|required
      * @LRDparam password  string|required
      */
     public function login(Request $request) {
