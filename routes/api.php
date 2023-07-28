@@ -49,6 +49,6 @@ Route::prefix("event/")->middleware([CorsConfig::class,Jwt::class])->group(funct
     Route::post("{id:id}",[EventController::class,"update"])->where(["id" => "[a-z0-9]{24}"]);
     // Route::put("status/{id:id}/{state:state}",[EventController::class,"changeStatus"]);
     // Route::put("visibility/{id:id}/{state:state}",[EventController::class,"changeVisibility"]);
-    // Route::post("clone/{id:id}",[EventController::class,"duplicate"]);
+    Route::put("clone/{id:id}",[EventController::class,"duplicate"])->where(["id" => "[a-z0-9]{24}"]);
     Route::delete("{id:id}",[EventController::class,"destroy"])->withoutMiddleware([VerifyCsrfToken::class])->where(["id" => "[a-z0-9]{24}"]);
 });

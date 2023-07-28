@@ -330,6 +330,44 @@ class EventController extends Controller
 
     }
 
+    public function duplicate($id){
+
+        $event = Event::findOrFail($id);
+
+        if($event){
+            $photos = $event->photos;
+            $banners = $event->banners;
+
+            $eventReplicate = $event->replicate();
+            $eventReplicate->create_at = Carbon::now();
+            $eventReplicate->update_at = Carbon::now();
+
+            $eventReplicate->published = false;
+            $eventReplicate->private = false;
+            $eventReplicate->verify = false;
+            $eventReplicate->link = uniqid()."-".Str::slug($eventReplicate->name,'-','fr')."-clone";
+
+            $newPhotos = [];
+            $newBanners = [];
+
+            #Iterate throug all photos and banners and make copy
+            /**
+             *File::copy($photo,$asset.$newPhoto);
+             *File::copy($banner,$asset.$newBanner);
+             */
+
+            $eventReplicate->photos = $newPhotos;
+            $eventReplicate->banners = $newBanners;
+
+            $eventReplicate->save();
+
+            if($eventReplicate){
+                return JsonResponse::send(false,"L'évènement a été dupliqué !",$eventReplicate);
+            }
+            return JsonResponse::send(true,"Impossible de dupliquer l'évènement",null,400);
+        }
+    }
+
     /**
      * Remove the specified resource from storage.
      *
