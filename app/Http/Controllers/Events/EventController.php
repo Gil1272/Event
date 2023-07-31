@@ -19,6 +19,8 @@ use Monarobase\CountryList\CountryListFacade;
 class EventController extends Controller
 {
 
+    const STORAGE_EVENT = "events";
+    const STORAGE_FORMATS = ["221_x_170","399_x_311","311_x_208","599_x_311"];
     private static function rules() {
         return [
             'name' => 'required',
@@ -103,41 +105,33 @@ class EventController extends Controller
              *  $filename =  uniqid().$link_slug.'.'.$file->getClientOriginalExtension();
              *  $file->move(("assets/img/events"),$filename);
              * */
-            $user_id = Auth::id();
-            $directory = '/events';
-            if (!Storage::disk('local')->exists($user_id))
+            //not checking anymore if directory exist or not because storeAs already make it if not
+            $photos = $request->photos;
+            foreach ($photos as $photo)
             {
-                #create user directory
-                Storage::disk('local')->makeDirectory($user_id.$directory);
+                $filename = uniqid().$link_slug.'.'.$photo->getClientOriginalExtension();
+                $photo->storeAs(
+                    Auth::id()."/".self::STORAGE_EVENT,
+                    $filename,
+                    ['disk' => 'local']
+                );
+                $data['photos'] = $filename;
+                //resize file for each format using resize image
+                foreach (self::STORAGE_FORMATS as $FORMAT)
+                {
+                    $width = Str::of($FORMAT)->before('_x_');
+                    $height = Str::of($FORMAT)->after('_x_');
+                    $width = (int) $width;
+                    $height = (int) $height;
+                    $photoResized = Image::make($photo)->resize($width,$height);
+                    Storage::put(Auth::id()."/".self::STORAGE_EVENT."/".$FORMAT."/".$filename,
+                        $photoResized,
+                        'public');
 
-            }
-            $file = $request->photos;
-            $filename =  uniqid().$link_slug.'.'.$file->getClientOriginalExtension();
-            $file->move(("assets/img/events"),$filename);
-            /**
-             * Resize image for different fomart
-             *
-             */
-            $fomart = array(
-                1=>'500_x_700',
-                2=>'600_x_800'
-            );
-            foreach ($fomart as $key => $value)
-            {
-                $path = $user_id.$directory.'/'.$value[$key];
-                $width = Str::of($value[$key])->before('_x_');
-                $height = Str::of($value[$key])->after('_x_');
-                #Let's check if the folder exist ? create
-                if(!Storage::disk('local')->exists($path)){
-                    #create format directory
-                    Storage::disk('local')->makeDirectory($path);
                 }
-                $newpath = 'assets/img/events/'.$value[$key];
-                $file->move(($newpath),$filename);
             }
-
-            $data["photos"] = $filename;
-        }else{
+        }
+        else{
             $data["photos"] = []; #put default event app photos
         }
 
