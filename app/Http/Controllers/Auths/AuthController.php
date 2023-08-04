@@ -20,12 +20,7 @@ class AuthController extends UserController
 {
 
 
-    public function index(Request $request){
-        return response()->json([
-            'name' => $request->input('name'),
-            'message'=>'Hello world'
-        ]);
-    }
+
     public static function messages() {
         return [
             'phone_number.required' => 'Votre numero n\'est pas valide',
