@@ -3,10 +3,10 @@ node {
     /* groovylint-disable-next-line NoDef, VariableTypeRequired */
     try {
         stage('Clone Repo') {
-            git branch: 'main',
-            credentialsId: 'ed641ed3-eca4-4802-b99c-e364e72b4d05',
+            git branch: 'develop',
+            credentialsId: '974bb4d4-016a-4f05-82a9-ea55e365055b',
             poll: false,
-            url: 'git@gitlab.com:gemini-and-co/event-show/laravel-api.git'
+            url: 'git@gitlab.geminico.cloud:event-show/laravel-api.git'
         }
         stage('Build docker') {
            sh 'cp .env.dev .env'
