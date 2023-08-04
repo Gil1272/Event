@@ -14,6 +14,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
+use Intervention\Image\Facades\Image;
 use Monarobase\CountryList\CountryListFacade;
 
 class EventController extends Controller
@@ -53,15 +54,116 @@ class EventController extends Controller
      */
 
     /**
-     * @LRDparam name string|required
-     * @LRDparam description string|required
-     * @LRDparam country string|required
-     * @LRDparam place String|required
-     * @LRDparam type string|required
-     * @LRDparam status string|required
-     * @LRDparam photos nullable
-     * @LRDparam banners nullable
-         */
+     * Create Event
+     * @OA\Post (
+     *     path="/event/",
+     *     tags={"Event"},
+     *     summary="Event Register",
+     *     description="Event register",
+     *     @OA\RequestBody(
+     *         @OA\JsonContent(),
+     *         @OA\MediaType(
+     *            mediaType="multipart/form-data",
+     *            @OA\Schema(
+     *               type="object",
+     *               required={"name","type", "status", "description","place","country","start_date","end_date","time_end"},
+     *                      @OA\Property(property="name",type="string"),
+     *                      @OA\Property(property="type",type="string"),
+     *                      @OA\Property(property="status",type="string"),
+     *                      @OA\Property( property="description",type="string"),
+     *                      @OA\Property(property="place",type="string"),
+     *                      @OA\Property(property="country",type="string"),
+     *                      @OA\Property(property="start_date",type="string"),
+     *                      @OA\Property(property="end_date",type="string"),
+     *                      @OA\Property(property="time_end",type="time"),
+     *                      @OA\Property( property="banners",type="array",@OA\Items(type="string")),
+     *                      @OA\Property(property="photos",type="array",@OA\Items(type="string")),
+     *            ),
+     *        ),
+     *    ),
+     *     @OA\RequestBody(
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(
+     *                 @OA\Property(
+     *                      type="object",
+     *                      @OA\Property(property="name",type="string"),
+     *                      @OA\Property( property="description",type="string"),
+     *                      @OA\Property(property="country",type="string"),
+     *                      @OA\Property(property="place",type="string"),
+     *                      @OA\Property(property="start_date",type="string"),
+     *                      @OA\Property(property="end_date",type="string"),
+     *                      @OA\Property(property="time_end",type="string"),
+     *                      @OA\Property(property="user",type="string"),
+     *                      @OA\Property(property="type",type="string"),
+     *                      @OA\Property(property="status",type="string"),
+     *                      @OA\Property(property="published",type="string"),
+     *                      @OA\Property(property="private",type="string"),
+     *                      @OA\Property(property="verify",type="string"),
+     *                      @OA\Property(property="link",type="string"),
+     *                      @OA\Property( property="banners",type="array",@OA\Items(type="string")),
+     *                      @OA\Property(property="photos",type="array",@OA\Items(type="string"))
+     *                 ),
+     *                 example={
+     *                    "name": "Event Api 3",
+     *                   "type": "Atelier",
+     *                   "status": "En attente",
+     *                   "description": "Event Api description",
+     *                   "place": "Cotonou, Bénin",
+     *                   "country": "BJ",
+     *                   "start_date": "2023-04-05",
+     *                   "end_date": "2023-05-05",
+     *                   "time_end": "14:30",
+     *                   "photos": "64ca25fba7a4fevent-api-3.png",
+     *                   "link": "64ca25fba7a02-event-api-3",
+     *                   "published": false,
+     *                   "private": false,
+     *                   "verify": false,
+     *                   "banners": "64ca25fba7a4fevent-api-3.png",
+     *                   "user_id": "64ca1eadcb2c0000e7001622",
+     *                   "updated_at": "2023-08-02T09:46:37.112000Z",
+     *                   "created_at": "2023-08-02T09:46:37.112000Z",
+     *                   "_id": "64ca25fde937000084006042"
+     *                }
+     *             )
+     *         )
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="success",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="error", type="string", example="false"),
+     *              @OA\Property(property="msg", type="string", example="Votre évènement a été créer !"),
+     *              @OA\Property(property="_id", type="String", example="64b7ba121179c7e2e005ad06"),
+     *              @OA\Property(property="name", type="string", example="Event Api"),
+     *              @OA\Property(property="description", type="string", example="Event Api description"),
+     *              @OA\Property(property="type", type="string", example="WORKSHOP"),
+     *              @OA\Property(property="status", type="string", example="PENDING"),
+     *              @OA\Property(property="place", type="string", example="Cotonou,Bénin"),
+     *              @OA\Property(property="country", type="string", example="BJ"),
+     *              @OA\Property(property="start_date", type="string", example="2023-04-05"),
+     *              @OA\Property(property="end_date", type="string", example="2023-05-05"),
+     *              @OA\Property(property="time_end", type="string", example="14:30"),
+     *              @OA\Property(property="photos", type="string", example="64ca25fba7a4fevent-api-3.png"),
+     *              @OA\Property(property="link", type="string", example="64ca25fba7a02-event-api-3"),
+     *              @OA\Property(property="published", type="boolean", example="false"),
+     *              @OA\Property(property="private", type="boolean", example="false"),
+     *              @OA\Property(property="verify", type="boolean", example="false"),
+     *              @OA\Property(property="banners", type="string", example="64ca25fba7a4fevent-api-3.png"),
+     *              @OA\Property(property="user_id", type="string", example="64ca1eadcb2c0000e7001622"),
+     *              @OA\Property(property="updated_at", type="string", example="2021-12-11T09:25:53.000000Z"),
+     *              @OA\Property(property="created_at", type="string", example="2021-12-11T09:25:53.000000Z"),
+     *          )
+     *      ),
+     *      @OA\Response(
+     *          response=400,
+     *          description="invalid",
+     *          @OA\JsonContent(
+     *          )
+     *      )
+     * )
+     */
+
     public function store(Request $request)
     {
         $data = $request->all();
@@ -106,7 +208,10 @@ class EventController extends Controller
              *  $file->move(("assets/img/events"),$filename);
              * */
             //not checking anymore if directory exist or not because storeAs already make it if not
-            $photos = $request->photos;
+
+            $photos = $request->file("photos");
+            $fileLink = array();
+            //for many files
             foreach ($photos as $photo)
             {
                 $filename = uniqid().$link_slug.'.'.$photo->getClientOriginalExtension();
@@ -115,14 +220,12 @@ class EventController extends Controller
                     $filename,
                     ['disk' => 'local']
                 );
-                $data['photos'] = $filename;
+                $fileLink[] = Auth::id()."/".self::STORAGE_EVENT."/".$filename;
                 //resize file for each format using resize image
                 foreach (self::STORAGE_FORMATS as $FORMAT)
                 {
                     $width = Str::of($FORMAT)->before('_x_');
                     $height = Str::of($FORMAT)->after('_x_');
-                    $width = (int) $width;
-                    $height = (int) $height;
                     $photoResized = Image::make($photo)->resize($width,$height);
                     Storage::put(Auth::id()."/".self::STORAGE_EVENT."/".$FORMAT."/".$filename,
                         $photoResized,
@@ -130,6 +233,7 @@ class EventController extends Controller
 
                 }
             }
+            $data['photos'] = $fileLink;
         }
         else{
             $data["photos"] = []; #put default event app photos
@@ -150,6 +254,57 @@ class EventController extends Controller
         }
     }
 
+    /**
+     * Show User's Events
+     * @OA\Get (
+     *     path="/event/",
+     *     tags={"Event"},
+     *     summary="Get All connected User's Event ",
+     *     description="Get connected User's Event",
+     *     @OA\Parameter(name="id",
+     *          required=true,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string",
+     *          ),
+     *    ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="L'évènement a été dupliqué !",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="events", type="array", @OA\Items(
+                    @OA\Property(property="_id", type="String", example="64b7ba121179c7e2e005ad06"),
+     *              @OA\Property(property="name", type="string", example="Event Api"),
+     *              @OA\Property(property="description", type="string", example="Event Api description"),
+     *              @OA\Property(property="type", type="string", example="WORKSHOP"),
+     *              @OA\Property(property="status", type="string", example="PENDING"),
+     *              @OA\Property(property="place", type="string", example="Cotonou,Bénin"),
+     *              @OA\Property(property="country", type="string", example="BJ"),
+     *              @OA\Property(property="start_date", type="string", example="2023-04-05"),
+     *              @OA\Property(property="end_date", type="string", example="2023-05-05"),
+     *              @OA\Property(property="time_end", type="string", example="14:30"),
+     *              @OA\Property(property="photos", type="string", example="64ca25fba7a4fevent-api-3.png"),
+     *              @OA\Property(property="link", type="string", example="64ca25fba7a02-event-api-3"),
+     *              @OA\Property(property="published", type="boolean", example="false"),
+     *              @OA\Property(property="private", type="boolean", example="false"),
+     *              @OA\Property(property="verify", type="boolean", example="false"),
+     *              @OA\Property(property="banners", type="string", example="64ca25fba7a4fevent-api-3.png"),
+     *              @OA\Property(property="user_id", type="string", example="64ca1eadcb2c0000e7001622"),
+     *              @OA\Property(property="updated_at", type="string", example="2021-12-11T09:25:53.000000Z"),
+     *              @OA\Property(property="created_at", type="string", example="2021-12-11T09:25:53.000000Z"),
+     *               ),)
+     *
+     *          )
+     *      ),
+     *      @OA\Response(
+     *          response=400,
+     *          description="invalid",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="hjdd",type="string")
+     *          )
+     *      ),
+     * )
+     */
     public function getMyEvents(){
 
         $user = User::find(Auth::id());
@@ -166,6 +321,102 @@ class EventController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+
+    /**
+     * Show Events by id
+     * @OA\Get (
+     *     path="/event/{id}",
+     *     tags={"Event"},
+     *     summary="Get Event by id ",
+     *     description="Get Event by id",
+     *     @OA\Parameter(name="id",
+     *          required=true,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string",
+     *          ),
+     *    ),
+     *     @OA\RequestBody(
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(
+     *                 @OA\Property(
+     *                      type="object",
+     *                      @OA\Property(property="name",type="string"),
+     *                      @OA\Property( property="description",type="string"),
+     *                      @OA\Property(property="country",type="string"),
+     *                      @OA\Property(property="place",type="string"),
+     *                      @OA\Property(property="start_date",type="string"),
+     *                      @OA\Property(property="end_date",type="string"),
+     *                      @OA\Property(property="time_end",type="string"),
+     *                      @OA\Property(property="user",type="string"),
+     *                      @OA\Property(property="type",type="string"),
+     *                      @OA\Property(property="status",type="string"),
+     *                      @OA\Property(property="published",type="string"),
+     *                      @OA\Property(property="private",type="string"),
+     *                      @OA\Property(property="verify",type="string"),
+     *                      @OA\Property(property="link",type="string"),
+     *                      @OA\Property( property="banners",type="array",@OA\Items(type="string")),
+     *                      @OA\Property(property="photos",type="array",@OA\Items(type="string"))
+     *                 ),
+     *                 example={
+     *                    "name": "Event Api 3",
+     *                   "type": "Atelier",
+     *                   "status": "En attente",
+     *                   "description": "Event Api description",
+     *                   "place": "Cotonou, Bénin",
+     *                   "country": "BJ",
+     *                   "start_date": "2023-04-05",
+     *                   "end_date": "2023-05-05",
+     *                   "time_end": "14:30",
+     *                   "photos": "64ca25fba7a4fevent-api-3.png",
+     *                   "link": "64ca25fba7a02-event-api-3",
+     *                   "published": false,
+     *                   "private": false,
+     *                   "verify": false,
+     *                   "banners": "64ca25fba7a4fevent-api-3.png",
+     *                   "user_id": "64ca1eadcb2c0000e7001622",
+     *                   "updated_at": "2023-08-02T09:46:37.112000Z",
+     *                   "created_at": "2023-08-02T09:46:37.112000Z",
+     *                   "_id": "64ca25fde937000084006042"
+     *                }
+     *             )
+     *         )
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="L'évènement a été dupliqué !",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="_id", type="String", example="64b7ba121179c7e2e005ad06"),
+     *              @OA\Property(property="name", type="string", example="Event Api"),
+     *              @OA\Property(property="description", type="string", example="Event Api description"),
+     *              @OA\Property(property="type", type="string", example="WORKSHOP"),
+     *              @OA\Property(property="status", type="string", example="PENDING"),
+     *              @OA\Property(property="place", type="string", example="Cotonou,Bénin"),
+     *              @OA\Property(property="country", type="string", example="BJ"),
+     *              @OA\Property(property="start_date", type="string", example="2023-04-05"),
+     *              @OA\Property(property="end_date", type="string", example="2023-05-05"),
+     *              @OA\Property(property="time_end", type="string", example="14:30"),
+     *              @OA\Property(property="photos", type="string", example="64ca25fba7a4fevent-api-3.png"),
+     *              @OA\Property(property="link", type="string", example="64ca25fba7a02-event-api-3"),
+     *              @OA\Property(property="published", type="boolean", example="false"),
+     *              @OA\Property(property="private", type="boolean", example="false"),
+     *              @OA\Property(property="verify", type="boolean", example="false"),
+     *              @OA\Property(property="banners", type="string", example="64ca25fba7a4fevent-api-3.png"),
+     *              @OA\Property(property="user_id", type="string", example="64ca1eadcb2c0000e7001622"),
+     *              @OA\Property(property="updated_at", type="string", example="2021-12-11T09:25:53.000000Z"),
+     *              @OA\Property(property="created_at", type="string", example="2021-12-11T09:25:53.000000Z"),
+     *          )
+     *      ),
+     *      @OA\Response(
+     *          response=400,
+     *          description="invalid",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="hjdd",type="string")
+     *          )
+     *      ),
+     * )
+     */
     public function show($id)
     {
         $event =  Event::find($id);
@@ -180,6 +431,99 @@ class EventController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
+     */
+
+    /**
+     * Update event
+     * @OA\Post (
+     *     path="/event/{id}",
+     *     tags={"Event"},
+     *     summary="Update Event",
+     *     description="Update Event",
+     *     @OA\Parameter(name="id",
+     *          required=true,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string",
+     *          )),
+     *     @OA\RequestBody(
+     *         @OA\JsonContent(),
+     *         @OA\MediaType(
+     *            mediaType="multipart/form-data",
+     *            @OA\Schema(
+     *               type="object",
+     *                      @OA\Property(property="name",type="string"),
+     *                      @OA\Property(property="type",type="string"),
+     *                      @OA\Property(property="status",type="string"),
+     *                      @OA\Property( property="description",type="string"),
+     *                      @OA\Property(property="place",type="string"),
+     *                      @OA\Property(property="country",type="string"),
+     *                      @OA\Property(property="start_date",type="string"),
+     *                      @OA\Property(property="end_date",type="string"),
+     *                      @OA\Property(property="time_end",type="time"),
+     *                      @OA\Property( property="banners",type="array",@OA\Items(type="string")),
+     *                      @OA\Property(property="photos",type="array",@OA\Items(type="string")),
+     *            ),
+     *        ),
+     *    ),
+     *     @OA\RequestBody(
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(
+     *                 @OA\Property(
+     *                      type="object",
+     *                      @OA\Property(property="name",type="string"),
+     *                      @OA\Property( property="description",type="string"),
+     *                      @OA\Property(property="country",type="string"),
+     *                      @OA\Property(property="place",type="string"),
+     *                      @OA\Property(property="start_date",type="string"),
+     *                      @OA\Property(property="end_date",type="string"),
+     *                      @OA\Property(property="time_end",type="string"),
+     *                      @OA\Property(property="user",type="string"),
+     *                      @OA\Property(property="type",type="string"),
+     *                      @OA\Property(property="status",type="string"),
+     *                      @OA\Property(property="published",type="string"),
+     *                      @OA\Property(property="private",type="string"),
+     *                      @OA\Property(property="verify",type="string"),
+     *                      @OA\Property(property="link",type="string"),
+     *                      @OA\Property( property="banners",type="array",@OA\Items(type="string")),
+     *                      @OA\Property(property="photos",type="array",@OA\Items(type="string"))
+     *                 ),
+     *                 example={
+     *                    "name": "Event Api 3",
+     *                   "type": "Atelier",
+     *                   "status": "En attente",
+     *                   "description": "Event Api description",
+     *                   "place": "Cotonou, Bénin",
+     *                   "country": "BJ",
+     *                   "start_date": "2023-04-05",
+     *                   "end_date": "2023-05-05",
+     *                   "time_end": "14:30",
+     *                   "photos": "64ca25fba7a4fevent-api-3.png",
+     *                   "link": "64ca25fba7a02-event-api-3",
+     *                   "published": false,
+     *                   "private": false,
+     *                   "verify": false,
+     *                   "banners": "64ca25fba7a4fevent-api-3.png",
+     *                   "user_id": "64ca1eadcb2c0000e7001622",
+     *                   "updated_at": "2023-08-02T09:46:37.112000Z",
+     *                   "created_at": "2023-08-02T09:46:37.112000Z",
+     *                   "_id": "64ca25fde937000084006042"
+     *                }
+     *             )
+     *         )
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="Votre évènement a été modifié !",
+     *      ),
+     *      @OA\Response(
+     *          response=400,
+     *          description="invalid",
+     *          @OA\JsonContent(
+     *          )
+     *      )
+     * )
      */
     public function update(Request $request, $id)
     {
@@ -217,6 +561,80 @@ class EventController extends Controller
 
     }
 
+    /**
+     * Duplicate Event
+     * @OA\Put (
+     *     path="/event/clone/{id}",
+     *     tags={"Event"},
+     *     summary="Duplicate Event",
+     *     description="Duplicate Event",
+     *     @OA\Parameter(name="id",
+     *          required=true,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string",
+     *          ),
+     *    ),
+     *     @OA\RequestBody(
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(
+     *                 @OA\Property(
+     *                      type="object",
+     *                      @OA\Property(property="name",type="string"),
+     *                      @OA\Property( property="description",type="string"),
+     *                      @OA\Property(property="country",type="string"),
+     *                      @OA\Property(property="place",type="string"),
+     *                      @OA\Property(property="start_date",type="string"),
+     *                      @OA\Property(property="end_date",type="string"),
+     *                      @OA\Property(property="time_end",type="string"),
+     *                      @OA\Property(property="user",type="string"),
+     *                      @OA\Property(property="type",type="string"),
+     *                      @OA\Property(property="status",type="string"),
+     *                      @OA\Property(property="published",type="string"),
+     *                      @OA\Property(property="private",type="string"),
+     *                      @OA\Property(property="verify",type="string"),
+     *                      @OA\Property(property="link",type="string"),
+     *                      @OA\Property( property="banners",type="array",@OA\Items(type="string")),
+     *                      @OA\Property(property="photos",type="array",@OA\Items(type="string"))
+     *                 ),
+     *                 example={
+     *                    "name": "Event Api 3",
+     *                   "type": "Atelier",
+     *                   "status": "En attente",
+     *                   "description": "Event Api description",
+     *                   "place": "Cotonou, Bénin",
+     *                   "country": "BJ",
+     *                   "start_date": "2023-04-05",
+     *                   "end_date": "2023-05-05",
+     *                   "time_end": "14:30",
+     *                   "photos": "64ca25fba7a4fevent-api-3.png",
+     *                   "link": "64ca25fba7a02-event-api-3",
+     *                   "published": false,
+     *                   "private": false,
+     *                   "verify": false,
+     *                   "banners": "64ca25fba7a4fevent-api-3.png",
+     *                   "user_id": "64ca1eadcb2c0000e7001622",
+     *                   "updated_at": "2023-08-02T09:46:37.112000Z",
+     *                   "created_at": "2023-08-02T09:46:37.112000Z",
+     *                   "_id": "64ca25fde937000084006042"
+     *                }
+     *             )
+     *         )
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="L'évènement a été dupliqué !",
+     *      ),
+     *      @OA\Response(
+     *          response=400,
+     *          description="invalid",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="hjdd",type="string")
+     *          )
+     *      ),
+     * )
+     */
     public function duplicate($id){
 
         $event = Event::findOrFail($id);
@@ -260,6 +678,78 @@ class EventController extends Controller
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
+     */
+
+    /**
+     * Delete Event
+     * @OA\Delete (
+     *     path="/event/{id}",
+     *     tags={"Event"},
+     *     summary="Delete Event",
+     *     description="Delete Event",
+     *     @OA\Parameter(name="id",
+     *          required=true,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string",
+     *          ),
+     *    ),
+     *     @OA\RequestBody(
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(
+     *                 @OA\Property(
+     *                      type="object",
+     *                      @OA\Property(property="name",type="string"),
+     *                      @OA\Property( property="description",type="string"),
+     *                      @OA\Property(property="country",type="string"),
+     *                      @OA\Property(property="place",type="string"),
+     *                      @OA\Property(property="start_date",type="string"),
+     *                      @OA\Property(property="end_date",type="string"),
+     *                      @OA\Property(property="time_end",type="string"),
+     *                      @OA\Property(property="user",type="string"),
+     *                      @OA\Property(property="type",type="string"),
+     *                      @OA\Property(property="status",type="string"),
+     *                      @OA\Property(property="published",type="string"),
+     *                      @OA\Property(property="private",type="string"),
+     *                      @OA\Property(property="verify",type="string"),
+     *                      @OA\Property(property="link",type="string"),
+     *                      @OA\Property( property="banners",type="array",@OA\Items(type="string")),
+     *                      @OA\Property(property="photos",type="array",@OA\Items(type="string"))
+     *                 ),
+     *                 example={
+     *                    "name": "Event Api 3",
+     *                   "type": "Atelier",
+     *                   "status": "En attente",
+     *                   "description": "Event Api description",
+     *                   "place": "Cotonou, Bénin",
+     *                   "country": "BJ",
+     *                   "start_date": "2023-04-05",
+     *                   "end_date": "2023-05-05",
+     *                   "time_end": "14:30",
+     *                   "photos": "64ca25fba7a4fevent-api-3.png",
+     *                   "link": "64ca25fba7a02-event-api-3",
+     *                   "published": false,
+     *                   "private": false,
+     *                   "verify": false,
+     *                   "banners": "64ca25fba7a4fevent-api-3.png",
+     *                   "user_id": "64ca1eadcb2c0000e7001622",
+     *                   "updated_at": "2023-08-02T09:46:37.112000Z",
+     *                   "created_at": "2023-08-02T09:46:37.112000Z",
+     *                   "_id": "64ca25fde937000084006042"
+     *                }
+     *             )
+     *         )
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="L'évènement a été supprimé !",
+     *      ),
+     *      @OA\Response(
+     *          response=400,
+     *          description="invalid"
+     *      ),
+     * )
      */
     public function destroy($id)
     {

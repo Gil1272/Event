@@ -1,0 +1,1141 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "APIs for Event App",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/register": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "User Register",
+                "description": "User Register required unique phone_number and email",
+                "operationId": "Register",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "email",
+                                    "password",
+                                    "password_confirmation"
+                                ],
+                                "properties": {
+                                    "phone_number": {
+                                        "type": "text"
+                                    },
+                                    "name": {
+                                        "type": "text"
+                                    },
+                                    "firstname": {
+                                        "type": "text"
+                                    },
+                                    "password": {
+                                        "type": "password"
+                                    },
+                                    "civility": {
+                                        "type": "text"
+                                    },
+                                    "email": {
+                                        "type": "text"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "application/json": {
+                            "schema": {}
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "_id": {
+                                            "type": "String",
+                                            "example": "64b7ba121179c7e2e005ad06"
+                                        },
+                                        "phone_number": {
+                                            "type": "string",
+                                            "example": "66248499"
+                                        },
+                                        "name": {
+                                            "type": "string",
+                                            "example": "Joe"
+                                        },
+                                        "fisrtname": {
+                                            "type": "string",
+                                            "example": "Doe"
+                                        },
+                                        "password": {
+                                            "type": "string",
+                                            "example": "$2y$10$mbNy17DeKqz.OVVSCganDOREhugSpE1n6H7Pc9PbXMyadAtFwrlVa"
+                                        },
+                                        "civility": {
+                                            "type": "string",
+                                            "example": "Mr"
+                                        },
+                                        "country": {
+                                            "type": "string",
+                                            "example": "BJ"
+                                        },
+                                        "email": {
+                                            "type": "string",
+                                            "example": "jean.doe@mail.com"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "Resource Not Found"
+                    }
+                }
+            }
+        },
+        "/api/login": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Login Register",
+                "description": "User Register required  phone_number and email at identify",
+                "operationId": "Login",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "identify",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "identify": {
+                                        "type": "text"
+                                    },
+                                    "password": {
+                                        "type": "password"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "application/json": {
+                            "schema": {}
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "access_token": {
+                                                        "type": "string",
+                                                        "example": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL3YxL2F1dGgvbG9naW4iLCJpYXQiOjE2OTA5ODg3MTgsImV4cCI6MTY5MDk5MjMxOCwibmJmIjoxNjkwOTg4NzE4LCJqdGkiOiJTTUxiMEpLblVQVUZIVkNFIiwic3ViIjoiNjRjYTFlYWRjYjJjMDAwMGU3MDAxNjIyIiwicHJ2IjoiNGFjMDVjMGY4YWMwOGYzNjRjYjRkMDNmYjhlMWY2MzFmZWMzMjJlOCJ9.a9qYwCD5X61wR4SyUyMSCJlm09vOES1-Fnp_D0V7HDY"
+                                                    },
+                                                    "token_type": {
+                                                        "type": "string",
+                                                        "example": "bearer"
+                                                    },
+                                                    "expire_in": {
+                                                        "type": "string",
+                                                        "example": "3600"
+                                                    },
+                                                    "infos": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "properties": {
+                                                                "user": {
+                                                                    "type": "array",
+                                                                    "items": {
+                                                                        "properties": {
+                                                                            "_id": {
+                                                                                "type": "String",
+                                                                                "example": "64b7ba121179c7e2e005ad06"
+                                                                            },
+                                                                            "phone_number": {
+                                                                                "type": "string",
+                                                                                "example": "66248499"
+                                                                            },
+                                                                            "name": {
+                                                                                "type": "string",
+                                                                                "example": "Joe"
+                                                                            },
+                                                                            "fisrtname": {
+                                                                                "type": "string",
+                                                                                "example": "Doe"
+                                                                            },
+                                                                            "password": {
+                                                                                "type": "string",
+                                                                                "example": "$2y$10$mbNy17DeKqz.OVVSCganDOREhugSpE1n6H7Pc9PbXMyadAtFwrlVa"
+                                                                            },
+                                                                            "civility": {
+                                                                                "type": "string",
+                                                                                "example": "Mr"
+                                                                            },
+                                                                            "country": {
+                                                                                "type": "string",
+                                                                                "example": "BJ"
+                                                                            },
+                                                                            "email": {
+                                                                                "type": "string",
+                                                                                "example": "jean.doe@mail.com"
+                                                                            },
+                                                                            "user_type": {
+                                                                                "type": "string",
+                                                                                "example": "user,customer"
+                                                                            },
+                                                                            "updated_at": {
+                                                                                "type": "string",
+                                                                                "example": "2023-08-02T09:15:25.653000Z"
+                                                                            },
+                                                                            "created_at": {
+                                                                                "type": "string",
+                                                                                "example": "2023-08-02T09:15:25.653000Z"
+                                                                            },
+                                                                            "user_verify": {
+                                                                                "type": "array",
+                                                                                "items": {
+                                                                                    "properties": {
+                                                                                        "_id": {
+                                                                                            "type": "string",
+                                                                                            "example": "64ca1eaecb2c0000e7001623"
+                                                                                        },
+                                                                                        "token": {
+                                                                                            "type": "string",
+                                                                                            "example": "null"
+                                                                                        },
+                                                                                        "user_id": {
+                                                                                            "type": "string",
+                                                                                            "example": "64ca1eaecb2c0000e7001623"
+                                                                                        },
+                                                                                        "updated_at": {
+                                                                                            "type": "string",
+                                                                                            "example": "2023-08-02T09:15:26.307000Z"
+                                                                                        },
+                                                                                        "created_at": {
+                                                                                            "type": "string",
+                                                                                            "example": "2023-08-02T09:15:26.307000Z"
+                                                                                        }
+                                                                                    },
+                                                                                    "type": "object"
+                                                                                }
+                                                                            }
+                                                                        },
+                                                                        "type": "object"
+                                                                    }
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        }
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "Resource Not Found"
+                    }
+                }
+            }
+        },
+        "/event/": {
+            "get": {
+                "tags": [
+                    "Event"
+                ],
+                "summary": "Get All connected User's Event ",
+                "description": "Get connected User's Event",
+                "operationId": "7fd5e504a48a024ee814553c0095a4c3",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "L'évènement a été dupliqué !",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "events": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "_id": {
+                                                        "type": "String",
+                                                        "example": "64b7ba121179c7e2e005ad06"
+                                                    },
+                                                    "name": {
+                                                        "type": "string",
+                                                        "example": "Event Api"
+                                                    },
+                                                    "description": {
+                                                        "type": "string",
+                                                        "example": "Event Api description"
+                                                    },
+                                                    "type": {
+                                                        "type": "string",
+                                                        "example": "WORKSHOP"
+                                                    },
+                                                    "status": {
+                                                        "type": "string",
+                                                        "example": "PENDING"
+                                                    },
+                                                    "place": {
+                                                        "type": "string",
+                                                        "example": "Cotonou,Bénin"
+                                                    },
+                                                    "country": {
+                                                        "type": "string",
+                                                        "example": "BJ"
+                                                    },
+                                                    "start_date": {
+                                                        "type": "string",
+                                                        "example": "2023-04-05"
+                                                    },
+                                                    "end_date": {
+                                                        "type": "string",
+                                                        "example": "2023-05-05"
+                                                    },
+                                                    "time_end": {
+                                                        "type": "string",
+                                                        "example": "14:30"
+                                                    },
+                                                    "photos": {
+                                                        "type": "string",
+                                                        "example": "64ca25fba7a4fevent-api-3.png"
+                                                    },
+                                                    "link": {
+                                                        "type": "string",
+                                                        "example": "64ca25fba7a02-event-api-3"
+                                                    },
+                                                    "published": {
+                                                        "type": "boolean",
+                                                        "example": "false"
+                                                    },
+                                                    "private": {
+                                                        "type": "boolean",
+                                                        "example": "false"
+                                                    },
+                                                    "verify": {
+                                                        "type": "boolean",
+                                                        "example": "false"
+                                                    },
+                                                    "banners": {
+                                                        "type": "string",
+                                                        "example": "64ca25fba7a4fevent-api-3.png"
+                                                    },
+                                                    "user_id": {
+                                                        "type": "string",
+                                                        "example": "64ca1eadcb2c0000e7001622"
+                                                    },
+                                                    "updated_at": {
+                                                        "type": "string",
+                                                        "example": "2021-12-11T09:25:53.000000Z"
+                                                    },
+                                                    "created_at": {
+                                                        "type": "string",
+                                                        "example": "2021-12-11T09:25:53.000000Z"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "invalid",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "hjdd": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Event"
+                ],
+                "summary": "Event Register",
+                "description": "Event register",
+                "operationId": "8e05bfa73f02dbb9a3661d9a6e895dd5",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "type",
+                                    "status",
+                                    "description",
+                                    "place",
+                                    "country",
+                                    "start_date",
+                                    "end_date",
+                                    "time_end"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "type": {
+                                        "type": "string"
+                                    },
+                                    "status": {
+                                        "type": "string"
+                                    },
+                                    "description": {
+                                        "type": "string"
+                                    },
+                                    "place": {
+                                        "type": "string"
+                                    },
+                                    "country": {
+                                        "type": "string"
+                                    },
+                                    "start_date": {
+                                        "type": "string"
+                                    },
+                                    "end_date": {
+                                        "type": "string"
+                                    },
+                                    "time_end": {
+                                        "type": "time"
+                                    },
+                                    "banners": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "photos": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "application/json": {
+                            "schema": {}
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "false"
+                                        },
+                                        "msg": {
+                                            "type": "string",
+                                            "example": "Votre évènement a été créer !"
+                                        },
+                                        "_id": {
+                                            "type": "String",
+                                            "example": "64b7ba121179c7e2e005ad06"
+                                        },
+                                        "name": {
+                                            "type": "string",
+                                            "example": "Event Api"
+                                        },
+                                        "description": {
+                                            "type": "string",
+                                            "example": "Event Api description"
+                                        },
+                                        "type": {
+                                            "type": "string",
+                                            "example": "WORKSHOP"
+                                        },
+                                        "status": {
+                                            "type": "string",
+                                            "example": "PENDING"
+                                        },
+                                        "place": {
+                                            "type": "string",
+                                            "example": "Cotonou,Bénin"
+                                        },
+                                        "country": {
+                                            "type": "string",
+                                            "example": "BJ"
+                                        },
+                                        "start_date": {
+                                            "type": "string",
+                                            "example": "2023-04-05"
+                                        },
+                                        "end_date": {
+                                            "type": "string",
+                                            "example": "2023-05-05"
+                                        },
+                                        "time_end": {
+                                            "type": "string",
+                                            "example": "14:30"
+                                        },
+                                        "photos": {
+                                            "type": "string",
+                                            "example": "64ca25fba7a4fevent-api-3.png"
+                                        },
+                                        "link": {
+                                            "type": "string",
+                                            "example": "64ca25fba7a02-event-api-3"
+                                        },
+                                        "published": {
+                                            "type": "boolean",
+                                            "example": "false"
+                                        },
+                                        "private": {
+                                            "type": "boolean",
+                                            "example": "false"
+                                        },
+                                        "verify": {
+                                            "type": "boolean",
+                                            "example": "false"
+                                        },
+                                        "banners": {
+                                            "type": "string",
+                                            "example": "64ca25fba7a4fevent-api-3.png"
+                                        },
+                                        "user_id": {
+                                            "type": "string",
+                                            "example": "64ca1eadcb2c0000e7001622"
+                                        },
+                                        "updated_at": {
+                                            "type": "string",
+                                            "example": "2021-12-11T09:25:53.000000Z"
+                                        },
+                                        "created_at": {
+                                            "type": "string",
+                                            "example": "2021-12-11T09:25:53.000000Z"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "invalid",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/event/{id}": {
+            "get": {
+                "tags": [
+                    "Event"
+                ],
+                "summary": "Get Event by id ",
+                "description": "Get Event by id",
+                "operationId": "c5ba79eb0bdab8fc16df7c8d57e13f28",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "": {
+                                        "properties": {
+                                            "name": {
+                                                "type": "string"
+                                            },
+                                            "description": {
+                                                "type": "string"
+                                            },
+                                            "country": {
+                                                "type": "string"
+                                            },
+                                            "place": {
+                                                "type": "string"
+                                            },
+                                            "start_date": {
+                                                "type": "string"
+                                            },
+                                            "end_date": {
+                                                "type": "string"
+                                            },
+                                            "time_end": {
+                                                "type": "string"
+                                            },
+                                            "user": {
+                                                "type": "string"
+                                            },
+                                            "type": {
+                                                "type": "string"
+                                            },
+                                            "status": {
+                                                "type": "string"
+                                            },
+                                            "published": {
+                                                "type": "string"
+                                            },
+                                            "private": {
+                                                "type": "string"
+                                            },
+                                            "verify": {
+                                                "type": "string"
+                                            },
+                                            "link": {
+                                                "type": "string"
+                                            },
+                                            "banners": {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "photos": {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "string"
+                                                }
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                },
+                                "type": "object",
+                                "example": {
+                                    "name": "Event Api 3",
+                                    "type": "Atelier",
+                                    "status": "En attente",
+                                    "description": "Event Api description",
+                                    "place": "Cotonou, Bénin",
+                                    "country": "BJ",
+                                    "start_date": "2023-04-05",
+                                    "end_date": "2023-05-05",
+                                    "time_end": "14:30",
+                                    "photos": "64ca25fba7a4fevent-api-3.png",
+                                    "link": "64ca25fba7a02-event-api-3",
+                                    "published": false,
+                                    "private": false,
+                                    "verify": false,
+                                    "banners": "64ca25fba7a4fevent-api-3.png",
+                                    "user_id": "64ca1eadcb2c0000e7001622",
+                                    "updated_at": "2023-08-02T09:46:37.112000Z",
+                                    "created_at": "2023-08-02T09:46:37.112000Z",
+                                    "_id": "64ca25fde937000084006042"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "L'évènement a été dupliqué !",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "_id": {
+                                            "type": "String",
+                                            "example": "64b7ba121179c7e2e005ad06"
+                                        },
+                                        "name": {
+                                            "type": "string",
+                                            "example": "Event Api"
+                                        },
+                                        "description": {
+                                            "type": "string",
+                                            "example": "Event Api description"
+                                        },
+                                        "type": {
+                                            "type": "string",
+                                            "example": "WORKSHOP"
+                                        },
+                                        "status": {
+                                            "type": "string",
+                                            "example": "PENDING"
+                                        },
+                                        "place": {
+                                            "type": "string",
+                                            "example": "Cotonou,Bénin"
+                                        },
+                                        "country": {
+                                            "type": "string",
+                                            "example": "BJ"
+                                        },
+                                        "start_date": {
+                                            "type": "string",
+                                            "example": "2023-04-05"
+                                        },
+                                        "end_date": {
+                                            "type": "string",
+                                            "example": "2023-05-05"
+                                        },
+                                        "time_end": {
+                                            "type": "string",
+                                            "example": "14:30"
+                                        },
+                                        "photos": {
+                                            "type": "string",
+                                            "example": "64ca25fba7a4fevent-api-3.png"
+                                        },
+                                        "link": {
+                                            "type": "string",
+                                            "example": "64ca25fba7a02-event-api-3"
+                                        },
+                                        "published": {
+                                            "type": "boolean",
+                                            "example": "false"
+                                        },
+                                        "private": {
+                                            "type": "boolean",
+                                            "example": "false"
+                                        },
+                                        "verify": {
+                                            "type": "boolean",
+                                            "example": "false"
+                                        },
+                                        "banners": {
+                                            "type": "string",
+                                            "example": "64ca25fba7a4fevent-api-3.png"
+                                        },
+                                        "user_id": {
+                                            "type": "string",
+                                            "example": "64ca1eadcb2c0000e7001622"
+                                        },
+                                        "updated_at": {
+                                            "type": "string",
+                                            "example": "2021-12-11T09:25:53.000000Z"
+                                        },
+                                        "created_at": {
+                                            "type": "string",
+                                            "example": "2021-12-11T09:25:53.000000Z"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "invalid",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "hjdd": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Event"
+                ],
+                "summary": "Update Event",
+                "description": "Update Event",
+                "operationId": "3cfd9a54be04879fc9a2a7c95581c9b7",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "type": {
+                                        "type": "string"
+                                    },
+                                    "status": {
+                                        "type": "string"
+                                    },
+                                    "description": {
+                                        "type": "string"
+                                    },
+                                    "place": {
+                                        "type": "string"
+                                    },
+                                    "country": {
+                                        "type": "string"
+                                    },
+                                    "start_date": {
+                                        "type": "string"
+                                    },
+                                    "end_date": {
+                                        "type": "string"
+                                    },
+                                    "time_end": {
+                                        "type": "time"
+                                    },
+                                    "banners": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "photos": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "application/json": {
+                            "schema": {}
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Votre évènement a été modifié !"
+                    },
+                    "400": {
+                        "description": "invalid",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Event"
+                ],
+                "summary": "Delete Event",
+                "description": "Delete Event",
+                "operationId": "17201e803dac1a658db23df32f16fdd8",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "": {
+                                        "properties": {
+                                            "name": {
+                                                "type": "string"
+                                            },
+                                            "description": {
+                                                "type": "string"
+                                            },
+                                            "country": {
+                                                "type": "string"
+                                            },
+                                            "place": {
+                                                "type": "string"
+                                            },
+                                            "start_date": {
+                                                "type": "string"
+                                            },
+                                            "end_date": {
+                                                "type": "string"
+                                            },
+                                            "time_end": {
+                                                "type": "string"
+                                            },
+                                            "user": {
+                                                "type": "string"
+                                            },
+                                            "type": {
+                                                "type": "string"
+                                            },
+                                            "status": {
+                                                "type": "string"
+                                            },
+                                            "published": {
+                                                "type": "string"
+                                            },
+                                            "private": {
+                                                "type": "string"
+                                            },
+                                            "verify": {
+                                                "type": "string"
+                                            },
+                                            "link": {
+                                                "type": "string"
+                                            },
+                                            "banners": {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "photos": {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "string"
+                                                }
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                },
+                                "type": "object",
+                                "example": {
+                                    "name": "Event Api 3",
+                                    "type": "Atelier",
+                                    "status": "En attente",
+                                    "description": "Event Api description",
+                                    "place": "Cotonou, Bénin",
+                                    "country": "BJ",
+                                    "start_date": "2023-04-05",
+                                    "end_date": "2023-05-05",
+                                    "time_end": "14:30",
+                                    "photos": "64ca25fba7a4fevent-api-3.png",
+                                    "link": "64ca25fba7a02-event-api-3",
+                                    "published": false,
+                                    "private": false,
+                                    "verify": false,
+                                    "banners": "64ca25fba7a4fevent-api-3.png",
+                                    "user_id": "64ca1eadcb2c0000e7001622",
+                                    "updated_at": "2023-08-02T09:46:37.112000Z",
+                                    "created_at": "2023-08-02T09:46:37.112000Z",
+                                    "_id": "64ca25fde937000084006042"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "L'évènement a été supprimé !"
+                    },
+                    "400": {
+                        "description": "invalid"
+                    }
+                }
+            }
+        },
+        "/event/clone/{id}": {
+            "put": {
+                "tags": [
+                    "Event"
+                ],
+                "summary": "Duplicate Event",
+                "description": "Duplicate Event",
+                "operationId": "fea09a5cac876c13503f209f3b82f810",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "": {
+                                        "properties": {
+                                            "name": {
+                                                "type": "string"
+                                            },
+                                            "description": {
+                                                "type": "string"
+                                            },
+                                            "country": {
+                                                "type": "string"
+                                            },
+                                            "place": {
+                                                "type": "string"
+                                            },
+                                            "start_date": {
+                                                "type": "string"
+                                            },
+                                            "end_date": {
+                                                "type": "string"
+                                            },
+                                            "time_end": {
+                                                "type": "string"
+                                            },
+                                            "user": {
+                                                "type": "string"
+                                            },
+                                            "type": {
+                                                "type": "string"
+                                            },
+                                            "status": {
+                                                "type": "string"
+                                            },
+                                            "published": {
+                                                "type": "string"
+                                            },
+                                            "private": {
+                                                "type": "string"
+                                            },
+                                            "verify": {
+                                                "type": "string"
+                                            },
+                                            "link": {
+                                                "type": "string"
+                                            },
+                                            "banners": {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "photos": {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "string"
+                                                }
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                },
+                                "type": "object",
+                                "example": {
+                                    "name": "Event Api 3",
+                                    "type": "Atelier",
+                                    "status": "En attente",
+                                    "description": "Event Api description",
+                                    "place": "Cotonou, Bénin",
+                                    "country": "BJ",
+                                    "start_date": "2023-04-05",
+                                    "end_date": "2023-05-05",
+                                    "time_end": "14:30",
+                                    "photos": "64ca25fba7a4fevent-api-3.png",
+                                    "link": "64ca25fba7a02-event-api-3",
+                                    "published": false,
+                                    "private": false,
+                                    "verify": false,
+                                    "banners": "64ca25fba7a4fevent-api-3.png",
+                                    "user_id": "64ca1eadcb2c0000e7001622",
+                                    "updated_at": "2023-08-02T09:46:37.112000Z",
+                                    "created_at": "2023-08-02T09:46:37.112000Z",
+                                    "_id": "64ca25fde937000084006042"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "L'évènement a été dupliqué !"
+                    },
+                    "400": {
+                        "description": "invalid",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "hjdd": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "bearAuth": {
+                "type": "http",
+                "name": "bearerAuth",
+                "in": "header",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            }
+        }
+    }
+}

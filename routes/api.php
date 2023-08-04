@@ -20,6 +20,7 @@ use App\Http\Controllers\Tickets\TicketController;
 |
 */
 
+
 Route::prefix("auth")->middleware([CorsConfig::class])->group(function(){
 
     Route::post("login",[AuthController::class,"login"]);
