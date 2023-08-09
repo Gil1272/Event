@@ -49,10 +49,7 @@ class TicketController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return new JsonResponse([
-                "error" => true,
-                "message" => $validator->errors()->messages()
-            ]);
+            return JsonResponse::send(true,"Erreur",$validator->errors()->messages(),400);
         }
 
         if(!TicketType::key_exists($request->type)){
@@ -65,10 +62,7 @@ class TicketController extends Controller
             $data['free'] = true;
         }else{
             if(is_null($data['price']) || $data['price'] <= 0){
-                return new JsonResponse([
-                    "error" => true,
-                    "message" => "Le prix est invalide"
-                ]);
+                return JsonResponse::send(true,"Le prix est invalide",null,400);
             }
             $data['free'] = false;
         }
@@ -113,16 +107,9 @@ class TicketController extends Controller
         $data["template"] = "";
         $data["tags"] = [];
 
-        $event->tickets()->create($data);
+        $ticket = $event->tickets()->create($data);
 
-        return new JsonResponse([
-            "error" => false,
-            "message" => "Votre ticket a été crée !",
-            "data" => [
-                "modal" => "#ticket",
-                "function" => "getTicket()"
-            ]
-        ]);
+        return  JsonResponse::send(false,"Votre ticket a été crée !",$ticket);
     }
 
 
@@ -213,10 +200,7 @@ class TicketController extends Controller
             $data['free'] = true;
         }else{
             if(is_null($data['price']) || $data['price'] <= 0){
-                return new JsonResponse([
-                    "error" => true,
-                    "message" => "Le prix est invalide"
-                ]);
+                return JsonResponse::send(true,"Le prix est invalide",400);
             }
             $data['free'] = false;
         }
