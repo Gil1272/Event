@@ -272,54 +272,7 @@ class TicketController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    /**
-     * Delete Event
-     * @OA\Delete (
-     *     path="/event/{id}",
-     *     tags={"Ticket"},
-     *     summary="Delete Ticket",
-     *     description="Delete Ticket",
-     *     @OA\Parameter(name="id",
-     *          required=true,
-     *          in="query",
-     *          @OA\Schema(
-     *              type="string",
-     *          ),
-     *    ),
-     *     @OA\RequestBody(
-     *         @OA\MediaType(
-     *             mediaType="application/json",
-     *             @OA\Schema(
-     *                 @OA\Property(
-     *                      type="object",
-     *                      @OA\Property(property="event",type="string"),
-     *                      @OA\Property( property="description",type="string"),
-     *                      @OA\Property(property="country",type="string"),
-     *                      @OA\Property(property="description",type="string"),
-     *                      @OA\Property(property="free",type="boolean"),
-     *                      @OA\Property(property="price",type="float"),
-     *                      @OA\Property(property="type",type="string"),
-     *                      @OA\Property(property="template",type="string"),
-     *                      @OA\Property( property="tags",type="array",@OA\Items(type="string")),
-     *                      @OA\Property(property="photos",type="array",@OA\Items(type="string"))
-     *                 ),
-     *                 example={
-     *                    "event": "64ca25fde937000084006042",
-     *
-     *                }
-     *             )
-     *         )
-     *      ),
-     *      @OA\Response(
-     *          response=200,
-     *          description="Le ticket a été supprimé !",
-     *      ),
-     *      @OA\Response(
-     *          response=400,
-     *          description="invalid"
-     *      ),
-     * )
-     */
+
     public function destroy($id)
     {
         //

@@ -57,8 +57,8 @@ Route::prefix("event/")->middleware([CorsConfig::class,Jwt::class])->group(funct
 });
 
 Route::prefix("ticket")->group(function(){
-    // Route::patch("{id:id}",[TicketController::class,"update"])->where(["id" => "[0-9]+"]);
-    // Route::delete("{id:id}",[TicketController::class,"destroy"])->withoutMiddleware([VerifyCsrfToken::class])->where(["id" => "[0-9]+"]);
-    // Route::post("",[TicketController::class,"store"]);
+     Route::patch("{id:id}",[TicketController::class,"update"])->where(["id" => "[0-9]+"]);
+     Route::delete("{id:id}",[TicketController::class,"destroy"])->withoutMiddleware([VerifyCsrfToken::class])->where(["id" => "[0-9]+"]);
+     Route::post("",[TicketController::class,"store"]);
     Route::get("{id:id}",[TicketController::class,"show"])->where(["id" => "[0-9]+"]);
 });
