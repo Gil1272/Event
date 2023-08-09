@@ -43,8 +43,8 @@ class TicketController extends Controller
 
         ##NB THE LOGIC IS YET FINISH
         $validator =  Validator::make($data,[
-            'type' => 'required|exists:ticket_types,id',
-            'event' => 'required|exists:events,id',
+            'type' => 'required',
+            'event' => 'required',
             'number' => "required|numeric|min:0|not_in:0'"
         ]);
 
@@ -178,8 +178,8 @@ class TicketController extends Controller
         //
         $data = $request->all();
         $validator =  Validator::make($data,[
-            'type' => 'required|exists:ticket_types,id',
-            'event' => 'required|exists:events,id',
+            'type' => 'required',
+            'event' => 'required',
             'number' => "required|numeric|min:0|not_in:0'"
         ]);
         $errorMessage = "Vos données sont invalides";
@@ -206,10 +206,7 @@ class TicketController extends Controller
         }
 
         if (is_null($data['number']) || $data['number'] <=0){
-            return  new  JsonResponse([
-                "error" => true,
-                "message" => "Le nombre de ticket est invalide"
-            ]);
+            return JsonResponse::send(true,"Le nombre de ticket est invalide",400);
         }else{
             $data['number'] = $request->number;
         }
@@ -261,9 +258,10 @@ class TicketController extends Controller
     {
         //
         $ticket = Ticket::find($id);
+//        dd($ticket);
         if ($ticket)
         {
-            $ticket->where('event',$ticket->event)->first()->delete();
+            $ticket->delete();
             return JsonResponse::send(false,"Le ticket de l'évènement a été supprimé");
         }
         return JsonResponse::send(true,"Le ticket est introuvable !",null,404);
