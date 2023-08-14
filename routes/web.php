@@ -18,7 +18,7 @@ Route::get('/', function () {
 });
 
 Route::get('/ex', function () {
-    return "Hello ! ";
+    return "Hello ok ok ok ! ";
 });
 
 Route::get('api/documentation', function () {
