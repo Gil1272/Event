@@ -17,10 +17,4 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/ex', function () {
-    return "Hello ok ok ok ! ";
-});
-
-Route::get('api/documentation', function () {
-    return view('vendor/l5-swagger/index');
-});
+Route::view("/swagger","swagger");
