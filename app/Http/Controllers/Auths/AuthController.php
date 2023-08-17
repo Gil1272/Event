@@ -19,8 +19,6 @@ use Monarobase\CountryList\CountryListFacade;
 class AuthController extends UserController
 {
 
-
-
     public static function messages() {
         return [
             'phone_number.required' => 'Votre numero n\'est pas valide',
@@ -45,85 +43,6 @@ class AuthController extends UserController
         ];
     }
 
-
-    /**
-     * @OA\Post(
-     * path="/api/register",
-     * operationId="Register",
-     * tags={"User"},
-     * summary="User Register",
-     * description="User Register required unique phone_number and email",
-     *     @OA\RequestBody(
-     *         @OA\JsonContent(),
-     *         @OA\MediaType(
-     *            mediaType="multipart/form-data",
-     *            @OA\Schema(
-     *               type="object",
-     *               required={"name","email", "password", "password_confirmation"},
-     *               @OA\Property(property="phone_number", type="text"),
-     *               @OA\Property(property="name", type="text"),
-     *               @OA\Property(property="firstname", type="text"),
-     *               @OA\Property(property="password", type="password"),
-     *               @OA\Property(property="civility", type="text"),
-     *               @OA\Property(property="email", type="text"),
-     *            ),
-     *        ),
-     *    ), @OA\RequestBody(
-     *         @OA\MediaType(
-     *             mediaType="application/json",
-     *             @OA\Schema(
-     *                 @OA\Property(
-     *                      type="object",
-     *                      @OA\Property(property="_id",type="string"),
-     *                      @OA\Property( property="phone_number",type="string"),
-     *                      @OA\Property(property="name",type="string"),
-     *                      @OA\Property(property="firstname",type="string"),
-     *                      @OA\Property(property="password",type="string"),
-     *                      @OA\Property(property="civility",type="string"),
-     *                      @OA\Property(property="country",type="string"),
-     *                      @OA\Property(property="email",type="string"),
-     *                      @OA\Property(property="user_type",type="array",@OA\Items(type="string")),
-     *                      @OA\Property(property="updated_at", type="string"),
-     *                      @OA\Property(property="created_at", type="string")
-     *
-     *                 ),
-     *                 example={
-     *                       "_id": "64ca1eadcb2c0000e7001622",
-     *                       "phone_number": "66248499",
-     *                       "name": "Jean",
-     *                       "firstname": "Doe",
-     *                       "password": "$2y$10$mbNy17DeKqz.OVVSCganDOREhugSpE1n6H7Pc9PbXMyadAtFwrlVa",
-     *                       "civility": "Mr",
-     *                       "country": "BJ",
-     *                       "email": "jean.doe@mail.com",
-     *                       "user_type": {
-     *                       "user",
-     *                       "customer"
-     *                       },
-     *                       "updated_at": "2023-08-02T09:15:25.653Z",
-     *                       "created_at":"2023-08-02T09:15:25.653Z"
-     *                }
-     *             )
-     *         )
-     *      ),
-     *      @OA\Response(
-     *          response=200,
-     *          description="success",
-     *          @OA\JsonContent(
-     *              @OA\Property(property="_id", type="String", example="64b7ba121179c7e2e005ad06"),
-     *              @OA\Property(property="phone_number", type="string", example="66248499"),
-     *              @OA\Property(property="name", type="string", example="Joe"),
-     *              @OA\Property(property="fisrtname", type="string", example="Doe"),
-     *              @OA\Property(property="password", type="string", example="$2y$10$mbNy17DeKqz.OVVSCganDOREhugSpE1n6H7Pc9PbXMyadAtFwrlVa"),
-     *              @OA\Property(property="civility", type="string", example="Mr"),
-     *              @OA\Property(property="country", type="string", example="BJ"),
-     *              @OA\Property(property="email", type="string", example="jean.doe@mail.com")
-     *          )
-     *      ),
-     *      @OA\Response(response=400, description="Bad request"),
-     *      @OA\Response(response=404, description="Resource Not Found"),
-     * )
-     */
     public function register(Request $request) {
 
         $data = $request->all();
@@ -189,101 +108,6 @@ class AuthController extends UserController
      * @return \Illuminate\Http\JsonResponse
      */
 
-    /**
-     * @OA\Post(
-     * path="/api/login",
-     * operationId="Login",
-     * tags={"User"},
-     * summary="Login Register",
-     * description="User Register required  phone_number and email at identify",
-     *     @OA\RequestBody(
-     *         @OA\JsonContent(),
-     *         @OA\MediaType(
-     *            mediaType="multipart/form-data",
-     *            @OA\Schema(
-     *               type="object",
-     *               required={"identify","password"},
-     *               @OA\Property(property="identify", type="text"),
-     *               @OA\Property(property="password", type="password"),
-     *            ),
-     *        ),
-     *    ), @OA\RequestBody(
-     *         @OA\MediaType(
-     *             mediaType="application/json",
-     *             @OA\Schema(
-     *                 @OA\Property(
-     *                      type="object",
-     *                      @OA\Property(property="_id",type="string"),
-     *                      @OA\Property( property="phone_number",type="string"),
-     *                      @OA\Property(property="name",type="string"),
-     *                      @OA\Property(property="firstname",type="string"),
-     *                      @OA\Property(property="password",type="string"),
-     *                      @OA\Property(property="civility",type="string"),
-     *                      @OA\Property(property="country",type="string"),
-     *                      @OA\Property(property="email",type="string"),
-     *                      @OA\Property(property="user_type",type="array",@OA\Items(type="string")),
-     *                      @OA\Property(property="updated_at", type="string"),
-     *                      @OA\Property(property="created_at", type="string")
-     *
-     *                 ),
-     *                 example={
-     *                       "_id": "64ca1eadcb2c0000e7001622",
-     *                       "phone_number": "66248499",
-     *                       "name": "Jean",
-     *                       "firstname": "Doe",
-     *                       "password": "$2y$10$mbNy17DeKqz.OVVSCganDOREhugSpE1n6H7Pc9PbXMyadAtFwrlVa",
-     *                       "civility": "Mr",
-     *                       "country": "BJ",
-     *                       "email": "jean.doe@mail.com",
-     *                       "user_type": {
-     *                       "user",
-     *                       "customer"
-     *                       },
-     *                       "updated_at": "2023-08-02T09:15:25.653Z",
-     *                       "created_at":"2023-08-02T09:15:25.653Z"
-     *                }
-     *             )
-     *         )
-     *      ),
-     *      @OA\Response(
-     *          response=200,
-     *          description="success",
-     *          @OA\JsonContent(
-         *          @OA\Property (property="data",type="array",@OA\Items(
-         *              @OA\Property (property="access_token",type="string",example="eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL3YxL2F1dGgvbG9naW4iLCJpYXQiOjE2OTA5ODg3MTgsImV4cCI6MTY5MDk5MjMxOCwibmJmIjoxNjkwOTg4NzE4LCJqdGkiOiJTTUxiMEpLblVQVUZIVkNFIiwic3ViIjoiNjRjYTFlYWRjYjJjMDAwMGU3MDAxNjIyIiwicHJ2IjoiNGFjMDVjMGY4YWMwOGYzNjRjYjRkMDNmYjhlMWY2MzFmZWMzMjJlOCJ9.a9qYwCD5X61wR4SyUyMSCJlm09vOES1-Fnp_D0V7HDY"),
-         *              @OA\Property (property="token_type",type="string",example="bearer"),
-         *              @OA\Property (property="expire_in",type="string",example="3600"),
-         *              @OA\Property (property="infos",type="array",@OA\Items(
-         *                          @OA\Property(property="user",type="array",@OA\Items(
-         *                                          @OA\Property(property="_id", type="String", example="64b7ba121179c7e2e005ad06"),
-         *                                          @OA\Property(property="phone_number", type="string", example="66248499"),
-         *                                          @OA\Property(property="name", type="string", example="Joe"),
-         *                                          @OA\Property(property="fisrtname", type="string", example="Doe"),
-         *                                          @OA\Property(property="password", type="string", example="$2y$10$mbNy17DeKqz.OVVSCganDOREhugSpE1n6H7Pc9PbXMyadAtFwrlVa"),
-         *                                          @OA\Property(property="civility", type="string", example="Mr"),
-         *                                          @OA\Property(property="country", type="string", example="BJ"),
-         *                                          @OA\Property(property="email", type="string", example="jean.doe@mail.com"),
-         *                                          @OA\Property(property="user_type",type="string",example="user,customer"),
-         *                                          @OA\Property(property="updated_at",type="string",example="2023-08-02T09:15:25.653000Z"),
-         *                                          @OA\Property(property="created_at",type="string",example="2023-08-02T09:15:25.653000Z"),
-         *                                          @OA\Property(property="user_verify",type="array",@OA\Items(
-         *                                                      @OA\Property(property="_id",type="string",example="64ca1eaecb2c0000e7001623"),
-         *                                                      @OA\Property(property="token",type="string",example="null"),
-         *                                                      @OA\Property(property="user_id",type="string",example="64ca1eaecb2c0000e7001623"),
-         *                                                      @OA\Property(property="updated_at",type="string",example="2023-08-02T09:15:26.307000Z"),
-         *                                                      @OA\Property(property="created_at",type="string",example="2023-08-02T09:15:26.307000Z"),
-     *                                                         ),
-     *                                              ),
-     *                              ),),
-     *                 ),),
-     *          ),),
-     *
-     *
-     *      ),),
-     *      @OA\Response(response=400, description="Bad request"),
-     *      @OA\Response(response=404, description="Resource Not Found"),
-     * )
-     */
     public function login(Request $request) {
 
         $identify = request()->input('identify');

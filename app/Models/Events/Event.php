@@ -2,6 +2,8 @@
 
 namespace App\Models\Events;
 
+use App\Models\Organizers\Organizer;
+use App\Models\Sponsors\Sponsor;
 use App\Models\Tickets\Ticket;
 use App\Models\Users\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -40,4 +42,13 @@ class Event extends Model
     public function tickets(){
         return $this->hasMany(Ticket::class);
     }
+
+    public function sponsors(){
+        return $this->hasMany(Sponsor::class);
+    }
+
+    public function organizers(){
+        return $this->hasMany(Organizer::class);
+    }
+
 }
