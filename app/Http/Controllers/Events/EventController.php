@@ -99,14 +99,14 @@ class EventController extends Controller
                     $filename,
                     ['disk' => 'local']
                 );
-                $fileLink[] = env('APP_URL').'/storage'.Auth::id()."/".self::STORAGE_EVENT."/".$filename;
+                $fileLink[] = env('APP_URL').'/storage/'.Auth::id()."/".self::STORAGE_EVENT."/".$filename;
                 //resize file for each format using resize image
                 foreach (self::STORAGE_FORMATS as $FORMAT)
                 {
                     $width = Str::of($FORMAT)->before('_x_');
                     $height = Str::of($FORMAT)->after('_x_');
                     $photoResized = Image::make($photo)->resize($width,$height);
-                    Storage::put(env('APP_URL').'/storage'.Auth::id()."/".self::STORAGE_EVENT."/".$FORMAT."/".$filename,
+                    Storage::put(env('APP_URL').'/storage/'.Auth::id()."/".self::STORAGE_EVENT."/".$FORMAT."/".$filename,
                         $photoResized,
                         'public');
 
@@ -131,14 +131,14 @@ class EventController extends Controller
                     $filename,
                     ['disk' => 'local']
                 );
-                $fileLink[] = env('APP_URL').'/storage'.Auth::id()."/".self::STORAGE_EVENT."/".$filename;
+                $fileLink[] = env('APP_URL').'/storage/'.Auth::id()."/".self::STORAGE_EVENT."/".$filename;
                 //resize file for each format using resize image
                 foreach (self::STORAGE_FORMATS as $FORMAT)
                 {
                     $width = Str::of($FORMAT)->before('_x_');
                     $height = Str::of($FORMAT)->after('_x_');
                     $bannerResized = Image::make($banner)->resize($width,$height);
-                    Storage::put(env('APP_URL').'/storage'.Auth::id()."/".self::STORAGE_EVENT."/".$FORMAT."/".$filename,
+                    Storage::put(env('APP_URL').'/storage/'.Auth::id()."/".self::STORAGE_EVENT."/".$FORMAT."/".$filename,
                         $photoResized,
                         'public');
 
@@ -181,7 +181,7 @@ class EventController extends Controller
     {
         $event =  Event::find($id);
         if($event)
-            return JsonResponse::send(false,null,["event"=>$event ]);
+            return JsonResponse::send(false,null,["event"=>$event]);
         return JsonResponse::send(true,"Aucun évènement trouvé",null,404);
     }
 
@@ -235,14 +235,14 @@ class EventController extends Controller
                     $filename,
                     ['disk' => 'local']
                 );
-                $fileLink[] = Auth::id()."/".self::STORAGE_EVENT."/".$filename;
+                $fileLink[] = env('APP_URL').'/storage/'.Auth::id()."/".self::STORAGE_EVENT."/".$filename;
                 //resize file for each format using resize image
                 foreach (self::STORAGE_FORMATS as $FORMAT)
                 {
                     $width = Str::of($FORMAT)->before('_x_');
                     $height = Str::of($FORMAT)->after('_x_');
                     $photoResized = Image::make($photo)->resize($width,$height);
-                    Storage::put(Auth::id()."/".self::STORAGE_EVENT."/".$FORMAT."/".$filename,
+                    Storage::put(env('APP_URL').'/storage/'.Auth::id()."/".self::STORAGE_EVENT."/".$FORMAT."/".$filename,
                         $photoResized,
                         'public');
 
@@ -277,14 +277,14 @@ class EventController extends Controller
                     $filename,
                     ['disk' => 'local']
                 );
-                $fileLink[] = Auth::id()."/".self::STORAGE_EVENT."/".$filename;
+                $fileLink[] = env('APP_URL').'/storage/'.Auth::id()."/".self::STORAGE_EVENT."/".$filename;
                 //resize file for each format using resize image
                 foreach (self::STORAGE_FORMATS as $FORMAT)
                 {
                     $width = Str::of($FORMAT)->before('_x_');
                     $height = Str::of($FORMAT)->after('_x_');
                     $bannerResized = Image::make($banner)->resize($width,$height);
-                    Storage::put(Auth::id()."/".self::STORAGE_EVENT."/".$FORMAT."/".$filename,
+                    Storage::put(env('APP_URL').'/storage/'.Auth::id()."/".self::STORAGE_EVENT."/".$FORMAT."/".$filename,
                         $bannerResized,
                         'public');
 
