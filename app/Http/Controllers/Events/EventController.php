@@ -164,7 +164,8 @@ class EventController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
-     */
+    */
+
 
     public function update(Request $request, $id)
     {
@@ -183,15 +184,85 @@ class EventController extends Controller
         $link_slug =  Str::slug($data['name'],'-','fr');
         $data['link'] = uniqid()."-".$link_slug;
 
-        #NB All old files should be delete if a new file is provide
-        if($request->hasFile("banners")){
+        #NB All old files should be delete if a new file is provided
+        /* If there is photos in payload */
+        if($request->hasFile("photos")){
+
+            /* Check for lasts photos of the event and delete them*/  
+  
+            foreach($event -> photos as $eventPhoto){
+                if(Storage::disk('public')->exists($eventPhoto)){
+                    Storage::disk('public')->delete($eventPhoto);
+                }
+            }
+           
             //iterate thought and upload each file  NB : file shou b
+
+            $photos = $request->file("photos");
+           
+            foreach ($photos as $photo)
+            {
+                $filename = uniqid().$link_slug.'.'.$photo->getClientOriginalExtension();
+                $photo->storeAs(
+                    Auth::id()."/".self::STORAGE_EVENT,
+                    $filename,
+                    ['disk' => 'local']
+                );
+                $fileLink[] = Auth::id()."/".self::STORAGE_EVENT."/".$filename;
+                //resize file for each format using resize image
+                foreach (self::STORAGE_FORMATS as $FORMAT)
+                {
+                    $width = Str::of($FORMAT)->before('_x_');
+                    $height = Str::of($FORMAT)->after('_x_');
+                    $photoResized = Image::make($photo)->resize($width,$height);
+                    Storage::put(Auth::id()."/".self::STORAGE_EVENT."/".$FORMAT."/".$filename,
+                        $photoResized,
+                        'public');
+
+                }
+            }
+
         }else{
-            $data["banners"] = []; #default event banner
+            $data["photos"] = []; #default event banner
         }
 
         if($request->hasFile("banners")){
+
+            /* Check and delete all banner from storage after deleted event from Collection*/  
+  
+
+            foreach($event -> banners as $eventBanners){
+                if(Storage::disk('public')->exists($eventBanners)){
+                    Storage::disk('public')->delete($eventBanners);
+                }
+            }
+           
             //iterate thought and upload each file  NB : file shou b
+
+            $banners = $request->file("banners");
+            $fileLink = array();
+            //for many files
+            foreach ($banners as $banner)
+            {
+                $filename = uniqid().$link_slug.'.'.$banner->getClientOriginalExtension();
+                $banner->storeAs(
+                    Auth::id()."/".self::STORAGE_EVENT,
+                    $filename,
+                    ['disk' => 'local']
+                );
+                $fileLink[] = Auth::id()."/".self::STORAGE_EVENT."/".$filename;
+                //resize file for each format using resize image
+                foreach (self::STORAGE_FORMATS as $FORMAT)
+                {
+                    $width = Str::of($FORMAT)->before('_x_');
+                    $height = Str::of($FORMAT)->after('_x_');
+                    $bannerResized = Image::make($banner)->resize($width,$height);
+                    Storage::put(Auth::id()."/".self::STORAGE_EVENT."/".$FORMAT."/".$filename,
+                        $bannerResized,
+                        'public');
+
+                }
+            }
         }else{
             $data["banners"] = []; #default event banner
         }
@@ -201,6 +272,9 @@ class EventController extends Controller
         return JsonResponse::send(false,"Votre évènement a été modifié !",$event);
 
     }
+
+
+
 
     public function duplicate($id){
 
@@ -245,7 +319,10 @@ class EventController extends Controller
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
-     */
+    */
+
+
+
 
     public function destroy($id)
     {
@@ -263,9 +340,38 @@ class EventController extends Controller
         // }
 
         if ($event) {
+            
             $event->where('user_id', Auth::id())->first()->delete();
+            
+
+            /* Check and delete all photo and banner from storage after deleted event from Collection*/  
+
+            $authentificatedUserEvent = $event->where('user_id', Auth::id())->first(); 
+
+            foreach($authentificatedUserEvent -> photos as $eventPhoto){
+                if(Storage::disk('public')->exists($eventPhoto)){
+                    Storage::disk('public')->delete($eventPhoto);
+                }else{
+                    return JsonResponse::send(false,"Aucune photo dans votre disque");
+                }
+            }
+
+            foreach($authentificatedUserEvent -> banners as $eventBanners){
+                if(Storage::disk('public')->exists($eventBanners)){
+                    Storage::disk('public')->delete($eventBanners);
+                }else{
+                    return JsonResponse::send(false,"Aucune banner dans votre disque");
+                }
+            }
+
+
             return JsonResponse::send(false,"L'évènement a été supprimé !");
+
+
         }
+
         return JsonResponse::send(true,"L'évènement est introuvable !",null,404);
     }
+
+   
 }
