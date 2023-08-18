@@ -181,26 +181,7 @@ class EventController extends Controller
     {
         $event =  Event::find($id);
         if($event)
-            $photos = []; 
-            $banners = [];
-
-            /* Chack if there is banners and photo */
-            
-            if($event -> photos){
-                foreach($event -> photos as $eventPhoto ){
-                    $photos[] = Storage::disk('public')->url($eventPhoto);
-                }
-            } 
-
-            if($event -> banners){
-                foreach($event -> banners as $eventBanner ){
-                    $banners[] = Storage::disk('public')->url($eventBanner);
-                }
-            }
-           
-            /* Return the array event , photosLink , bannersLink */
-
-            return JsonResponse::send(false,null,["event"=>$event , "photos_link" => $photos , "banner_link"=>$banners]);
+            return JsonResponse::send(false,null,["event"=>$event ]);
         return JsonResponse::send(true,"Aucun évènement trouvé",null,404);
     }
 
