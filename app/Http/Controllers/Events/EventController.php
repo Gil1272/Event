@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Intervention\Image\Facades\Image;
 use Monarobase\CountryList\CountryListFacade;
+use App\Http\Controllers\RessoureController;
 
 class EventController extends Controller
 {
@@ -99,14 +100,14 @@ class EventController extends Controller
                     $filename,
                     ['disk' => 'local']
                 );
-                $fileLink[] = env('APP_URL').'/storage/'.Auth::id()."/".self::STORAGE_EVENT."/".$filename;
+                $fileLink[] = Auth::id()."/".self::STORAGE_EVENT."/".$filename;
                 //resize file for each format using resize image
                 foreach (self::STORAGE_FORMATS as $FORMAT)
                 {
                     $width = Str::of($FORMAT)->before('_x_');
                     $height = Str::of($FORMAT)->after('_x_');
                     $photoResized = Image::make($photo)->resize($width,$height);
-                    Storage::put(env('APP_URL').'/storage/'.Auth::id()."/".self::STORAGE_EVENT."/".$FORMAT."/".$filename,
+                    Storage::put(Auth::id()."/".self::STORAGE_EVENT."/".$FORMAT."/".$filename,
                         $photoResized,
                         'public');
 
@@ -131,14 +132,14 @@ class EventController extends Controller
                     $filename,
                     ['disk' => 'local']
                 );
-                $fileLink[] = env('APP_URL').'/storage/'.Auth::id()."/".self::STORAGE_EVENT."/".$filename;
+                $fileLink[] = Auth::id()."/".self::STORAGE_EVENT."/".$filename;
                 //resize file for each format using resize image
                 foreach (self::STORAGE_FORMATS as $FORMAT)
                 {
                     $width = Str::of($FORMAT)->before('_x_');
                     $height = Str::of($FORMAT)->after('_x_');
                     $bannerResized = Image::make($banner)->resize($width,$height);
-                    Storage::put(env('APP_URL').'/storage/'.Auth::id()."/".self::STORAGE_EVENT."/".$FORMAT."/".$filename,
+                    Storage::put(Auth::id()."/".self::STORAGE_EVENT."/".$FORMAT."/".$filename,
                         $photoResized,
                         'public');
 
@@ -166,7 +167,7 @@ class EventController extends Controller
         return JsonResponse::send(
             false,
             "La liste de mes évènements",
-            ["events" => $user->events]
+            ["events" => $user->events , "photos_links" => RessoureController::getAllEventsAssetLink($user->events)]
         );
     }
 
@@ -181,7 +182,8 @@ class EventController extends Controller
     {
         $event =  Event::find($id);
         if($event)
-            return JsonResponse::send(false,null,["event"=>$event]);
+
+            return JsonResponse::send(false,null,["event"=>$event , "photos_links" => RessoureController::formatAssetsLink($event ->photos)]);
         return JsonResponse::send(true,"Aucun évènement trouvé",null,404);
     }
 
@@ -215,18 +217,18 @@ class EventController extends Controller
         /* If there is photos in payload */
         if($request->hasFile("photos")){
 
-            /* Check for lasts photos of the event and delete them*/  
-  
+            /* Check for lasts photos of the event and delete them*/
+
             foreach($event -> photos as $eventPhoto){
                 if(Storage::disk('public')->exists($eventPhoto)){
                     Storage::disk('public')->delete($eventPhoto);
                 }
             }
-           
+
             //iterate thought and upload each file  NB : file shou b
 
             $photos = $request->file("photos");
-           
+
             foreach ($photos as $photo)
             {
                 $filename = uniqid().$link_slug.'.'.$photo->getClientOriginalExtension();
@@ -235,14 +237,14 @@ class EventController extends Controller
                     $filename,
                     ['disk' => 'local']
                 );
-                $fileLink[] = env('APP_URL').'/storage/'.Auth::id()."/".self::STORAGE_EVENT."/".$filename;
+                $fileLink[] = Auth::id()."/".self::STORAGE_EVENT."/".$filename;
                 //resize file for each format using resize image
                 foreach (self::STORAGE_FORMATS as $FORMAT)
                 {
                     $width = Str::of($FORMAT)->before('_x_');
                     $height = Str::of($FORMAT)->after('_x_');
                     $photoResized = Image::make($photo)->resize($width,$height);
-                    Storage::put(env('APP_URL').'/storage/'.Auth::id()."/".self::STORAGE_EVENT."/".$FORMAT."/".$filename,
+                    Storage::put(Auth::id()."/".self::STORAGE_EVENT."/".$FORMAT."/".$filename,
                         $photoResized,
                         'public');
 
@@ -255,15 +257,15 @@ class EventController extends Controller
 
         if($request->hasFile("banners")){
 
-            /* Check and delete all banner from storage after deleted event from Collection*/  
-  
+            /* Check and delete all banner from storage after deleted event from Collection*/
+
 
             foreach($event -> banners as $eventBanners){
                 if(Storage::disk('public')->exists($eventBanners)){
                     Storage::disk('public')->delete($eventBanners);
                 }
             }
-           
+
             //iterate thought and upload each file  NB : file shou b
 
             $banners = $request->file("banners");
@@ -277,14 +279,14 @@ class EventController extends Controller
                     $filename,
                     ['disk' => 'local']
                 );
-                $fileLink[] = env('APP_URL').'/storage/'.Auth::id()."/".self::STORAGE_EVENT."/".$filename;
+                $fileLink[] = Auth::id()."/".self::STORAGE_EVENT."/".$filename;
                 //resize file for each format using resize image
                 foreach (self::STORAGE_FORMATS as $FORMAT)
                 {
                     $width = Str::of($FORMAT)->before('_x_');
                     $height = Str::of($FORMAT)->after('_x_');
                     $bannerResized = Image::make($banner)->resize($width,$height);
-                    Storage::put(env('APP_URL').'/storage/'.Auth::id()."/".self::STORAGE_EVENT."/".$FORMAT."/".$filename,
+                    Storage::put(Auth::id()."/".self::STORAGE_EVENT."/".$FORMAT."/".$filename,
                         $bannerResized,
                         'public');
 
@@ -367,13 +369,13 @@ class EventController extends Controller
         // }
 
         if ($event) {
-            
+
             $event->where('user_id', Auth::id())->first()->delete();
-            
 
-            /* Check and delete all photo and banner from storage after deleted event from Collection*/  
 
-            $authentificatedUserEvent = $event->where('user_id', Auth::id())->first(); 
+            /* Check and delete all photo and banner from storage after deleted event from Collection*/
+
+            $authentificatedUserEvent = $event->where('user_id', Auth::id())->first();
 
             foreach($authentificatedUserEvent -> photos as $eventPhoto){
                 if(Storage::disk('public')->exists($eventPhoto)){
@@ -400,5 +402,5 @@ class EventController extends Controller
         return JsonResponse::send(true,"L'évènement est introuvable !",null,404);
     }
 
-   
+
 }
