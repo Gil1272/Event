@@ -20,9 +20,14 @@ class RessoureController extends Controller
     public static function getAllEventsAssetLink($events){
 
         $eventsWithPhotos = [];
+        $eventsWithBanners = [];
 
         foreach ($events as $event) {
             $eventWithPhotos = [
+                $event->_id =>  [],
+            ];
+
+             $eventWithBanners = [
                 $event->_id =>  [],
             ];
 
@@ -32,10 +37,17 @@ class RessoureController extends Controller
                 $eventWithPhotos[ $event->_id ][] = $photoUrl;
             }
 
+            foreach ($event->banners as $eventBanner) {
+
+                $bannerUrl = Storage::disk('public')->url($eventBanner); // Supposons que le nom du fichier de la photo soit accessible via $photo->filename
+                $eventWithBanners[ $event->_id ][] = $bannerUrl;
+            }
+
             $eventsWithPhotos[] = $eventWithPhotos;
+            $eventsWithBanners[] = $eventWithBanners;
         }
 
-        return $eventsWithPhotos;
+        return [$eventsWithPhotos , $eventsWithBanners];
 
     }
 }

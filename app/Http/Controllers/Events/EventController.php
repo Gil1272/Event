@@ -183,7 +183,7 @@ class EventController extends Controller
         $event =  Event::find($id);
         if($event)
 
-            return JsonResponse::send(false,null,["event"=>$event , "photos_links" => RessoureController::formatAssetsLink($event ->photos)]);
+            return JsonResponse::send(false,null,["event"=>$event , "photos_links" => RessoureController::formatAssetsLink($event ->photos) , "banners_links" => RessoureController::formatAssetsLink($event ->banners)]);
         return JsonResponse::send(true,"Aucun évènement trouvé",null,404);
     }
 
