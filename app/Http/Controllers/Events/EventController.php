@@ -184,7 +184,7 @@ class EventController extends Controller
         $event =  Event::find($id);
         if($event)
 
-            return JsonResponse::send(false,null,["event"=>EventResource::make($event)]);
+            return JsonResponse::send(false,null,["event"=> new EventResource($event)]);
         return JsonResponse::send(true,"Aucun évènement trouvé",null,404);
     }
 
