@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Auth;
 use Intervention\Image\Facades\Image;
 use Monarobase\CountryList\CountryListFacade;
 use App\Http\Controllers\RessoureController;
+use App\Http\Resources\Events\EventResource;
 
 class EventController extends Controller
 {
@@ -167,7 +168,7 @@ class EventController extends Controller
         return JsonResponse::send(
             false,
             "La liste de mes évènements",
-            ["events" => $user->events , "photos_links" => RessoureController::getAllEventsAssetLink($user->events)]
+            ["events" => EventResource::collection($user->events)]
         );
     }
 
@@ -183,7 +184,7 @@ class EventController extends Controller
         $event =  Event::find($id);
         if($event)
 
-            return JsonResponse::send(false,null,["event"=>$event , "photos_links" => RessoureController::formatAssetsLink($event ->photos) , "banners_links" => RessoureController::formatAssetsLink($event ->banners)]);
+            return JsonResponse::send(false,null,["event"=>EventResource::make($event)]);
         return JsonResponse::send(true,"Aucun évènement trouvé",null,404);
     }
 

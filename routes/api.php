@@ -7,6 +7,8 @@ use App\Http\Middleware\Api\CorsConfig;
 use App\Http\Controllers\Auths\AuthController;
 use App\Http\Controllers\Utils\UtilsController;
 use App\Http\Controllers\Events\EventController;
+use App\Http\Controllers\Organizers\OrganizerController;
+use App\Http\Controllers\Sponsors\SponsorController;
 use App\Http\Controllers\Tickets\TicketController;
 
 /*
@@ -61,4 +63,18 @@ Route::prefix("ticket")->group(function(){
      Route::delete("{id:id}",[TicketController::class,"destroy"])->withoutMiddleware([VerifyCsrfToken::class])->where(["id" => "[a-z0-9]{24}"]);
      Route::post("",[TicketController::class,"store"]);
     Route::get("{id:id}",[TicketController::class,"show"])->where(["id" => "[a-z0-9]{24}"]);
+});
+
+Route::prefix("organizer")->group(function(){
+    Route::post("{id:id}",[OrganizerController::class,"update"])->where(["id" => "[a-z0-9]{24}"]);
+    Route::delete("{id:id}",[OrganizerController::class,"destroy"]);
+    Route::post("",[OrganizerController::class,"store"]);
+   Route::get("{id:id}",[OrganizerController::class,"show"])->where(["id" => "[a-z0-9]{24}"]);
+});
+
+Route::prefix("sponsor")->group(function(){
+    Route::post("{id:id}",[SponsorController::class,"update"])->where(["id" => "[a-z0-9]{24}"]);
+    Route::delete("{id:id}",[SponsorController::class,"destroy"]);
+    Route::post("",[SponsorController::class,"store"]);
+   Route::get("{id:id}",[SponsorController::class,"show"])->where(["id" => "[a-z0-9]{24}"]);
 });
