@@ -16,7 +16,6 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Intervention\Image\Facades\Image;
 use Monarobase\CountryList\CountryListFacade;
-use App\Http\Controllers\RessoureController;
 use App\Http\Resources\Events\EventResource;
 
 class EventController extends Controller
