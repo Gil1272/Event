@@ -6,6 +6,7 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Components\Api\JsonResponse;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Events\SponsorsRessource;
 use App\Models\Events\Event;
 use App\Models\Sponsors\Sponsor;
 use App\Models\Sponsors\SponsorType;
@@ -150,7 +151,7 @@ class SponsorController extends Controller
         $sponsor =  Sponsor::find($id);
         if($sponsor)
 
-            return JsonResponse::send(false,null,["sponsor"=> $sponsor]);
+            return JsonResponse::send(false,null,["sponsor"=> new SponsorsRessource($sponsor)]);
         return JsonResponse::send(true,"Aucun sponsor trouvé",null,404);
     }
 
