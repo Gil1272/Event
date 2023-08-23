@@ -104,9 +104,9 @@ class SponsorController extends Controller
         $event = Event::find($id);
         $sponsor =  $event->sponsors()->create($data);
         if($sponsor){
-            return JsonResponse::send(false,"Votre évènement a été créer !",$sponsor);
+            return JsonResponse::send(false,"Votre sponsor a été créer !",$sponsor);
         }else{
-            return JsonResponse::send(true,"L'évènement n'a pas pu être crée");
+            return JsonResponse::send(true,"Le sponsor n'a pas pu être crée");
         }
 
 
@@ -132,7 +132,7 @@ class SponsorController extends Controller
                 ["sponsors" => $sponsors]
             );
         } else {
-            return JsonResponse::send(true,"Aucun évènement trouvé",null,404);
+            return JsonResponse::send(true,"Aucun sponsor trouvé",null,404);
         }
 
     }
@@ -237,7 +237,7 @@ class SponsorController extends Controller
         $sponsor = $sponsor->update($data);
 
         if($sponsor)
-            return JsonResponse::send(false,"Votre évènement a été modifié !",$sponsor);
+            return JsonResponse::send(false,"Votre sponsor a été modifié !",$sponsor);
 
 
     }
