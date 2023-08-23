@@ -23,7 +23,7 @@ class SponsorController extends Controller
     //
 
 
-    const STORAGE_EVENT = "sponsors";
+    const STORAGE_SPONSOR = "sponsors";
     const STORAGE_FORMATS = ["221_x_170","399_x_311","311_x_208","599_x_311"];
     private static function rules() {
         return [
@@ -78,18 +78,18 @@ class SponsorController extends Controller
 
             $filename = uniqid().$link_slug.'.'.$logo->getClientOriginalExtension();
             $logo->storeAs(
-                Auth::id()."/".self::STORAGE_EVENT,
+                Auth::id()."/".self::STORAGE_SPONSOR,
                 $filename,
                 ['disk' => 'local']
             );
-            $fileLink = Auth::id()."/".self::STORAGE_EVENT."/".$filename;
+            $fileLink = Auth::id()."/".self::STORAGE_SPONSOR."/".$filename;
             //resize file for each format using resize image
             foreach (self::STORAGE_FORMATS as $FORMAT)
             {
                 $width = Str::of($FORMAT)->before('_x_');
                 $height = Str::of($FORMAT)->after('_x_');
                 $photoResized = Image::make($logo)->resize($width,$height);
-                Storage::put(Auth::id()."/".self::STORAGE_EVENT."/".$FORMAT."/".$filename,
+                Storage::put(Auth::id()."/".self::STORAGE_SPONSOR."/".$FORMAT."/".$filename,
                     $photoResized,
                 'public');
 
@@ -203,18 +203,18 @@ class SponsorController extends Controller
 
             $filename = uniqid().$link_slug.'.'.$logo->getClientOriginalExtension();
             $logo->storeAs(
-                Auth::id()."/".self::STORAGE_EVENT,
+                Auth::id()."/".self::STORAGE_SPONSOR,
                 $filename,
                 ['disk' => 'local']
             );
-            $fileLink = Auth::id()."/".self::STORAGE_EVENT."/".$filename;
+            $fileLink = Auth::id()."/".self::STORAGE_SPONSOR."/".$filename;
             //resize file for each format using resize image
             foreach (self::STORAGE_FORMATS as $FORMAT)
             {
                 $width = Str::of($FORMAT)->before('_x_');
                 $height = Str::of($FORMAT)->after('_x_');
                 $photoResized = Image::make($logo)->resize($width,$height);
-                Storage::put(Auth::id()."/".self::STORAGE_EVENT."/".$FORMAT."/".$filename,
+                Storage::put(Auth::id()."/".self::STORAGE_SPONSOR."/".$FORMAT."/".$filename,
                     $photoResized,
                 'public');
 
@@ -256,10 +256,18 @@ class SponsorController extends Controller
         $sponsor = Sponsor::find($id);
         if ($sponsor){
             $sponsor -> delete();
+            if(Storage::disk('public')->exists($sponsor -> logo)){
+                Storage::disk('public')->delete($sponsor -> logo);
+            }
+            if(Storage::disk('local')->exists($sponsor -> logo)){
+                Storage::disk('local')->delete($sponsor -> logo);
+            }
             return JsonResponse::send(false,"Le sponsor de l'évènement a été supprimé");
+        }  else {
+            return JsonResponse::send(true,"Le sponsor est introuvable !",null,404);
         }
 
-        return JsonResponse::send(true,"Le sponsor est introuvable !",null,404);
+
 
     }
 
