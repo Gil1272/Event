@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Sponsors;
 
-use App\Models\Users\User;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Components\Api\JsonResponse;
@@ -28,7 +27,7 @@ class SponsorController extends Controller
     const STORAGE_FORMATS = ["221_x_170","399_x_311","311_x_208","599_x_311"];
     private static function rules() {
         return [
-            'event' => 'required',
+
             'name' => 'required',
             'type' => 'required',
             'logo' => 'required',
@@ -156,6 +155,8 @@ class SponsorController extends Controller
     }
 
 
+
+
         /**
      * Update the specified resource in storage.
      *
@@ -163,6 +164,8 @@ class SponsorController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
     */
+
+
 
 
     public function update(Request $request, $id)
