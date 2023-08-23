@@ -43,7 +43,8 @@ class EventResource extends JsonResource
             "link" =>  $this->link,
             "banners" =>  $this->setAsset($this->banners),
             "photos" =>  $this->setAsset($this->photos),
-            // "organizer" => $this->,
+            "organizers" => $this->organizers ?? null ,
+            "sponsors" => $this->sponsors ?? null,
             // "ticket" => TicketResource::collection($this->ticket),
             "updated_at" => $this->updated_at,
             "created_at" => $this->created_at
