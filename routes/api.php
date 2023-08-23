@@ -75,6 +75,7 @@ Route::prefix("organizer")->group(function(){
 Route::prefix("sponsor")->group(function(){
     Route::post("{id:id}",[SponsorController::class,"update"])->where(["id" => "[a-z0-9]{24}"]);
     Route::delete("{id:id}",[SponsorController::class,"destroy"]);
+    Route::get("{id_event:id_event}",[EventController::class,"getEventAllSponsors"])->where(["id_event" => "[a-z0-9]{24}"]);
     Route::post("",[SponsorController::class,"store"]);
    Route::get("{id:id}",[SponsorController::class,"show"])->where(["id" => "[a-z0-9]{24}"]);
 });
