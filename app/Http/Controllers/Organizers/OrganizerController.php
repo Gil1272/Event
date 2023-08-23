@@ -7,6 +7,7 @@ use App\Models\Events\Event;
 use Illuminate\Http\Request;
 use App\Components\Api\JsonResponse;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Events\OrganizerResource;
 use App\Models\Organizers\Organizer;
 use Illuminate\Support\Facades\Auth;
 use Intervention\Image\Facades\Image;
@@ -194,7 +195,7 @@ class OrganizerController extends Controller
         $organizer =  Organizer::find($id);
         if($organizer)
 
-            return JsonResponse::send(false,null,["organizer"=> $organizer]);
+            return JsonResponse::send(false,null,["organizer"=> new OrganizerResource($organizer)]);
         return JsonResponse::send(true,"Aucun organizer trouvé",null,404);
     }
 
