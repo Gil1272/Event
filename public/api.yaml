@@ -27,6 +27,38 @@ paths:
   /organizer:
     post:
         summary: Create an organizer.
+        parameters:
+          - name: name
+            in: body request
+            description:
+            required: true
+            schema:
+            type: string
+          - name: activity_area
+            in: body request
+            description:
+            required: true
+            schema:
+            type: string
+          - name: logo
+            in: body request
+            description:
+            required: false
+            schema:
+            type: file
+          - name: description
+            in: body request
+            description:
+            required: true
+            schema:
+            type: text
+        description: A JSON array of the details of the entity created
+           content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
         responses:
         '200':
           description: A JSON array of the details of the entity created
@@ -42,6 +74,13 @@ paths:
 
     delete:
         summary: Delete an organizer entity passing his id.
+        parameter:
+        - name: id
+          in: query
+          description:
+          required: true
+          schema:
+          type: string
         responses:
         '200':
           description: A String confirming the entity is deleted
@@ -52,6 +91,13 @@ paths:
 
     get:
      summary: Returns the details of the organizer by passing his id.
+     parameter:
+      - name: id
+        in: query
+        description:
+        required: true
+        schema:
+        type: string
       responses:
         '200':
           description: A JSON array of the organizer details
@@ -62,9 +108,19 @@ paths:
                 items:
                   type: string
         '404':
-                  description: A String telling the entity can't be found
+          description: A String telling the entity can't be found
+
+
+
+
     post:
             summary: Update an organizer by passing his id.
+            - name: id
+              in: query
+              description:
+              required: true
+              schema:
+              type: string
             responses:
             '200':
               description: A JSON array of the new details of the entity created
