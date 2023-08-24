@@ -114,8 +114,9 @@ paths:
 
 
     post:
-            summary: Update an organizer by passing his id.
-            - name: id
+          summary: Update an organizer by passing his id.
+          parameters:
+          - name: id
               in: query
               description: organizer id
               required: true
@@ -137,6 +138,7 @@ paths:
   /sponsor:
     post:
         summary: Create an sponsor.
+        parameters:
         - name: name
             in: body request
             description: sponsor name
@@ -182,6 +184,7 @@ paths:
 
     delete:
         summary: Delete an sponsor entity passing his id.
+        parameters:
         - name: id
             in: query
             description: sponsor id
@@ -198,6 +201,7 @@ paths:
 
     get:
      summary: Returns the details of the sponsor by passing his id.
+     parameters:
       - name: id
             in: query
             description: sponsor id
@@ -218,6 +222,7 @@ paths:
 
     get:
         summary: Returns a list of the sponsors related to an event by passing the event id.
+        parameters:
          - name: id
             in: query
             description: event id
@@ -237,7 +242,8 @@ paths:
                       description: A String telling the entity can't be found
 
     post:
-            summary: Update an sponsor by passing his id.
+          summary: Update an sponsor by passing his id.
+          parameters:
             - name: id
               in: query
               description: sponsor id
