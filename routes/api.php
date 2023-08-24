@@ -22,6 +22,10 @@ use App\Http\Controllers\Tickets\TicketController;
 |
 */
 
+Route::get('/api.yaml', function () {
+    return response(file_get_contents(public_path('api.yaml')))
+        ->header('Content-Type', 'application/x-yaml');
+});
 
 Route::prefix("auth")->middleware([CorsConfig::class])->group(function(){
 

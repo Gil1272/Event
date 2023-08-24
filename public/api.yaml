@@ -23,3 +23,126 @@ paths:
                 type: array
                 items:
                   type: string
+
+  /organizer:
+    post:
+        summary: Create an organizer.
+        responses:
+        '200':
+          description: A JSON array of the details of the entity created
+           content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+        '400':
+          description: A string telling Validation fails.
+
+
+    delete:
+        summary: Delete an organizer entity passing his id.
+        responses:
+        '200':
+          description: A String confirming the entity is deleted
+        '404':
+          description: A String telling the entity can't be found
+
+
+
+    get:
+     summary: Returns the details of the organizer by passing his id.
+      responses:
+        '200':
+          description: A JSON array of the organizer details
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+        '404':
+                  description: A String telling the entity can't be found
+    post:
+            summary: Update an organizer by passing his id.
+            responses:
+            '200':
+              description: A JSON array of the new details of the entity created
+              content:
+                application/json:
+                  schema:
+                    type: array
+                    items:
+                      type: string
+            '400':
+              description: A string telling Validation fails.
+
+
+  /sponsor:
+    post:
+        summary: Create an sponsor.
+        responses:
+        '200':
+          description: A JSON array of the details of the entity created
+           content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+        '400':
+          description: A string telling Validation fails.
+
+
+    delete:
+        summary: Delete an sponsor entity passing his id.
+        responses:
+        '200':
+          description: A String confirming the entity is deleted
+        '404':
+          description: A String telling the entity can't be found
+
+
+
+    get:
+     summary: Returns the details of the sponsor by passing his id.
+      responses:
+        '200':
+          description: A JSON array of the sponsor details
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+        '404':
+                  description: A String telling the entity can't be found
+
+    get:
+        summary: Returns a list of the sponsors related to an event by passing the event id.
+          responses:
+            '200':
+              description: A JSON array of the sponsor details
+              content:
+                application/json:
+                  schema:
+                    type: array
+                    items:
+                      type: string
+            '404':
+                      description: A String telling the entity can't be found
+
+    post:
+            summary: Update an sponsor by passing his id.
+            responses:
+            '200':
+              description: A JSON array of the new details of the entity created
+              content:
+                application/json:
+                  schema:
+                    type: array
+                    items:
+                      type: string
+            '400':
+              description: A string telling Validation fails.
+
