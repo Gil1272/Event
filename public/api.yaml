@@ -202,41 +202,41 @@ paths:
                   message:
                     type: string
     delete:
-    tags:
-      - Sponsors
-    summary: "Delete specific sponsor resource"
-    description: "Delete specific sponsor resource."
-    operationId: 824b95c8d225b5371c5e01965e34c9d5
-    parameters:
-      - name: id
-        in: path
-        description: "ID of the sponsor"
-        required: true
-        schema:
-          type: integer
-    responses:
-      "200":
-        description: "Sponsor deleted"
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                id:
-                  type: string
-                message:
-                  type: string
-      "404":
-          description: "Sponsor not found"
+      tags:
+        - Sponsors
+      summary: "Delete specific sponsor resource"
+      description: "Delete specific sponsor resource."
+      operationId: 824b95c8d225b5371c5e01965e34c9d5
+      parameters:
+        - name: id
+          in: path
+          description: "ID of the sponsor"
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: "Sponsor deleted"
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  error:
+                  id:
                     type: string
                   message:
                     type: string
+        "404":
+            description: "Sponsor not found"
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    error:
+                      type: string
+                    message:
+                      type: string
   /api/organizer:
     post:
       tags:
@@ -416,28 +416,28 @@ paths:
                   message:
                     type: string
     delete:
-    tags:
-      - organizers
-    summary: "Delete specific organizer resource"
-    description: "Delete specific organizer resource."
-    operationId: 824b95c8d225b5371c5e01965e34c9d5
-    parameters:
-      - name: id
-        in: path
-        description: "ID of the organizer"
-        required: true
-        schema:
-          type: integer
-    responses:
-      '200':
-        description: "organizer deleted"
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                id:
-                  type: string
-                message:
-                  type: string
-      '404':
+      tags:
+        - organizers
+      summary: "Delete specific organizer resource"
+      description: "Delete specific organizer resource."
+      operationId: 824b95c8d225b5371c5e01965e34c9d5
+      parameters:
+        - name: id
+          in: path
+          description: "ID of the organizer"
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: "organizer deleted"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  message:
+                    type: string
+        '404':
