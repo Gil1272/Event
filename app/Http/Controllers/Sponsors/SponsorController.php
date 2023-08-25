@@ -47,7 +47,7 @@ use App\Models\Sponsors\SponsorActivitySector;
      *             type="object",
      *             @OA\Property(property="name", type="string"),
      *             @OA\Property(property="type", type="string"),
-     *             @OA\Property(property="logo", type="string"),
+     *             @OA\Property(property="logo", type="file"),
      *             @OA\Property(property="activity_sector", type="string"),
      *             @OA\Property(property="description", type="string")
      *         )
@@ -262,11 +262,11 @@ class SponsorController extends Controller
 
 
     /**
-     * update specific sponsor resource.
+     * Update specific sponsor resource.
      *
-     * @OA\Update(
+     * @OA\Post(
      *     path="/api/sponsors/{id}",
-     *     summary="Display specific sponsor resource",
+     *     summary="Update specific sponsor resource",
      *     tags={"Sponsors"},
      *     @OA\Parameter(
      *         name="id",
@@ -274,6 +274,17 @@ class SponsorController extends Controller
      *         description="ID of the sponsor",
      *         required=true,
      *         @OA\Schema(type="integer")
+     *     ),
+     *  @OA\RequestBody(
+     *         required=true,
+     *         description="Sponsor data",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="name", type="string"),
+     *             @OA\Property(property="type", type="string"),
+     *             @OA\Property(property="activity_sector", type="string"),
+     *             @OA\Property(property="description", type="string")
+     *         )
      *     ),
      *     @OA\Response(
      *         response=200,
@@ -385,7 +396,7 @@ class SponsorController extends Controller
      *
      * @OA\Delete(
      *     path="/api/sponsors/{id}",
-     *     summary="Display specific sponsor resource",
+     *     summary="Delete specific sponsor resource",
      *     tags={"Sponsors"},
      *     @OA\Parameter(
      *         name="id",
