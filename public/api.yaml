@@ -237,7 +237,7 @@ paths:
                     type: string
                   message:
                     type: string
- /api/organizer:
+  /api/organizer:
     post:
       tags:
         - organizers
