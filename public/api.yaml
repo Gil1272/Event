@@ -23,3 +23,207 @@ paths:
                 type: array
                 items:
                   type: string
+  /api/sponsors:
+    post:
+      tags:
+        - Sponsors
+      summary: "Store a newly created sponsor in storage"
+      description: "Store a newly created sponsor in storage."
+      parameters:
+        - name: id
+          in: path
+          description: "ID of the event"
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: "Sponsor data"
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                type:
+                  type: string
+                logo:
+                  type: file
+                activity_sector:
+                  type: string
+                description:
+                  type: string
+      responses:
+        '201':
+          description: "Sponsor created successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  message:
+                    type: string
+        '400':
+          description: "Bad request"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+                  errors:
+                    type: object
+  /api/sponsors/{id_event}:
+    get:
+      tags:
+        - Sponsors
+      summary: "Display specific event sponsors list resource"
+      description: "Display specific sponsor resource."
+      operationId: a6ae29c88c9a214b132609f91bf9baea
+      parameters:
+        - name: id_event
+          in: path
+          description: "ID of the event"
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: "List of the sponsors related to the event"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  sponsor:
+                    type: object
+        '404':
+          description: "Event not found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+  /api/sponsors/{id}:
+    get:
+      tags:
+        - Sponsors
+      summary: "Display specific sponsor resource"
+      description: "Display specific sponsor resource."
+      operationId: 912db602ddb406d191d3705fa5e6c174
+      parameters:
+        - name: id
+          in: path
+          description: "ID of the sponsor"
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: "Sponsor details"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  sponsor:
+                    type: object
+        '404':
+          description: "Sponsor not found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+    post:
+      tags:
+        - Sponsors
+      summary: "Update specific sponsor resource"
+      description: "Update specific sponsor resource."
+      operationId: 7bae74154d1d53681d0088ddf1972544
+      parameters:
+        - name: id
+          in: path
+          description: "ID of the sponsor"
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: "Sponsor data"
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                type:
+                  type: string
+                activity_sector:
+                  type: string
+                description:
+                  type: string
+      responses:
+        '200':
+          description: "Sponsor updated"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  message:
+                    type: string
+        '404':
+          description: "Sponsor not found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+  delete:
+    tags:
+      - Sponsors
+    summary: "Delete specific sponsor resource"
+    description: "Delete specific sponsor resource."
+    operationId: 824b95c8d225b5371c5e01965e34c9d5
+    parameters:
+      - name: id
+        in: path
+        description: "ID of the sponsor"
+        required: true
+        schema:
+          type: integer
+    responses:
+      '200':
+        description: "Sponsor deleted"
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                message:
+                  type: string
+      '404':
