@@ -181,6 +181,43 @@ class SponsorController extends Controller
     */
 
 
+
+       /**
+     * Display specific sponsor resource.
+     *
+     * @OA\Get(
+     *     path="/api/sponsors/{id_event}",
+     *     summary="Display specific event sponsors list resource",
+     *     tags={"Sponsors"},
+     *     @OA\Parameter(
+     *         name="id_event",
+     *         in="path",
+     *         description="ID of the event",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="List of the sponsors related to the event",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="sponsor", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Event not found",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="error", type="string"),
+     *             @OA\Property(property="message", type="string")
+     *         )
+     *     )
+     * )
+     */
+
+
+
     public function getEventAllSponsors($id){
 
         $event = Event::find($id);
@@ -192,7 +229,7 @@ class SponsorController extends Controller
                 ["sponsors" => $sponsors]
             );
         } else {
-            return JsonResponse::send(true,"Aucun sponsor trouvé",null,404);
+            return JsonResponse::send(true,"Aucun event trouvé",null,404);
         }
 
     }
