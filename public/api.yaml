@@ -227,3 +227,13 @@ paths:
                 message:
                   type: string
       "404":
+          description: "Sponsor not found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
