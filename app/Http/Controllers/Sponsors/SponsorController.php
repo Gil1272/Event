@@ -186,11 +186,11 @@ class SponsorController extends Controller
      * Display specific sponsor resource.
      *
      * @OA\Get(
-     *     path="/api/sponsors/{id}",
+     *     path="/api/sponsors/{id_event}",
      *     summary="Display specific event sponsors list resource",
      *     tags={"Sponsors"},
      *     @OA\Parameter(
-     *         name="id",
+     *         name="id_event",
      *         in="path",
      *         description="ID of the event",
      *         required=true,
