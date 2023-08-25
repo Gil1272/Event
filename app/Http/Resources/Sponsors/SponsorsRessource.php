@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Resources\Events;
+namespace App\Http\Resources\Sponsors;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Storage;

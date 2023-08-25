@@ -6,7 +6,7 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Components\Api\JsonResponse;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\Events\SponsorsRessource;
+use App\Http\Resources\Sponsors\SponsorsRessource;
 use App\Models\Events\Event;
 use App\Models\Sponsors\Sponsor;
 use App\Models\Sponsors\SponsorType;
@@ -15,6 +15,65 @@ use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Sponsors\SponsorActivitySector;
+
+/**
+ * @OA\Tag(
+ *     name="Sponsors",
+ *     description="API endpoints for managing sponsors"
+ * )
+*/
+
+
+
+
+/**
+     * Store a newly created sponsor in storage.
+     *
+     * @OA\Post(
+     *     path="/api/sponsors",
+     *     summary="Store a newly created sponsor in storage",
+     *     tags={"Sponsors"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the event",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Sponsor data",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="name", type="string"),
+     *             @OA\Property(property="type", type="string"),
+     *             @OA\Property(property="logo", type="string"),
+     *             @OA\Property(property="activity_sector", type="string"),
+     *             @OA\Property(property="description", type="string")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Sponsor created successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="id", type="integer"),
+     *             @OA\Property(property="message", type="string")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Bad request",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="error", type="string"),
+     *             @OA\Property(property="message", type="string"),
+     *             @OA\Property(property="errors", type="object")
+     *         )
+     *     )
+     * )
+     */
+
 
 
 
@@ -146,6 +205,41 @@ class SponsorController extends Controller
      * @return \Illuminate\Http\Response
     */
 
+
+     /**
+     * Display specific sponsor resource.
+     *
+     * @OA\Get(
+     *     path="/api/sponsors/{id}",
+     *     summary="Display specific sponsor resource",
+     *     tags={"Sponsors"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the sponsor",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Sponsor details",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="sponsor", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Sponsor not found",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="error", type="string"),
+     *             @OA\Property(property="message", type="string")
+     *         )
+     *     )
+     * )
+     */
+
     public function show($id)
     {
         $sponsor =  Sponsor::find($id);
@@ -167,7 +261,40 @@ class SponsorController extends Controller
     */
 
 
-
+    /**
+     * update specific sponsor resource.
+     *
+     * @OA\Update(
+     *     path="/api/sponsors/{id}",
+     *     summary="Display specific sponsor resource",
+     *     tags={"Sponsors"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the sponsor",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Sponsor updated",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="id", type="string"),
+     *             @OA\Property(property="message", type="string")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Sponsor not found",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="error", type="string"),
+     *             @OA\Property(property="message", type="string")
+     *         )
+     *     )
+     * )
+     */
 
     public function update(Request $request, $id)
     {
@@ -251,6 +378,43 @@ class SponsorController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
     */
+
+
+    /**
+     * Delete specific sponsor resource.
+     *
+     * @OA\Delete(
+     *     path="/api/sponsors/{id}",
+     *     summary="Display specific sponsor resource",
+     *     tags={"Sponsors"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the sponsor",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Sponsor deleted",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="id", type="string"),
+     *             @OA\Property(property="message", type="string")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Sponsor not found",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="error", type="string"),
+     *             @OA\Property(property="message", type="string")
+     *         )
+     *     )
+     * )
+     */
+
 
     public function destroy($id){
 
