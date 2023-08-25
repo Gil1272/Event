@@ -23,7 +23,7 @@ paths:
                 type: array
                 items:
                   type: string
-  /api/sponsors:
+  /api/sponsor:
     post:
       tags:
         - Sponsors
@@ -55,7 +55,7 @@ paths:
                 description:
                   type: string
       responses:
-        '201':
+        "201":
           description: "Sponsor created successfully"
           content:
             application/json:
@@ -66,7 +66,7 @@ paths:
                     type: integer
                   message:
                     type: string
-        '400':
+        "400":
           description: "Bad request"
           content:
             application/json:
@@ -79,11 +79,11 @@ paths:
                     type: string
                   errors:
                     type: object
-  /api/sponsors/{id_event}:
+  /api/sponsor/{id_event}:
     get:
       tags:
         - Sponsors
-      summary: "Display specific event sponsors list resource"
+      summary: "Display specific event sponsor list resource"
       description: "Display specific sponsor resource."
       operationId: a6ae29c88c9a214b132609f91bf9baea
       parameters:
@@ -94,8 +94,8 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
-          description: "List of the sponsors related to the event"
+        "200":
+          description: "List of the sponsor related to the event"
           content:
             application/json:
               schema:
@@ -103,7 +103,7 @@ paths:
                 properties:
                   sponsor:
                     type: object
-        '404':
+        "404":
           description: "Event not found"
           content:
             application/json:
@@ -114,7 +114,7 @@ paths:
                     type: string
                   message:
                     type: string
-  /api/sponsors/{id}:
+  /api/sponsor/{id}:
     get:
       tags:
         - Sponsors
@@ -129,7 +129,7 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: "Sponsor details"
           content:
             application/json:
@@ -138,7 +138,7 @@ paths:
                 properties:
                   sponsor:
                     type: object
-        '404':
+        "404":
           description: "Sponsor not found"
           content:
             application/json:
@@ -179,7 +179,7 @@ paths:
                 description:
                   type: string
       responses:
-        '200':
+        "200":
           description: "Sponsor updated"
           content:
             application/json:
@@ -190,7 +190,7 @@ paths:
                     type: string
                   message:
                     type: string
-        '404':
+        "404":
           description: "Sponsor not found"
           content:
             application/json:
@@ -215,7 +215,7 @@ paths:
         schema:
           type: integer
     responses:
-      '200':
+      "200":
         description: "Sponsor deleted"
         content:
           application/json:
@@ -226,4 +226,4 @@ paths:
                   type: string
                 message:
                   type: string
-      '404':
+      "404":
