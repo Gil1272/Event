@@ -237,3 +237,207 @@ paths:
                     type: string
                   message:
                     type: string
+ /api/organizer:
+    post:
+      tags:
+        - organizers
+      summary: "Store a newly created organizer in storage"
+      description: "Store a newly created organizer in storage."
+      parameters:
+        - name: id
+          in: path
+          description: "ID of the event"
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: "organizer data"
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                type:
+                  type: string
+                logo:
+                  type: file
+                activity_sector:
+                  type: string
+                description:
+                  type: string
+      responses:
+        '201':
+          description: "organizer created successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  message:
+                    type: string
+        '400':
+          description: "Bad request"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+                  errors:
+                    type: object
+  /api/organizer/{id_event}:
+    get:
+      tags:
+        - organizers
+      summary: "Display specific event organizer list resource"
+      description: "Display specific organizer resource."
+      operationId: a6ae29c88c9a214b132609f91bf9baea
+      parameters:
+        - name: id_event
+          in: path
+          description: "ID of the event"
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: "List of the organizer related to the event"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  organizer:
+                    type: object
+        '404':
+          description: "Event not found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+  /api/organizer/{id}:
+    get:
+      tags:
+        - organizers
+      summary: "Display specific organizer resource"
+      description: "Display specific organizer resource."
+      operationId: 912db602ddb406d191d3705fa5e6c174
+      parameters:
+        - name: id
+          in: path
+          description: "ID of the organizer"
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: "organizer details"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  organizer:
+                    type: object
+        '404':
+          description: "organizer not found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+    post:
+      tags:
+        - organizers
+      summary: "Update specific organizer resource"
+      description: "Update specific organizer resource."
+      operationId: 7bae74154d1d53681d0088ddf1972544
+      parameters:
+        - name: id
+          in: path
+          description: "ID of the organizer"
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: "organizer data"
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                type:
+                  type: string
+                activity_sector:
+                  type: string
+                description:
+                  type: string
+      responses:
+        '200':
+          description: "organizer updated"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  message:
+                    type: string
+        '404':
+          description: "organizer not found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+  delete:
+    tags:
+      - organizers
+    summary: "Delete specific organizer resource"
+    description: "Delete specific organizer resource."
+    operationId: 824b95c8d225b5371c5e01965e34c9d5
+    parameters:
+      - name: id
+        in: path
+        description: "ID of the organizer"
+        required: true
+        schema:
+          type: integer
+    responses:
+      '200':
+        description: "organizer deleted"
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                message:
+                  type: string
+      '404':
