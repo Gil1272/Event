@@ -53,7 +53,7 @@ paths:
             schema:
             type: text
         description: A JSON array of the details of the entity created
-           content:
+          content:
             application/json:
               schema:
                 type: array
