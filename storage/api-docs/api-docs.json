@@ -291,7 +291,7 @@
         }
     },
     "components": {
-        "securitySchemes": {
+        "securitySchemes": {git 
             "bearAuth": {
                 "type": "http",
                 "name": "bearerAuth",
