@@ -23,6 +23,238 @@ paths:
                 type: array
                 items:
                   type: string
+  /api/event:
+    post:
+      summary: Store a newly created event in storage.
+      requestBody:
+        description: "Event data"
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+                country:
+                  type: string
+                place:
+                  type: string
+                start_date:
+                  type: string
+                end_date:
+                  type: string
+                end_date:
+                  type: string
+                time_end:
+                  type: string
+                user:
+                  type: string
+                type:
+                  type: string
+                statut:
+                  type: string
+                published:
+                  type: string
+      responses:
+        "200":
+          description: A JSON array of the event detail
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+        "404":
+          description: "Bad payloads passes in request"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+    get:
+      summary: "Display all events list of authentified user"
+      description: "Display all events list of authentified user."
+      operationId: a6ae29c88c9a214b132609f91bf9baea
+      responses:
+        "200":
+          description: "List of the event related to the authentified user"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  events:
+                    type: object
+        "404":
+          description: "Bad request"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+  /api/event/{id}:
+    get:
+      summary: "Display specifique event details"
+      description: "Display specifique event details"
+      operationId: a6ae29c88c9a214b132609f91bf9baea
+      parameters:
+        - name: id
+          in: path
+          description: "ID of the event"
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: "Details of the event"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  events:
+                    type: object
+        "404":
+          description: "Bad request"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+    post:
+      summary: Update a created event in storage.
+      description: "Update a created event in storage".
+      parameters:
+        - name: id
+          in: path
+          description: "ID of the event"
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: "Event data"
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+                country:
+                  type: string
+                place:
+                  type: string
+                start_date:
+                  type: string
+                end_date:
+                  type: string
+                end_date:
+                  type: string
+                time_end:
+                  type: string
+                user:
+                  type: string
+                type:
+                  type: string
+                statut:
+                  type: string
+                published:
+                  type: string
+      responses:
+        "200":
+          description: A JSON array of the event detail
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+        "404":
+          description: "Bad payloads passes in request"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+    delete:
+      summary: Delete a created event in storage.
+      description: "Delete a created event in storage".
+      parameters:
+        - name: id
+          in: path
+          description: "ID of the event"
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: A string of confirmation
+          content:
+            application/json:
+              message:
+                type: string
+        "404":
+          description: "Bad payloads passes in request"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+  /api/event/clone/{id}:
+    put:
+      summary: Clone a created event in storage.
+      description: "Clone a created event in storage".
+      parameters:
+        - name: id
+          in: path
+          description: "ID of the event"
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: A string of confirmation
+          content:
+            application/json:
+              message:
+                type: string
+        "404":
+          description: "Bad payloads passes in request"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
   /api/sponsor:
     post:
       tags:
@@ -32,7 +264,7 @@ paths:
       parameters:
         - name: id
           in: path
-          description: "ID of the event"
+          description: "ID of the event related to the sponsor"
           required: true
           schema:
             type: integer
