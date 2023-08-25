@@ -46,8 +46,6 @@ paths:
                   type: string
                 end_date:
                   type: string
-                end_date:
-                  type: string
                 time_end:
                   type: string
                 user:
