@@ -262,11 +262,11 @@ class SponsorController extends Controller
 
 
     /**
-     * update specific sponsor resource.
+     * Update specific sponsor resource.
      *
-     * @OA\Update(
+     * @OA\Post(
      *     path="/api/sponsors/{id}",
-     *     summary="Display specific sponsor resource",
+     *     summary="Update specific sponsor resource",
      *     tags={"Sponsors"},
      *     @OA\Parameter(
      *         name="id",
@@ -396,7 +396,7 @@ class SponsorController extends Controller
      *
      * @OA\Delete(
      *     path="/api/sponsors/{id}",
-     *     summary="Display specific sponsor resource",
+     *     summary="Delete specific sponsor resource",
      *     tags={"Sponsors"},
      *     @OA\Parameter(
      *         name="id",
