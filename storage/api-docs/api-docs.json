@@ -7,9 +7,7 @@
     "paths": {
         "/api/register": {
             "post": {
-                "tags": [
-                    "User"
-                ],
+                "tags": ["User"],
                 "summary": "User Register",
                 "description": "User Register required unique phone_number and email",
                 "operationId": "Register",
@@ -107,9 +105,7 @@
         },
         "/api/login": {
             "post": {
-                "tags": [
-                    "User"
-                ],
+                "tags": ["User"],
                 "summary": "Login Register",
                 "description": "User Register required  phone_number and email at identify",
                 "operationId": "Login",
@@ -117,10 +113,7 @@
                     "content": {
                         "multipart/form-data": {
                             "schema": {
-                                "required": [
-                                    "identify",
-                                    "password"
-                                ],
+                                "required": ["identify", "password"],
                                 "properties": {
                                     "identify": {
                                         "type": "text"
@@ -269,9 +262,7 @@
         },
         "/event/": {
             "get": {
-                "tags": [
-                    "Event"
-                ],
+                "tags": ["Event"],
                 "summary": "Get All connected User's Event ",
                 "description": "Get connected User's Event",
                 "operationId": "7fd5e504a48a024ee814553c0095a4c3",
@@ -400,9 +391,7 @@
                 }
             },
             "post": {
-                "tags": [
-                    "Event"
-                ],
+                "tags": ["Event"],
                 "summary": "Event Register",
                 "description": "Event register",
                 "operationId": "8e05bfa73f02dbb9a3661d9a6e895dd5",
@@ -580,9 +569,7 @@
         },
         "/event/{id}": {
             "get": {
-                "tags": [
-                    "Event"
-                ],
+                "tags": ["Event"],
                 "summary": "Get Event by id ",
                 "description": "Get Event by id",
                 "operationId": "c5ba79eb0bdab8fc16df7c8d57e13f28",
@@ -794,9 +781,7 @@
                 }
             },
             "post": {
-                "tags": [
-                    "Event"
-                ],
+                "tags": ["Event"],
                 "summary": "Update Event",
                 "description": "Update Event",
                 "operationId": "3cfd9a54be04879fc9a2a7c95581c9b7",
@@ -878,9 +863,7 @@
                 }
             },
             "delete": {
-                "tags": [
-                    "Event"
-                ],
+                "tags": ["Event"],
                 "summary": "Delete Event",
                 "description": "Delete Event",
                 "operationId": "17201e803dac1a658db23df32f16fdd8",
@@ -997,9 +980,7 @@
         },
         "/event/clone/{id}": {
             "put": {
-                "tags": [
-                    "Event"
-                ],
+                "tags": ["Event"],
                 "summary": "Duplicate Event",
                 "description": "Duplicate Event",
                 "operationId": "fea09a5cac876c13503f209f3b82f810",
@@ -1115,6 +1096,336 @@
                                 "schema": {
                                     "properties": {
                                         "hjdd": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/sponsors": {
+            "post": {
+                "tags": ["Sponsors"],
+                "summary": "Store a newly created sponsor in storage",
+                "description": "Store a newly created sponsor in storage.",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the event",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Sponsor data",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "type": {
+                                        "type": "string"
+                                    },
+                                    "logo": {
+                                        "type": "file"
+                                    },
+                                    "activity_sector": {
+                                        "type": "string"
+                                    },
+                                    "description": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Sponsor created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/sponsors/{id_event}": {
+            "get": {
+                "tags": ["Sponsors"],
+                "summary": "Display specific event sponsors list resource",
+                "description": "Display specific sponsor resource.",
+                "operationId": "a6ae29c88c9a214b132609f91bf9baea",
+                "parameters": [
+                    {
+                        "name": "id_event",
+                        "in": "path",
+                        "description": "ID of the event",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of the sponsors related to the event",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "sponsor": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Event not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/sponsors/{id}": {
+            "get": {
+                "tags": ["Sponsors"],
+                "summary": "Display specific sponsor resource",
+                "description": "Display specific sponsor resource.",
+                "operationId": "912db602ddb406d191d3705fa5e6c174",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the sponsor",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Sponsor details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "sponsor": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Sponsor not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": ["Sponsors"],
+                "summary": "Update specific sponsor resource",
+                "description": "Update specific sponsor resource.",
+                "operationId": "7bae74154d1d53681d0088ddf1972544",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the sponsor",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Sponsor data",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "type": {
+                                        "type": "string"
+                                    },
+                                    "activity_sector": {
+                                        "type": "string"
+                                    },
+                                    "description": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Sponsor updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "string"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Sponsor not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": ["Sponsors"],
+                "summary": "Delete specific sponsor resource",
+                "description": "Delete specific sponsor resource.",
+                "operationId": "824b95c8d225b5371c5e01965e34c9d5",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the sponsor",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Sponsor deleted",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "string"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Sponsor not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string"
+                                        },
+                                        "message": {
                                             "type": "string"
                                         }
                                     },
