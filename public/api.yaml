@@ -201,7 +201,7 @@ paths:
                     type: string
                   message:
                     type: string
-  delete:
+    delete:
     tags:
       - Sponsors
     summary: "Delete specific sponsor resource"
