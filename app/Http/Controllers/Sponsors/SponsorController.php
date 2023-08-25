@@ -198,7 +198,7 @@ class SponsorController extends Controller
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="Sponsor details",
+     *         description="List of the sponsors related to the event",
      *         @OA\JsonContent(
      *             type="object",
      *             @OA\Property(property="sponsor", type="object")
