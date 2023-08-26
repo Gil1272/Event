@@ -225,7 +225,7 @@ paths:
   /api/event/clone/{id}:
     put:
       summary: Clone a created event in storage.
-      description: "Clone a created event in storage".
+      description: "Clone a created event in storage"
       parameters:
         - name: id
           in: path
