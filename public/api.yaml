@@ -164,8 +164,6 @@ paths:
                   type: string
                 end_date:
                   type: string
-                end_date:
-                  type: string
                 time_end:
                   type: string
                 user:
@@ -198,7 +196,7 @@ paths:
                     type: string
     delete:
       summary: Delete a created event in storage.
-      description: "Delete a created event in storage".
+      description: "Delete a created event in storage"
       parameters:
         - name: id
           in: path
