@@ -91,7 +91,6 @@ paths:
                     type: string
                   message:
                     type: string
-paths:
   /api/event:
     post:
       summary: Store a newly created event in storage.
