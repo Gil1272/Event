@@ -657,3 +657,83 @@ paths:
                   message:
                     type: string
         '404':
+  /api/auth/login:
+    post:
+      summary: Login to app.
+      requestBody:
+        description: "User data"
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        "200":
+          description: A JSON array of the logged user detail
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+        "404":
+          description: "Bad payloads passes in request or authentification fails"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+  /api/auth/register:
+    post:
+      summary: Register to app.
+      requestBody:
+        description: "User data"
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                country:
+                  type: string
+                civility:
+                  type: string
+                firstname:
+                  type: string
+                name:
+                  type: string
+                phone_number:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        "200":
+          description: A JSON array of the logged user detail
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+        "404":
+          description: "Bad payloads passes in request "
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
