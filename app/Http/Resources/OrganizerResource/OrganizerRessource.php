@@ -9,8 +9,11 @@ class OrganizerResource extends JsonResource
 {
     private function setAsset(array $assets){
         $newAssets = [];
-        array_push($newAssets,Storage::disk('public')->url($assets));
-
+        if(Storage::disk('public')->exists($assets)){
+            array_push($newAssets,Storage::disk('public')->url($assets));
+        } else {
+            array_push($newAssets, 'Aucune photo trouvé dans le storage pour ce nom');
+        }
         return $newAssets;
     }
     /**
