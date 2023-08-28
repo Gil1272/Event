@@ -13,6 +13,8 @@ class EventResource extends JsonResource
         foreach ($assets as $asset) {
             if(Storage::disk('public')->exists($asset)){
                 array_push($newAssets,Storage::disk('public')->url($asset));
+            } else {
+                array_push($newAssets, 'No photo for the link');
             }
 
         }
