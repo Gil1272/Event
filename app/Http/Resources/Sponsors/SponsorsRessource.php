@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Resources\Events;
+namespace App\Http\Resources\Sponsors;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Storage;
 
 class SponsorsRessource extends JsonResource
 {
-    private function setAsset(array $assets){
+    private function setAsset(string $assets){
         $newAssets = [];
         array_push($newAssets,Storage::disk('public')->url($assets));
 
