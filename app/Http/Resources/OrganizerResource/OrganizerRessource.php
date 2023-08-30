@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Resources\Events;
+namespace App\Http\Resources\OrganizerResource;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Storage;
 
-class OrganizerResource extends JsonResource
+class OrganizerRessource extends JsonResource
 {
-    private function setAsset(array $assets){
+    private function setAsset(string $assets){
         $newAssets = [];
         if(Storage::disk('public')->exists($assets)){
             array_push($newAssets,Storage::disk('public')->url($assets));

@@ -92,7 +92,7 @@ class SponsorController extends Controller
 
             $filename = uniqid() . $link_slug . '.' . $logo->getClientOriginalExtension();
             $logo->storeAs(
-                Auth::id() . "/" . self::STORAGE_SPONSOR,
+                'public/' . Auth::id() . "/" . self::STORAGE_SPONSOR,
                 $filename,
                 ['disk' => 'local']
             );
@@ -103,7 +103,7 @@ class SponsorController extends Controller
                 $height = Str::of($FORMAT)->after('_x_');
                 $photoResized = Image::make($logo)->resize($width, $height);
                 Storage::put(
-                    Auth::id() . "/" . self::STORAGE_SPONSOR . "/" . $FORMAT . "/" . $filename,
+                    'public/' . Auth::id() . "/" . self::STORAGE_SPONSOR . "/" . $FORMAT . "/" . $filename,
                     $photoResized,
                     'public'
                 );
@@ -208,13 +208,24 @@ class SponsorController extends Controller
         if ($request->hasFile("logo")) {
 
 
+            $sponsor = Sponsor::find($id);
+            if ($sponsor) {
+
+                if (Storage::disk('public')->exists('public' . $sponsor->logo)) {
+                    Storage::disk('public')->delete('public' . $sponsor->logo);
+                }
+                if (Storage::disk('local')->exists('public' . $sponsor->logo)) {
+                    Storage::disk('local')->delete('public' . $sponsor->logo);
+                }
+            }
+
 
             $logo = $request->file("logo");
             $fileLink = '';
 
             $filename = uniqid() . $link_slug . '.' . $logo->getClientOriginalExtension();
             $logo->storeAs(
-                Auth::id() . "/" . self::STORAGE_SPONSOR,
+                'public/' . Auth::id() . "/" . self::STORAGE_SPONSOR,
                 $filename,
                 ['disk' => 'local']
             );
@@ -225,18 +236,12 @@ class SponsorController extends Controller
                 $height = Str::of($FORMAT)->after('_x_');
                 $photoResized = Image::make($logo)->resize($width, $height);
                 Storage::put(
-                    Auth::id() . "/" . self::STORAGE_SPONSOR . "/" . $FORMAT . "/" . $filename,
+                    'public/' . Auth::id() . "/" . self::STORAGE_SPONSOR . "/" . $FORMAT . "/" . $filename,
                     $photoResized,
                     'public'
                 );
             }
 
-            if (Storage::disk('public')->exists($fileLink)) {
-                Storage::disk('public')->delete($fileLink);
-            }
-            if (Storage::disk('local')->exists($fileLink)) {
-                Storage::disk('local')->delete($fileLink);
-            }
 
             $data['logo'] = $fileLink;
         } else {
@@ -244,10 +249,14 @@ class SponsorController extends Controller
         }
 
         $sponsor = Sponsor::find($id);
-        $sponsor = $sponsor->update($data);
 
-        if ($sponsor)
+
+        if ($sponsor) {
+            $sponsor = $sponsor->update($data);
             return JsonResponse::send(false, "Votre sponsor a été modifié !", $sponsor);
+        } else {
+            return JsonResponse::send(true, "Votre sponsor est introuvable !",);
+        }
     }
 
 
@@ -265,11 +274,11 @@ class SponsorController extends Controller
         $sponsor = Sponsor::find($id);
         if ($sponsor) {
             $sponsor->delete();
-            if (Storage::disk('public')->exists($sponsor->logo)) {
-                Storage::disk('public')->delete($sponsor->logo);
+            if (Storage::disk('public')->exists('public' . $sponsor->logo)) {
+                Storage::disk('public')->delete('public' . $sponsor->logo);
             }
-            if (Storage::disk('local')->exists($sponsor->logo)) {
-                Storage::disk('local')->delete($sponsor->logo);
+            if (Storage::disk('local')->exists('public' . $sponsor->logo)) {
+                Storage::disk('local')->delete('public' . $sponsor->logo);
             }
             return JsonResponse::send(false, "Le sponsor de l'évènement a été supprimé");
         } else {
