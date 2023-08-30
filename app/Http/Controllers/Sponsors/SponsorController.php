@@ -31,8 +31,8 @@ class SponsorController extends Controller
 
             'name' => 'required',
             'type' => 'required',
-            'logo' => 'required',
             'activity_sector' => 'required',
+            'event' => 'required',
             'description' => 'required',
 
         ];
@@ -47,7 +47,7 @@ class SponsorController extends Controller
      * @return \Illuminate\Http\Response
     */
 
-    public function store(Request $request , $id)
+    public function store(Request $request)
     {
         $data = $request->all();
 
@@ -102,7 +102,7 @@ class SponsorController extends Controller
             return JsonResponse::send(true,$errorMessage,["logo"=>"Logo requis"],400);
         }
 
-        $event = Event::find($id);
+        $event = Event::find($data['event']);
         $sponsor =  $event->sponsors()->create($data);
         if($sponsor){
             return JsonResponse::send(false,"Votre sponsor a été créer !",$sponsor);

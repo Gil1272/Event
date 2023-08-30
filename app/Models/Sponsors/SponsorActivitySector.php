@@ -11,6 +11,7 @@ enum SponsorActivitySector
     const AGRICULTURE = 'Agriculture';
     const ELEVAGE = 'Élevage';
     const FINANCE = 'Finance';
+    const TELECOMS = 'Télécommunication';
 
     // Check if a given type exists in the enum
     public static function value_exists(string $type): bool{
