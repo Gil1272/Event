@@ -66,7 +66,7 @@ class SponsorController extends Controller
         if(!SponsorActivitySector::key_exists($request->activity_sector)){
             return JsonResponse::send(true,$errorMessage,["activity_sector"=>"Le secteur d'activité n'est pas prit en compte"],400);
         }
-        $data['activity_sector'] = SponsorType::get_value($request -> activity_sector);
+        $data['activity_sector'] = SponsorActivitySector::get_value($request -> activity_sector);
 
         $link_slug =  Str::slug($data['name'],'-','fr');
 
@@ -97,9 +97,6 @@ class SponsorController extends Controller
             }
 
             $data['logo'] = $fileLink;
-        }
-        else{
-            return JsonResponse::send(true,$errorMessage,["logo"=>"Logo requis"],400);
         }
 
         $event = Event::find($data['event']);
