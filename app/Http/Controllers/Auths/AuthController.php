@@ -106,23 +106,20 @@ class AuthController extends UserController
     }
 
 
-    public function confirm(Request $request)
+    public function confirm($user_id , $token)
     {
-        $userId = $request->input('user_id');
-        $token = $request->input('token');
-
-        dd($userId);
+                dd($user_id);
         // Find the user by ID
-        $user = User::find($userId);
+        $user = User::find($user_id);
 
         if (!$user) {
             return JsonResponse::send(true, "User not found", null, 404);
         }
 
-        $userVerify = UserVerify::where("user_id", $userId)->where("token", $token)->firstOrFail();
+        $userVerify = UserVerify::where("user_id", $user_id)->where("token", $token)->firstOrFail();
         if ($userVerify) {
             $data['token'] = null;
-            $user = User::find($userId);
+            $user = User::find($user_id);
             $userVerify->update($data);
             Mail::to($user->email)->send(new RegisterMail([
                 "header" => "Salut ! " . $user->name . " " . $user->firstname,
