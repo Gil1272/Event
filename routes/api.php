@@ -22,14 +22,12 @@ use App\Http\Controllers\Tickets\TicketController;
 |
 */
 
-Route::get('/api.yaml', function () {
-    return response(file_get_contents(public_path('api.yaml')))
-        ->header('Content-Type', 'application/x-yaml');
-});
+
 
 Route::prefix("auth")->middleware([CorsConfig::class])->group(function(){
 
-    Route::post("login",[AuthController::class,"login"]);
+    Route::get('/confirm/{user_id}/{token}', [AuthController::class, 'confirm'])->name('auth.confirm');
+    Route::post("login",[AuthController::class,"login"])->name('auth.login');
 
     Route::post("register",[AuthController::class,"register"]);
 });
@@ -39,6 +37,9 @@ Route::prefix("node")->middleware([CorsConfig::class])->group(function(){
     Route::get("event-status",[UtilsController::class,'getEventStatus']);
     Route::get("event-type",[UtilsController::class,'getEventType']);
     Route::get("ticket-type",[UtilsController::class,'getTicketType']);
+    Route::get("organizer_activity_area",[UtilsController::class,'getOrganizerActivityArea']);
+    Route::get("sponsor_type",[UtilsController::class,'getSponsorType']);
+    Route::get("sponsor_activity_sector", [UtilsController::class , "getSponsorActivitySector"] );
 });
 
 Route::prefix("auth")->middleware([CorsConfig::class,Jwt::class])->group(function(){
@@ -79,7 +80,7 @@ Route::prefix("organizer")->group(function(){
 Route::prefix("sponsor")->group(function(){
     Route::post("{id:id}",[SponsorController::class,"update"])->where(["id" => "[a-z0-9]{24}"]);
     Route::delete("{id:id}",[SponsorController::class,"destroy"]);
-    Route::get("{id_event:id_event}",[EventController::class,"getEventAllSponsors"])->where(["id_event" => "[a-z0-9]{24}"]);
+    Route::get("{id_event:id_event}",[SponsorController::class,"getEventAllSponsors"])->where(["id_event" => "[a-z0-9]{24}"]);
     Route::post("",[SponsorController::class,"store"]);
-   Route::get("{id:id}",[SponsorController::class,"show"])->where(["id" => "[a-z0-9]{24}"]);
+   Route::get("specificsponsor/{id:id}",[SponsorController::class,"show"])->where(["id" => "[a-z0-9]{24}"]);
 });

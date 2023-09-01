@@ -11,7 +11,12 @@ class EventResource extends JsonResource
     private function setAsset(array $assets){
         $newAssets = [];
         foreach ($assets as $asset) {
-            array_push($newAssets,Storage::disk('public')->url($asset));
+            if(Storage::disk('public')->exists($asset)){
+                array_push($newAssets,Storage::disk('public')->url($asset));
+            } else {
+                array_push($newAssets, 'Aucune photo trouvé dans le storage pour ce nom');
+            }
+
         }
 
         return $newAssets;

@@ -84,13 +84,26 @@ class SponsorController extends Controller
 
 
     const STORAGE_SPONSOR = "sponsors";
-    const STORAGE_FORMATS = ["221_x_170","399_x_311","311_x_208","599_x_311"];
-    private static function rules() {
+    const STORAGE_FORMATS = ["221_x_170", "399_x_311", "311_x_208", "599_x_311"];
+    private static function rules()
+    {
         return [
 
             'name' => 'required',
             'type' => 'required',
-            'logo' => 'required',
+            'activity_sector' => 'required',
+            'event' => 'required',
+            'description' => 'required',
+
+        ];
+    }
+
+    private static function rulesWithoutEvent()
+    {
+        return [
+
+            'name' => 'required',
+            'type' => 'required',
             'activity_sector' => 'required',
             'description' => 'required',
 
@@ -104,72 +117,69 @@ class SponsorController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
-    */
+     */
 
-    public function store(Request $request , $id)
+    public function store(Request $request)
     {
         $data = $request->all();
 
-        $validator =  Validator::make($data,SponsorController::rules());
+        $validator =  Validator::make($data, SponsorController::rules());
         $errorMessage = "vos donnés sont invalides";
 
         if ($validator->fails()) {
-            return JsonResponse::send(true,$errorMessage,$validator->errors()->messages(),400);
+            return JsonResponse::send(true, $errorMessage, $validator->errors()->messages(), 400);
         }
 
-        if(!SponsorType::key_exists($request->type)){
-            return JsonResponse::send(true,$errorMessage,["type"=>"Le type de sponsor n'existe pas"],400);
+        if (!SponsorType::key_exists($request->type)) {
+            return JsonResponse::send(true, $errorMessage, ["type" => "Le type de sponsor n'existe pas"], 400);
         }
-        $data['type'] = SponsorType::get_value($request -> type);
+        $data['type'] = SponsorType::get_value($request->type);
 
-        if(!SponsorActivitySector::key_exists($request->activity_sector)){
-            return JsonResponse::send(true,$errorMessage,["activity_sector"=>"Le secteur d'activité n'est pas prit en compte"],400);
+        if (!SponsorActivitySector::key_exists($request->activity_sector)) {
+            return JsonResponse::send(true, $errorMessage, ["activity_sector" => "Le secteur d'activité n'est pas prit en compte"], 400);
         }
-        $data['activity_sector'] = SponsorType::get_value($request -> activity_sector);
+        $data['activity_sector'] = SponsorActivitySector::get_value($request->activity_sector);
 
-        $link_slug =  Str::slug($data['name'],'-','fr');
+        $link_slug =  Str::slug($data['name'], '-', 'fr');
 
 
 
-        if($request->hasFile("logo")){
+        if ($request->hasFile("logo")) {
 
             $logo = $request->file("logo");
             $fileLink = '';
 
-            $filename = uniqid().$link_slug.'.'.$logo->getClientOriginalExtension();
+            $filename = uniqid() . $link_slug . '.' . $logo->getClientOriginalExtension();
             $logo->storeAs(
-                Auth::id()."/".self::STORAGE_SPONSOR,
+                'public/' . Auth::id() . "/" . self::STORAGE_SPONSOR,
                 $filename,
                 ['disk' => 'local']
             );
-            $fileLink = Auth::id()."/".self::STORAGE_SPONSOR."/".$filename;
+            $fileLink = Auth::id() . "/" . self::STORAGE_SPONSOR . "/" . $filename;
             //resize file for each format using resize image
-            foreach (self::STORAGE_FORMATS as $FORMAT)
-            {
+            foreach (self::STORAGE_FORMATS as $FORMAT) {
                 $width = Str::of($FORMAT)->before('_x_');
                 $height = Str::of($FORMAT)->after('_x_');
-                $photoResized = Image::make($logo)->resize($width,$height);
-                Storage::put(Auth::id()."/".self::STORAGE_SPONSOR."/".$FORMAT."/".$filename,
+                $photoResized = Image::make($logo)->resize($width, $height);
+                Storage::put(
+                    'public/' . Auth::id() . "/" . self::STORAGE_SPONSOR . "/" . $FORMAT . "/" . $filename,
                     $photoResized,
-                'public');
-
+                    'public'
+                );
             }
 
             $data['logo'] = $fileLink;
-        }
-        else{
-            return JsonResponse::send(true,$errorMessage,["logo"=>"Logo requis"],400);
+        } else {
+            $data['logo'] = [];
         }
 
-        $event = Event::find($id);
+        $event = Event::find($data['event']);
         $sponsor =  $event->sponsors()->create($data);
-        if($sponsor){
-            return JsonResponse::send(false,"Votre sponsor a été créer !",$sponsor);
-        }else{
-            return JsonResponse::send(true,"Le sponsor n'a pas pu être crée");
+        if ($sponsor) {
+            return JsonResponse::send(false, "Votre sponsor a été créer !", $sponsor);
+        } else {
+            return JsonResponse::send(true, "Le sponsor n'a pas pu être crée");
         }
-
-
     }
 
 
@@ -178,9 +188,10 @@ class SponsorController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
-    */
+     */
 
 
+<<<<<<< HEAD
 
        /**
      * Display specific sponsor resource.
@@ -219,19 +230,26 @@ class SponsorController extends Controller
 
 
     public function getEventAllSponsors($id){
+=======
+    public function getEventAllSponsors($id)
+    {
+>>>>>>> a82cdd61e1f1cf8f2ecf0d96356f369c2538a099
 
         $event = Event::find($id);
-        if($event){
-            $sponsors = $event -> sponsors()->get();
+        if ($event) {
+            $sponsors = $event->sponsors()->get();
             return JsonResponse::send(
                 false,
                 "La liste des sponsors",
                 ["sponsors" => $sponsors]
             );
         } else {
+<<<<<<< HEAD
             return JsonResponse::send(true,"Aucun event trouvé",null,404);
+=======
+            return JsonResponse::send(true, "Aucun sponsor trouvé", null, 404);
+>>>>>>> a82cdd61e1f1cf8f2ecf0d96356f369c2538a099
         }
-
     }
 
 
@@ -240,7 +258,7 @@ class SponsorController extends Controller
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
-    */
+     */
 
 
      /**
@@ -280,22 +298,22 @@ class SponsorController extends Controller
     public function show($id)
     {
         $sponsor =  Sponsor::find($id);
-        if($sponsor)
+        if ($sponsor)
 
-            return JsonResponse::send(false,null,["sponsor"=> new SponsorsRessource($sponsor)]);
-        return JsonResponse::send(true,"Aucun sponsor trouvé",null,404);
+            return JsonResponse::send(false, null, ["sponsor" => new SponsorsRessource($sponsor)]);
+        return JsonResponse::send(true, "Aucun sponsor trouvé", null, 404);
     }
 
 
 
 
-        /**
+    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
-    */
+     */
 
 
     /**
@@ -349,73 +367,79 @@ class SponsorController extends Controller
 
         $data = $request->all();
 
-        $validator =  Validator::make($data,SponsorController::rules());
+        $validator =  Validator::make($data, SponsorController::rulesWithoutEvent());
         $errorMessage = "vos donnés sont invalides";
 
         if ($validator->fails()) {
-            return JsonResponse::send(true,$errorMessage,$validator->errors()->messages(),400);
+            return JsonResponse::send(true, $errorMessage, $validator->errors()->messages(), 400);
         }
 
-        if(!SponsorType::key_exists($request->type)){
-            return JsonResponse::send(true,$errorMessage,["type"=>"Le type de sponsor n'existe pas"],400);
+        if (!SponsorType::key_exists($request->type)) {
+            return JsonResponse::send(true, $errorMessage, ["type" => "Le type de sponsor n'existe pas"], 400);
         }
-        $data['type'] = SponsorType::get_value($request -> type);
+        $data['type'] = SponsorType::get_value($request->type);
 
-        if(!SponsorActivitySector::key_exists($request->activity_sector)){
-            return JsonResponse::send(true,$errorMessage,["activity_sector"=>"Le secteur d'activité n'est pas prit en compte"],400);
+        if (!SponsorActivitySector::key_exists($request->activity_sector)) {
+            return JsonResponse::send(true, $errorMessage, ["activity_sector" => "Le secteur d'activité n'est pas prit en compte"], 400);
         }
-        $data['activity_sector'] = SponsorType::get_value($request -> activity_sector);
+        $data['activity_sector'] = SponsorActivitySector::get_value($request->activity_sector);
 
-        $link_slug =  Str::slug($data['name'],'-','fr');
+        $link_slug =  Str::slug($data['name'], '-', 'fr');
 
 
 
-        if($request->hasFile("logo")){
+        if ($request->hasFile("logo")) {
 
+
+            $sponsor = Sponsor::find($id);
+            if ($sponsor) {
+
+                if (Storage::disk('public')->exists('public' . $sponsor->logo)) {
+                    Storage::disk('public')->delete('public' . $sponsor->logo);
+                }
+                if (Storage::disk('local')->exists('public' . $sponsor->logo)) {
+                    Storage::disk('local')->delete('public' . $sponsor->logo);
+                }
+            }
 
 
             $logo = $request->file("logo");
             $fileLink = '';
 
-            $filename = uniqid().$link_slug.'.'.$logo->getClientOriginalExtension();
+            $filename = uniqid() . $link_slug . '.' . $logo->getClientOriginalExtension();
             $logo->storeAs(
-                Auth::id()."/".self::STORAGE_SPONSOR,
+                'public/' . Auth::id() . "/" . self::STORAGE_SPONSOR,
                 $filename,
                 ['disk' => 'local']
             );
-            $fileLink = Auth::id()."/".self::STORAGE_SPONSOR."/".$filename;
+            $fileLink = Auth::id() . "/" . self::STORAGE_SPONSOR . "/" . $filename;
             //resize file for each format using resize image
-            foreach (self::STORAGE_FORMATS as $FORMAT)
-            {
+            foreach (self::STORAGE_FORMATS as $FORMAT) {
                 $width = Str::of($FORMAT)->before('_x_');
                 $height = Str::of($FORMAT)->after('_x_');
-                $photoResized = Image::make($logo)->resize($width,$height);
-                Storage::put(Auth::id()."/".self::STORAGE_SPONSOR."/".$FORMAT."/".$filename,
+                $photoResized = Image::make($logo)->resize($width, $height);
+                Storage::put(
+                    'public/' . Auth::id() . "/" . self::STORAGE_SPONSOR . "/" . $FORMAT . "/" . $filename,
                     $photoResized,
-                'public');
-
+                    'public'
+                );
             }
 
-            if(Storage::disk('public')->exists($fileLink)){
-                Storage::disk('public')->delete($fileLink);
-            }
-            if(Storage::disk('local')->exists($fileLink)){
-                Storage::disk('local')->delete($fileLink);
-            }
 
             $data['logo'] = $fileLink;
-        }
-        else{
-            return JsonResponse::send(true,$errorMessage,["logo"=>"Logo requis"],400);
+        } else {
+            $data['logo'] = [];
         }
 
         $sponsor = Sponsor::find($id);
-        $sponsor = $sponsor->update($data);
-
-        if($sponsor)
-            return JsonResponse::send(false,"Votre sponsor a été modifié !",$sponsor);
 
 
+        if ($sponsor) {
+            $sponsor = $sponsor->update($data);
+            return JsonResponse::send(false, "Votre sponsor a été modifié !", $sponsor);
+        } else {
+            return JsonResponse::send(true, "Votre sponsor est introuvable !",);
+        }
     }
 
 
@@ -425,8 +449,9 @@ class SponsorController extends Controller
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
-    */
+     */
 
+<<<<<<< HEAD
 
     /**
      * Delete specific sponsor resource.
@@ -465,24 +490,23 @@ class SponsorController extends Controller
 
 
     public function destroy($id){
+=======
+    public function destroy($id)
+    {
+>>>>>>> a82cdd61e1f1cf8f2ecf0d96356f369c2538a099
 
         $sponsor = Sponsor::find($id);
-        if ($sponsor){
-            $sponsor -> delete();
-            if(Storage::disk('public')->exists($sponsor -> logo)){
-                Storage::disk('public')->delete($sponsor -> logo);
+        if ($sponsor) {
+            $sponsor->delete();
+            if (Storage::disk('public')->exists('public' . $sponsor->logo)) {
+                Storage::disk('public')->delete('public' . $sponsor->logo);
             }
-            if(Storage::disk('local')->exists($sponsor -> logo)){
-                Storage::disk('local')->delete($sponsor -> logo);
+            if (Storage::disk('local')->exists('public' . $sponsor->logo)) {
+                Storage::disk('local')->delete('public' . $sponsor->logo);
             }
-            return JsonResponse::send(false,"Le sponsor de l'évènement a été supprimé");
-        }  else {
-            return JsonResponse::send(true,"Le sponsor est introuvable !",null,404);
+            return JsonResponse::send(false, "Le sponsor de l'évènement a été supprimé");
+        } else {
+            return JsonResponse::send(true, "Le sponsor est introuvable !", null, 404);
         }
-
-
-
     }
-
-
 }

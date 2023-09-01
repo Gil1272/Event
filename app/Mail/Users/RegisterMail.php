@@ -11,15 +11,24 @@ class RegisterMail extends Mailable
 {
     use Queueable, SerializesModels;
 
+    public $header;
+    public $message;
+    public $link;
+    public $linkText;
     public $data;
+
+
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct(array $data)
+    public function __construct($data)
     {
-        $this->data = $data;
+        $this->header = $data['header'];
+        $this->message = $data['message'];
+        $this->link = $data['link'];
+        $this->linkText = $data['linkText'];
     }
 
     /**

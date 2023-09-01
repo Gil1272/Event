@@ -12,254 +12,796 @@ servers:
     description: production server
 
 paths:
-  /users:
-    get:
-      summary: Returns a list of users.
-      responses:
-        '200':
-          description: A JSON array of user names
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: string
-
-  /organizer:
+  /api/auth/login:
     post:
-        summary: Create an organizer.
-        parameters:
-          - name: name
-            in: body request
-            description: organizer name
-            required: true
+      summary: Login to app.
+      requestBody:
+        description: "User data"
+        required: true
+        content:
+          application/json:
             schema:
-            type: string
-          - name: activity_area
-            in: body request
-            description: organizer activity area
-            required: true
-            schema:
-            type: string
-          - name: logo
-            in: body request
-            description: organizer logo
-            required: false
-            schema:
-            type: file
-          - name: description
-            in: body request
-            description:
-            required: true
-            schema:
-            type: text
-        description: A JSON array of the details of the entity created
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        "200":
+          description: A JSON array of the logged user detail
           content:
             application/json:
               schema:
                 type: array
                 items:
                   type: string
-        responses:
-        '200':
-          description: A JSON array of the details of the entity created
-           content:
+        "404":
+          description: "Bad payloads passes in request or authentification fails"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+  /api/auth/register:
+    post:
+      summary: Register to app.
+      requestBody:
+        description: "User data"
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                country:
+                  type: string
+                civility:
+                  type: string
+                firstname:
+                  type: string
+                name:
+                  type: string
+                phone_number:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        "200":
+          description: A JSON array of the logged user detail
+          content:
             application/json:
               schema:
                 type: array
                 items:
                   type: string
-        '400':
-          description: A string telling Validation fails.
-
-
-    delete:
-        summary: Delete an organizer entity passing his id.
-        parameter:
+        "404":
+          description: "Bad payloads passes in request "
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+  /api/auth/logout:
+    post:
+      summary: Logout from app.
+      requestBody:
+        description: "User id"
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userid:
+                  type: string
+      responses:
+        "200":
+          description: A string of confirmation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+        "404":
+          description: "Bad payloads passes in request "
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+  /api/auth/me:
+    post:
+      summary: Get authentified user details.
+      requestBody:
+        description: "User token"
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+      responses:
+        "200":
+          description: A JSON object of user details
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+        "404":
+          description: "Bad payloads passes in request or bad token passes"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+  /api/event:
+    post:
+      summary: Store a newly created event in storage.
+      requestBody:
+        description: "Event data"
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+                country:
+                  type: string
+                place:
+                  type: string
+                start_date:
+                  type: string
+                end_date:
+                  type: string
+                time_end:
+                  type: string
+                user:
+                  type: string
+                type:
+                  type: string
+                statut:
+                  type: string
+                published:
+                  type: string
+      responses:
+        "200":
+          description: A JSON array of the event detail
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+        "404":
+          description: "Bad payloads passes in request"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+    get:
+      summary: "Display all events list of authentified user"
+      description: "Display all events list of authentified user."
+      operationId: a6ae29c88c9a214b132609f91bf9baea
+      responses:
+        "200":
+          description: "List of the event related to the authentified user"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  events:
+                    type: object
+        "404":
+          description: "Bad request"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+  /api/event/{id}:
+    get:
+      summary: "Display specifique event details"
+      description: "Display specifique event details"
+      operationId: a6ae29c88c9a214b132609f91bf9baea
+      parameters:
         - name: id
-          in: query
-          description: organizer id
+          in: path
+          description: "ID of the event"
           required: true
           schema:
-          type: string
-        responses:
-        '200':
-          description: A String confirming the entity is deleted
-        '404':
-          description: A String telling the entity can't be found
-
-
-
-    get:
-     summary: Returns the details of the organizer by passing his id.
-     parameter:
-      - name: id
-        in: query
-        description: organizer id
-        required: true
-        schema:
-        type: string
+            type: integer
       responses:
-        '200':
-          description: A JSON array of the organizer details
+        "200":
+          description: "Details of the event"
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  type: string
-        '404':
-          description: A String telling the entity can't be found
-
-
-
-
-    post:
-          summary: Update an organizer by passing his id.
-          parameters:
-          - name: id
-              in: query
-              description: organizer id
-              required: true
-              schema:
-              type: string
-            responses:
-            '200':
-              description: A JSON array of the new details of the entity created
-              content:
-                application/json:
-                  schema:
-                    type: array
-                    items:
-                      type: string
-            '400':
-              description: A string telling Validation fails.
-
-
-  /sponsor:
-    post:
-        summary: Create an sponsor.
-        parameters:
-        - name: name
-            in: body request
-            description: sponsor name
-            required: true
-            schema:
-            type: string
-        - name: activity_sector
-            in: body request
-            description: sponsor activity sector
-            required: true
-            schema:
-            type: string
-        - name: logo
-            in: body request
-            description:
-            required: false
-            schema:
-            type: file
-        - name: type
-            in: body request
-            description: sponsor type
-            required: true
-            schema:
-            type: text
-        - name: description
-            in: body request
-            description:
-            required: true
-            schema:
-            type: text
-        responses:
-        '200':
-          description: A JSON array of the details of the entity created
-           content:
+                type: object
+                properties:
+                  events:
+                    type: object
+        "404":
+          description: "Bad request"
+          content:
             application/json:
               schema:
-                type: array
-                items:
-                  type: string
-        '400':
-          description: A string telling Validation fails.
-
-
-    delete:
-        summary: Delete an sponsor entity passing his id.
-        parameters:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+    post:
+      summary: Update a created event in storage.
+      description: "Update a created event in storage"
+      parameters:
         - name: id
-            in: query
-            description: sponsor id
-            required: true
+          in: path
+          description: "ID of the event"
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: "Event data"
+        required: true
+        content:
+          application/json:
             schema:
-            type: string
-        responses:
-        '200':
-          description: A String confirming the entity is deleted
-        '404':
-          description: A String telling the entity can't be found
-
-
-
-    get:
-     summary: Returns the details of the sponsor by passing his id.
-     parameters:
-      - name: id
-            in: query
-            description: sponsor id
-            required: true
-            schema:
-            type: string
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+                country:
+                  type: string
+                place:
+                  type: string
+                start_date:
+                  type: string
+                end_date:
+                  type: string
+                time_end:
+                  type: string
+                user:
+                  type: string
+                type:
+                  type: string
+                statut:
+                  type: string
+                published:
+                  type: string
       responses:
-        '200':
-          description: A JSON array of the sponsor details
+        "200":
+          description: A JSON array of the event detail
           content:
             application/json:
               schema:
                 type: array
                 items:
                   type: string
-        '404':
-                  description: A String telling the entity can't be found
-
-    get:
-        summary: Returns a list of the sponsors related to an event by passing the event id.
-        parameters:
-         - name: id
-            in: query
-            description: event id
-            required: true
-            schema:
-            type: string
-          responses:
-            '200':
-              description: A JSON array of the sponsor details
-              content:
-                application/json:
-                  schema:
-                    type: array
-                    items:
-                      type: string
-            '404':
-                      description: A String telling the entity can't be found
-
-    post:
-          summary: Update an sponsor by passing his id.
-          parameters:
-            - name: id
-              in: query
-              description: sponsor id
-              required: true
+        "404":
+          description: "Bad payloads passes in request"
+          content:
+            application/json:
               schema:
-              type: string
-              responses:
-            '200':
-              description: A JSON array of the new details of the entity created
-              content:
-                application/json:
-                  schema:
-                    type: array
-                    items:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+    delete:
+      summary: Delete a created event in storage.
+      description: "Delete a created event in storage"
+      parameters:
+        - name: id
+          in: path
+          description: "ID of the event"
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: A string of confirmation
+          content:
+            application/json:
+              message:
+                type: string
+        "404":
+          description: "Bad payloads passes in request"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+  /api/event/clone/{id}:
+    put:
+      summary: Clone a created event in storage.
+      description: "Clone a created event in storage"
+      parameters:
+        - name: id
+          in: path
+          description: "ID of the event"
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: A string of confirmation
+          content:
+            application/json:
+              message:
+                type: string
+        "404":
+          description: "Bad payloads passes in request"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+  /api/sponsor:
+    post:
+      tags:
+        - Sponsors
+      summary: "Store a newly created sponsor in storage"
+      description: "Store a newly created sponsor in storage."
+      parameters:
+        - name: id
+          in: path
+          description: "ID of the event related to the sponsor"
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: "Sponsor data"
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                type:
+                  type: string
+                logo:
+                  type: file
+                activity_sector:
+                  type: string
+                description:
+                  type: string
+      responses:
+        "201":
+          description: "Sponsor created successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  message:
+                    type: string
+        "400":
+          description: "Bad request"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+                  errors:
+                    type: object
+  /api/sponsor/{id_event}:
+    get:
+      tags:
+        - Sponsors
+      summary: "Display specific event sponsor list resource"
+      description: "Display specific sponsor resource."
+      operationId: a6ae29c88c9a214b132609f91bf9baea
+      parameters:
+        - name: id_event
+          in: path
+          description: "ID of the event"
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: "List of the sponsor related to the event"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  sponsor:
+                    type: object
+        "404":
+          description: "Event not found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+  /api/sponsor/{id}:
+    get:
+      tags:
+        - Sponsors
+      summary: "Display specific sponsor resource"
+      description: "Display specific sponsor resource."
+      operationId: 912db602ddb406d191d3705fa5e6c174
+      parameters:
+        - name: id
+          in: path
+          description: "ID of the sponsor"
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: "Sponsor details"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  sponsor:
+                    type: object
+        "404":
+          description: "Sponsor not found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+    post:
+      tags:
+        - Sponsors
+      summary: "Update specific sponsor resource"
+      description: "Update specific sponsor resource."
+      operationId: 7bae74154d1d53681d0088ddf1972544
+      parameters:
+        - name: id
+          in: path
+          description: "ID of the sponsor"
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: "Sponsor data"
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                type:
+                  type: string
+                activity_sector:
+                  type: string
+                description:
+                  type: string
+      responses:
+        "200":
+          description: "Sponsor updated"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  message:
+                    type: string
+        "404":
+          description: "Sponsor not found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+    delete:
+      tags:
+        - Sponsors
+      summary: "Delete specific sponsor resource"
+      description: "Delete specific sponsor resource."
+      operationId: 824b95c8d225b5371c5e01965e34c9d5
+      parameters:
+        - name: id
+          in: path
+          description: "ID of the sponsor"
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: "Sponsor deleted"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  message:
+                    type: string
+        "404":
+            description: "Sponsor not found"
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    error:
                       type: string
-            '400':
-              description: A string telling Validation fails.
+                    message:
+                      type: string
+  /api/organizer:
+    post:
+      tags:
+        - organizers
+      summary: "Store a newly created organizer in storage"
+      description: "Store a newly created organizer in storage."
+      parameters:
+        - name: id
+          in: path
+          description: "ID of the event"
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: "organizer data"
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                type:
+                  type: string
+                logo:
+                  type: file
+                activity_sector:
+                  type: string
+                description:
+                  type: string
+      responses:
+        '201':
+          description: "organizer created successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  message:
+                    type: string
+        '400':
+          description: "Bad request"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+                  errors:
+                    type: object
+  /api/organizer/{id_event}:
+    get:
+      tags:
+        - organizers
+      summary: "Display specific event organizer list resource"
+      description: "Display specific organizer resource."
+      operationId: a6ae29c88c9a214b132609f91bf9baea
+      parameters:
+        - name: id_event
+          in: path
+          description: "ID of the event"
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: "List of the organizer related to the event"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  organizer:
+                    type: object
+        '404':
+          description: "Event not found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+  /api/organizer/{id}:
+    get:
+      tags:
+        - organizers
+      summary: "Display specific organizer resource"
+      description: "Display specific organizer resource."
+      operationId: 912db602ddb406d191d3705fa5e6c174
+      parameters:
+        - name: id
+          in: path
+          description: "ID of the organizer"
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: "organizer details"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  organizer:
+                    type: object
+        '404':
+          description: "organizer not found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+    post:
+      tags:
+        - organizers
+      summary: "Update specific organizer resource"
+      description: "Update specific organizer resource."
+      operationId: 7bae74154d1d53681d0088ddf1972544
+      parameters:
+        - name: id
+          in: path
+          description: "ID of the organizer"
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: "organizer data"
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                type:
+                  type: string
+                activity_sector:
+                  type: string
+                description:
+                  type: string
+      responses:
+        '200':
+          description: "organizer updated"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  message:
+                    type: string
+        '404':
+          description: "organizer not found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+    delete:
+      tags:
+        - organizers
+      summary: "Delete specific organizer resource"
+      description: "Delete specific organizer resource."
+      operationId: 824b95c8d225b5371c5e01965e34c9d5
+      parameters:
+        - name: id
+          in: path
+          description: "ID of the organizer"
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: "organizer deleted"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  message:
+                    type: string
+        '404':
 
