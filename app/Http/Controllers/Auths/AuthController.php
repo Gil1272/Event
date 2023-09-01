@@ -108,7 +108,7 @@ class AuthController extends UserController
 
     public function confirm($user_id , $token)
     {
-                dd($user_id);
+
         // Find the user by ID
         $user = User::find($user_id);
 
