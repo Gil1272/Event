@@ -22,14 +22,12 @@ use App\Http\Controllers\Tickets\TicketController;
 |
 */
 
-Route::get('/api.yaml', function () {
-    return response(file_get_contents(public_path('api.yaml')))
-        ->header('Content-Type', 'application/x-yaml');
-});
+
 
 Route::prefix("auth")->middleware([CorsConfig::class])->group(function(){
 
-    Route::post("login",[AuthController::class,"login"]);
+    Route::post('auth/confirm/{user_id}/{token}', [AuthController::class, 'confirm'])->name('auth.confirm');
+    Route::post("login",[AuthController::class,"login"])->name('auth.login');
 
     Route::post("register",[AuthController::class,"register"]);
 });
