@@ -37,6 +37,9 @@ Route::prefix("node")->middleware([CorsConfig::class])->group(function(){
     Route::get("event-status",[UtilsController::class,'getEventStatus']);
     Route::get("event-type",[UtilsController::class,'getEventType']);
     Route::get("ticket-type",[UtilsController::class,'getTicketType']);
+    Route::get("organizer_activity_area",[UtilsController::class,'getOrganizerActivityArea']);
+    Route::get("sponsor_type",[UtilsController::class,'getSponsorType']);
+    Route::get("sponsor_activity_sector", [UtilsController::class , "getSponsorActivitySector"] );
 });
 
 Route::prefix("auth")->middleware([CorsConfig::class,Jwt::class])->group(function(){
