@@ -26,7 +26,7 @@ use App\Http\Controllers\Tickets\TicketController;
 
 Route::prefix("auth")->middleware([CorsConfig::class])->group(function(){
 
-    Route::post('auth/confirm/{user_id}/{token}', [AuthController::class, 'confirm'])->name('auth.confirm');
+    Route::get('/confirm/{user_id}/{token}', [AuthController::class, 'confirm'])->name('auth.confirm');
     Route::post("login",[AuthController::class,"login"])->name('auth.login');
 
     Route::post("register",[AuthController::class,"register"]);
