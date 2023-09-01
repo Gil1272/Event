@@ -111,6 +111,7 @@ class AuthController extends UserController
         $userId = $request->input('user_id');
         $token = $request->input('token');
 
+        dd($userId);
         // Find the user by ID
         $user = User::find($userId);
 
