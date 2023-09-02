@@ -23,6 +23,7 @@ node {
         stage('Laravel post deploy') {
             sh 'make env-dev'
             sh 'make composer-install'
+            sh 'docker-compose exec laravel php artisan storage:link'
         }
     } catch (e) {
         currentBuild.result = 'FAILED'
