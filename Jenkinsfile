@@ -24,7 +24,7 @@ node {
             sh 'make env-dev'
             sh 'make composer-install'
             // sh 'sleep 120'
-            sh 'docker compose exec environment3-laravel php artisan storage:link'
+            // sh 'make exec cmd='php artisan storage:link''
         }
     } catch (e) {
         currentBuild.result = 'FAILED'
