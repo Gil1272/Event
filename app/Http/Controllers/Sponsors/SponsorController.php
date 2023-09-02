@@ -16,68 +16,6 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Sponsors\SponsorActivitySector;
 
-/**
- * @OA\Tag(
- *     name="Sponsors",
- *     description="API endpoints for managing sponsors"
- * )
-*/
-
-
-
-
-/**
-     * Store a newly created sponsor in storage.
-     *
-     * @OA\Post(
-     *     path="/api/sponsors",
-     *     summary="Store a newly created sponsor in storage",
-     *     tags={"Sponsors"},
-     *     @OA\Parameter(
-     *         name="id",
-     *         in="path",
-     *         description="ID of the event",
-     *         required=true,
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\RequestBody(
-     *         required=true,
-     *         description="Sponsor data",
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(property="name", type="string"),
-     *             @OA\Property(property="type", type="string"),
-     *             @OA\Property(property="logo", type="file"),
-     *             @OA\Property(property="activity_sector", type="string"),
-     *             @OA\Property(property="description", type="string")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=201,
-     *         description="Sponsor created successfully",
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(property="id", type="integer"),
-     *             @OA\Property(property="message", type="string")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=400,
-     *         description="Bad request",
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(property="error", type="string"),
-     *             @OA\Property(property="message", type="string"),
-     *             @OA\Property(property="errors", type="object")
-     *         )
-     *     )
-     * )
-     */
-
-
-
-
-
 class SponsorController extends Controller
 {
     //
@@ -191,49 +129,8 @@ class SponsorController extends Controller
      */
 
 
-<<<<<<< HEAD
-
-       /**
-     * Display specific sponsor resource.
-     *
-     * @OA\Get(
-     *     path="/api/sponsors/{id_event}",
-     *     summary="Display specific event sponsors list resource",
-     *     tags={"Sponsors"},
-     *     @OA\Parameter(
-     *         name="id_event",
-     *         in="path",
-     *         description="ID of the event",
-     *         required=true,
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="List of the sponsors related to the event",
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(property="sponsor", type="object")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=404,
-     *         description="Event not found",
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(property="error", type="string"),
-     *             @OA\Property(property="message", type="string")
-     *         )
-     *     )
-     * )
-     */
-
-
-
-    public function getEventAllSponsors($id){
-=======
     public function getEventAllSponsors($id)
     {
->>>>>>> a82cdd61e1f1cf8f2ecf0d96356f369c2538a099
 
         $event = Event::find($id);
         if ($event) {
@@ -244,11 +141,7 @@ class SponsorController extends Controller
                 ["sponsors" => $sponsors]
             );
         } else {
-<<<<<<< HEAD
-            return JsonResponse::send(true,"Aucun event trouvé",null,404);
-=======
             return JsonResponse::send(true, "Aucun sponsor trouvé", null, 404);
->>>>>>> a82cdd61e1f1cf8f2ecf0d96356f369c2538a099
         }
     }
 
@@ -261,40 +154,6 @@ class SponsorController extends Controller
      */
 
 
-     /**
-     * Display specific sponsor resource.
-     *
-     * @OA\Get(
-     *     path="/api/sponsors/{id}",
-     *     summary="Display specific sponsor resource",
-     *     tags={"Sponsors"},
-     *     @OA\Parameter(
-     *         name="id",
-     *         in="path",
-     *         description="ID of the sponsor",
-     *         required=true,
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Sponsor details",
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(property="sponsor", type="object")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=404,
-     *         description="Sponsor not found",
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(property="error", type="string"),
-     *             @OA\Property(property="message", type="string")
-     *         )
-     *     )
-     * )
-     */
-
     public function show($id)
     {
         $sponsor =  Sponsor::find($id);
@@ -304,9 +163,6 @@ class SponsorController extends Controller
         return JsonResponse::send(true, "Aucun sponsor trouvé", null, 404);
     }
 
-
-
-
     /**
      * Update the specified resource in storage.
      *
@@ -315,52 +171,6 @@ class SponsorController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-
-    /**
-     * Update specific sponsor resource.
-     *
-     * @OA\Post(
-     *     path="/api/sponsors/{id}",
-     *     summary="Update specific sponsor resource",
-     *     tags={"Sponsors"},
-     *     @OA\Parameter(
-     *         name="id",
-     *         in="path",
-     *         description="ID of the sponsor",
-     *         required=true,
-     *         @OA\Schema(type="integer")
-     *     ),
-     *  @OA\RequestBody(
-     *         required=true,
-     *         description="Sponsor data",
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(property="name", type="string"),
-     *             @OA\Property(property="type", type="string"),
-     *             @OA\Property(property="activity_sector", type="string"),
-     *             @OA\Property(property="description", type="string")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Sponsor updated",
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(property="id", type="string"),
-     *             @OA\Property(property="message", type="string")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=404,
-     *         description="Sponsor not found",
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(property="error", type="string"),
-     *             @OA\Property(property="message", type="string")
-     *         )
-     *     )
-     * )
-     */
 
     public function update(Request $request, $id)
     {
@@ -451,49 +261,8 @@ class SponsorController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-<<<<<<< HEAD
-
-    /**
-     * Delete specific sponsor resource.
-     *
-     * @OA\Delete(
-     *     path="/api/sponsors/{id}",
-     *     summary="Delete specific sponsor resource",
-     *     tags={"Sponsors"},
-     *     @OA\Parameter(
-     *         name="id",
-     *         in="path",
-     *         description="ID of the sponsor",
-     *         required=true,
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Sponsor deleted",
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(property="id", type="string"),
-     *             @OA\Property(property="message", type="string")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=404,
-     *         description="Sponsor not found",
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(property="error", type="string"),
-     *             @OA\Property(property="message", type="string")
-     *         )
-     *     )
-     * )
-     */
-
-
-    public function destroy($id){
-=======
     public function destroy($id)
     {
->>>>>>> a82cdd61e1f1cf8f2ecf0d96356f369c2538a099
 
         $sponsor = Sponsor::find($id);
         if ($sponsor) {

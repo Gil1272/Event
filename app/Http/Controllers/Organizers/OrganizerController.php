@@ -7,11 +7,7 @@ use App\Models\Events\Event;
 use Illuminate\Http\Request;
 use App\Components\Api\JsonResponse;
 use App\Http\Controllers\Controller;
-<<<<<<< HEAD
-use App\Http\Resources\OrganizerResource\OrganizerResource;
-=======
 use App\Http\Resources\OrganizerResource\OrganizerRessource;
->>>>>>> a82cdd61e1f1cf8f2ecf0d96356f369c2538a099
 use App\Models\Organizers\Organizer;
 use Illuminate\Support\Facades\Auth;
 use Intervention\Image\Facades\Image;
@@ -45,8 +41,6 @@ class OrganizerController extends Controller
         ];
     }
 
-
-
     /**
      * Store a newly created organizer in storage.
      *
@@ -71,10 +65,7 @@ class OrganizerController extends Controller
         }
         $data['activity_area'] = OrganizerActivityArea::get_value($request->activity_area);
 
-
         $link_slug =  Str::slug($data['name'], '-', 'fr');
-
-
 
         if ($request->hasFile("logo")) {
 

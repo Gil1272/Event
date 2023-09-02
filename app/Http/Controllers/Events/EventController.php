@@ -22,6 +22,9 @@ class EventController extends Controller
 {
 
     const STORAGE_EVENT = "events";
+    const STORAGE_EVENT_PHOTOS = "photos";
+    const STORAGE_EVENT_BANNERS = "banners";
+
     const STORAGE_FORMATS = ["221_x_170","399_x_311","311_x_208","599_x_311"];
     private static function rules() {
         return [
@@ -37,6 +40,36 @@ class EventController extends Controller
         ];
     }
 
+    private function uploadFile(Request $request,String $fileAttribut,String $userId,String $eventId,String $fileSlug,String $storeDir):array{
+        $fileNames = [];
+
+        if($request->hasFile($fileAttribut)){
+            $photos = $request->file($fileAttribut);
+
+            $eventPath = $userId.'/'.self::STORAGE_EVENT.'/'.$eventId.'/'.$storeDir;
+            $eventResizePath = $eventPath.'/'.'resize';
+            Storage::disk('public')->makeDirectory($eventPath);
+            Storage::disk('public')->makeDirectory($eventResizePath);
+            foreach($photos as $photo){
+                $filename = uniqid().'-'.$fileSlug.'.'.$photo->getClientOriginalExtension();
+                $photo->storeAs($eventPath, $filename,['disk' => 'public']);
+
+                #resize upload
+                foreach (self::STORAGE_FORMATS as $format)  {
+                    $width = Str::of($format)->before('_x_');
+                    $height = Str::of($format)->after('_x_');
+                    $pathResize = storage_path('app/public/'.$eventResizePath.'/'.$format.'-'.$filename);
+                    $save = Image::make($photo)->resize($width,$height, function($constraint) {
+                        $constraint->aspectRatio();
+                    });
+                    $save->save($pathResize);
+                }
+
+                $fileNames[] = $filename;
+            }
+        }
+        return $fileNames;
+    }
     /**
      * Store a newly created resource in storage.
      *
@@ -74,89 +107,33 @@ class EventController extends Controller
         $data["published"] = false;
         $data["private"] = false;
         $data["verify"] = false;
-        # use resize image plugin after
-        if($request->hasFile("photos")){
-            //iterate throught and upload each file
-            /**
-             * Ex :
-             * create storage with user id;
-             *   if(Storage::disk('local')->exists($user_id)){
-             *      pass;
-             *    }
-             *   Storage::disk('local')->makeDirectory($user_id);
-             *  $filename =  uniqid().$link_slug.'.'.$file->getClientOriginalExtension();
-             *  $file->move(("assets/img/events"),$filename);
-             * */
-            //not checking anymore if directory exist or not because storeAs already make it if not
 
-            $photos = $request->file("photos");
-            $fileLink = array();
-            //for many files
-            foreach ($photos as $photo)
-            {
-                $filename = uniqid().$link_slug.'.'.$photo->getClientOriginalExtension();
-                $photo->storeAs(
-                    Auth::id()."/".self::STORAGE_EVENT,
-                    $filename,
-                    ['disk' => 'local']
-                );
-                $fileLink[] = Auth::id()."/".self::STORAGE_EVENT."/".$filename;
-                //resize file for each format using resize image
-                foreach (self::STORAGE_FORMATS as $FORMAT)
-                {
-                    $width = Str::of($FORMAT)->before('_x_');
-                    $height = Str::of($FORMAT)->after('_x_');
-                    $photoResized = Image::make($photo)->resize($width,$height);
-                    Storage::put(Auth::id()."/".self::STORAGE_EVENT."/".$FORMAT."/".$filename,
-                        $photoResized,
-                        'public');
+        $userID = Auth::id();
+        $baseDirectory = $userID;
 
-                }
-            }
-            $data['photos'] = $fileLink;
-        }
-        else{
-            $data["photos"] = []; #put default event app photos
-        }
+        $user = User::find($userID);
 
-        if($request->hasFile("banners")){
-            //iterate thought and upload each file  NB : file shou b
-            $banners = $request->file("banners");
-            $fileLink = array();
-            //for many files
-            foreach ($banners as $banner)
-            {
-                $filename = uniqid().$link_slug.'.'.$banner->getClientOriginalExtension();
-                $banner->storeAs(
-                    Auth::id()."/".self::STORAGE_EVENT,
-                    $filename,
-                    ['disk' => 'local']
-                );
-                $fileLink[] = Auth::id()."/".self::STORAGE_EVENT."/".$filename;
-                //resize file for each format using resize image
-                foreach (self::STORAGE_FORMATS as $FORMAT)
-                {
-                    $width = Str::of($FORMAT)->before('_x_');
-                    $height = Str::of($FORMAT)->after('_x_');
-                    $bannerResized = Image::make($banner)->resize($width,$height);
-                    Storage::put(Auth::id()."/".self::STORAGE_EVENT."/".$FORMAT."/".$filename,
-                        $photoResized,
-                        'public');
-
-                }
-            }
-            $data['banners'] = $fileLink;
-        }else{
-            $data["banners"] = []; #default event banner
-        }
-
-        $user = User::find(Auth::id());
         $event = $user->events()->create($data);
+
         if($event){
-            return JsonResponse::send(false,"Votre évènement a été créer !",$event);
-        }else{
-            return JsonResponse::send(true,"L'évènement n'a pas pu être crée");
+            if(!Storage::disk('public')->exists($baseDirectory)){
+                Storage::disk('public')->makeDirectory($userID);
+            }
+
+            $photos = $this->uploadFile($request,'photos',$userID,$event->id,$link_slug,self::STORAGE_EVENT_PHOTOS);
+            $banners = $this->uploadFile($request,'banners',$userID,$event->id,$link_slug,self::STORAGE_EVENT_BANNERS);
+
+            $eventUpdate = $event->update([
+                'photos'=>$photos,
+                'banners'=>$banners,
+            ]);
+
+            if($eventUpdate){
+                return JsonResponse::send(false,"Votre évènement a été créer !",$event);
+            }
         }
+    
+        return JsonResponse::send(true,"L'évènement n'a pas pu être crée",null,400);
     }
 
 
