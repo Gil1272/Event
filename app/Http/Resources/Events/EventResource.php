@@ -2,19 +2,28 @@
 
 namespace App\Http\Resources\Events;
 
+use App\Http\Controllers\Events\EventController;
 use App\Http\Resources\Tickets\TicketResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Storage;
 
 class EventResource extends JsonResource
 {
-    private function setAsset(array $assets){
+    private function setAsset(string $userId, string $eventId, array $assets,bool $isPhoto){
         $newAssets = [];
         foreach ($assets as $asset) {
-            if(Storage::disk('public')->exists($asset)){
-                array_push($newAssets,Storage::disk('public')->url($asset));
-            } else {
-                array_push($newAssets, 'Aucune photo trouvé dans le storage pour ce nom');
+            $path = $userId.'/'.EventController::STORAGE_EVENT.'/'.$eventId;
+            if(Storage::disk('public')->exists($path)){
+                if($isPhoto){
+                    $path = $path.'/'.EventController::STORAGE_EVENT_PHOTOS.'/';
+                }else{
+                    $path = $path.'/'.EventController::STORAGE_EVENT_BANNERS.'/';
+                }
+                $newAssets['original'] = asset(Storage::url($path.$asset));
+                foreach (EventController::STORAGE_FORMATS as $format){
+                    $newAssets['resizes'][] = asset(Storage::url($path.'resize/'.$format.'-'.$asset));
+                }
+
             }
 
         }
@@ -46,8 +55,8 @@ class EventResource extends JsonResource
             "private" =>  (bool)$this->private,
             "verify" =>  (bool)$this->verify,
             "link" =>  $this->link,
-            "banners" =>  $this->setAsset($this->banners),
-            "photos" =>  $this->setAsset($this->photos),
+            "banners" =>  $this->setAsset($this->user->_id,$this->_id,$this->banners,false),
+            "photos" =>  $this->setAsset($this->user->_id,$this->_id,$this->photos,true),
             "organizers" => $this->organizers ?? null ,
             "sponsors" => $this->sponsors ?? null,
             // "ticket" => TicketResource::collection($this->ticket),

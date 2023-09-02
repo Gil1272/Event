@@ -59,9 +59,10 @@ class EventController extends Controller
                     $width = Str::of($format)->before('_x_');
                     $height = Str::of($format)->after('_x_');
                     $pathResize = storage_path('app/public/'.$eventResizePath.'/'.$format.'-'.$filename);
-                    $save = Image::make($photo)->resize($width,$height, function($constraint) {
-                        $constraint->aspectRatio();
-                    });
+                    $save = Image::make($photo)->resize($width,$height);
+                    // $save = Image::make($photo)->resize($width,$height, function($constraint) {
+                    //     $constraint->aspectRatio();
+                    // });
                     $save->save($pathResize);
                 }
 
@@ -132,7 +133,7 @@ class EventController extends Controller
                 return JsonResponse::send(false,"Votre évènement a été créer !",$event);
             }
         }
-    
+
         return JsonResponse::send(true,"L'évènement n'a pas pu être crée",null,400);
     }
 
