@@ -23,6 +23,7 @@ node {
         stage('Laravel post deploy') {
             sh 'make env-dev'
             sh 'make composer-install'
+            sh 'sleep 120'
             sh 'docker compose exec laravel php artisan storage:link'
         }
     } catch (e) {
