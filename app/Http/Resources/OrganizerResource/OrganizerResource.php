@@ -2,18 +2,27 @@
 
 namespace App\Http\Resources\OrganizerResource;
 
+use App\Http\Controllers\Organizers\OrganizerController;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Storage;
 
-class OrganizerRessource extends JsonResource
+class OrganizerResource extends JsonResource
 {
-    private function setAsset(string $assets){
+    private function setAsset(string $userId, string $eventId, array $assets){
         $newAssets = [];
-        if(Storage::disk('public')->exists($assets)){
-            array_push($newAssets,Storage::disk('public')->url($assets));
-        } else {
-            array_push($newAssets, 'Aucune photo trouvé dans le storage pour ce nom');
+        foreach ($assets as $asset) {
+            $path = $userId.'/'.OrganizerController::STORAGE_EVENT.'/'.$eventId.'/'.OrganizerController::STORAGE_ORGANIZER;
+            if(Storage::disk('public')->exists($path)){
+                $path = $path.'/'.OrganizerController::STORAGE_ORGANIZER_LOGO.'/';
+                $newAssets['original'] = asset(Storage::url($path.$asset));
+                foreach (OrganizerController::STORAGE_FORMATS as $format){
+                    $newAssets['resizes'][] = asset(Storage::url($path.'resize/'.$format.'-'.$asset));
+                }
+
+            }
+
         }
+
         return $newAssets;
     }
     /**
@@ -28,7 +37,7 @@ class OrganizerRessource extends JsonResource
         return [
             "_id" => $this->_id,
             "name" =>  $this->name,
-            "logo" => $this -> setAsset($this->logo),
+            "logo" =>  $this->setAsset($this -> event ->user->_id ,$this -> event->_id,$this->logo),
             "activity_area" =>  $this->activity_area,
             "description" =>  $this->description,
             "event" =>  $this ->  event,

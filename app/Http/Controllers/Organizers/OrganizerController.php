@@ -7,18 +7,22 @@ use App\Models\Events\Event;
 use Illuminate\Http\Request;
 use App\Components\Api\JsonResponse;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\OrganizerResource\OrganizerRessource;
 use App\Models\Organizers\Organizer;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Organizers\OrganizerActivityArea;
+use App\Http\Resources\OrganizerResource\OrganizerResource;
 
 class OrganizerController extends Controller
 {
     //
+    const STORAGE_EVENT = "events";
     const STORAGE_ORGANIZER = "organizers";
+    const STORAGE_ORGANIZER_LOGO = "logo";
+
     const STORAGE_FORMATS = ["221_x_170", "399_x_311", "311_x_208", "599_x_311"];
     private static function rules()
     {
@@ -39,6 +43,40 @@ class OrganizerController extends Controller
             'activity_area' => 'required',
             'description' => 'required',
         ];
+    }
+
+    private function uploadFile(Request $request, String $fileAttribut, String $userId, String $eventId, String $fileSlug, String $storeDir): array
+    {
+        $fileNames = [];
+
+        if ($request->hasFile($fileAttribut)) {
+            $logo = $request->file($fileAttribut);
+
+            $organizerPath = $userId . '/' . self::STORAGE_EVENT . '/' . $eventId . '/' . self::STORAGE_ORGANIZER . '/' . $storeDir;
+            $eventResizePath = $organizerPath . '/' . 'resize';
+            Storage::disk('public')->makeDirectory($organizerPath);
+            Storage::disk('public')->makeDirectory($eventResizePath);
+
+
+            $filename = uniqid() . '-' . $fileSlug . '.' . $logo->getClientOriginalExtension();
+            $logo->storeAs($organizerPath, $filename, ['disk' => 'public']);
+
+            #resize upload
+            foreach (self::STORAGE_FORMATS as $format) {
+                $width = Str::of($format)->before('_x_');
+                $height = Str::of($format)->after('_x_');
+                $pathResize = storage_path('app/public/' . $eventResizePath . '/' . $format . '-' . $filename);
+                $save = Image::make($logo)->resize($width, $height);
+                // $save = Image::make($photo)->resize($width,$height, function($constraint) {
+                //     $constraint->aspectRatio();
+                // });
+                $save->save($pathResize);
+            }
+
+            $fileNames[] = $filename;
+        }
+
+        return $fileNames;
     }
 
     /**
@@ -64,39 +102,19 @@ class OrganizerController extends Controller
             return JsonResponse::send(true, $errorMessage, ["type" => "Le secteur d'activité n'existe pas"], 400);
         }
         $data['activity_area'] = OrganizerActivityArea::get_value($request->activity_area);
-
         $link_slug =  Str::slug($data['name'], '-', 'fr');
 
-        if ($request->hasFile("logo")) {
 
-            $logo = $request->file("logo");
-            $fileLink = '';
-
-            $filename = uniqid() . $link_slug . '.' . $logo->getClientOriginalExtension();
-            $logo->storeAs(
-                'public/' . Auth::id() . "/" . self::STORAGE_ORGANIZER,
-                $filename,
-                ['disk' => 'local']
-            );
-            $fileLink = Auth::id() . "/" . self::STORAGE_ORGANIZER . "/" . $filename;
-            //resize file for each format using resize image
-            foreach (self::STORAGE_FORMATS as $FORMAT) {
-                $width = Str::of($FORMAT)->before('_x_');
-                $height = Str::of($FORMAT)->after('_x_');
-                $photoResized = Image::make($logo)->resize($width, $height);
-                Storage::put(
-                    'public/' . Auth::id() . "/" . self::STORAGE_ORGANIZER . "/" . $FORMAT . "/" . $filename,
-                    $photoResized,
-                    'public'
-                );
-            }
-
-            $data['logo'] = $fileLink;
-        } else {
-            $data['logo'] = [];
-        }
 
         $event = Event::find($data['event']);
+        if ($event) {
+
+            $userID = $event->user->_id;
+
+            $logo = $this->uploadFile($request, 'logo', $userID, $event->_id, $link_slug, self::STORAGE_ORGANIZER_LOGO);
+
+            $data['logo'] = $logo;
+        }
         $organizer =  $event->organizers()->create($data);
         if ($organizer) {
             return JsonResponse::send(false, "Votre organizer a été créer !", $organizer);
@@ -115,7 +133,7 @@ class OrganizerController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    public function update(Request $request, $id)
+    public function update(Request $request, $id, $eventId)
     {
         $data = $request->all();
 
@@ -136,55 +154,28 @@ class OrganizerController extends Controller
 
 
 
-        if ($request->hasFile("logo")) {
 
-            $organizer = Organizer::find($id);
-            if ($organizer) {
-
-                if (Storage::disk('public')->exists('public' . $organizer->logo)) {
-                    Storage::disk('public')->delete('public' . $organizer->logo);
-                }
-                if (Storage::disk('local')->exists('public' . $organizer->logo)) {
-                    Storage::disk('local')->delete('public' . $organizer->logo);
-                }
-            }
-
-
-            $logo = $request->file("logo");
-            $fileLink = '';
-
-            $filename = uniqid() . $link_slug . '.' . $logo->getClientOriginalExtension();
-            $logo->storeAs(
-                'public/' . Auth::id() . "/" . self::STORAGE_ORGANIZER,
-                $filename,
-                ['disk' => 'local']
-            );
-            $fileLink = Auth::id() . "/" . self::STORAGE_ORGANIZER . "/" . $filename;
-            //resize file for each format using resize image
-            foreach (self::STORAGE_FORMATS as $FORMAT) {
-                $width = Str::of($FORMAT)->before('_x_');
-                $height = Str::of($FORMAT)->after('_x_');
-                $photoResized = Image::make($logo)->resize($width, $height);
-                Storage::put(
-                    'public/' . Auth::id() . "/" . self::STORAGE_ORGANIZER . "/" . $FORMAT . "/" . $filename,
-                    $photoResized,
-                    'public'
-                );
-            }
-
-
-            $data['logo'] = $fileLink;
-        } else {
-            $data['logo'] = [];
-        }
 
         $organizer = Organizer::find($id);
-
+        $event = Event::find($eventId);
         if ($organizer) {
+            $organizerPath = $event->user->_id . '/' . self::STORAGE_EVENT . '/' . $event->_id . '/' . self::STORAGE_ORGANIZER . '/' . self::STORAGE_ORGANIZER_LOGO;
+            if (Storage::disk('public')->exists($organizerPath)) {
+                $directoryPath = storage_path('app/public/' . $organizerPath); // Construct the full directory path
+
+                if (File::isDirectory($directoryPath)) {
+                    File::deleteDirectory($directoryPath);
+                } else {
+                }
+            }
+            $userID = $event->user->_id;
+
+            $logo = $this->uploadFile($request, 'logo', $userID, $event->_id, $link_slug, self::STORAGE_ORGANIZER_LOGO);
+
+            $data['logo'] = $logo;
+
             $organizer =  $organizer->update($data);
             return JsonResponse::send(false, "Votre organizer a été modifié !", $organizer);
-        } else {
-            return JsonResponse::send(true, "L'organizer n'a pas pu être modifié , car introuvable");
         }
     }
 
@@ -201,7 +192,7 @@ class OrganizerController extends Controller
         $organizer =  Organizer::find($id);
         if ($organizer)
 
-            return JsonResponse::send(false, null, ["organizer" => new OrganizerRessource($organizer)]);
+            return JsonResponse::send(false, null, ["organizer" => new OrganizerResource($organizer)]);
         return JsonResponse::send(true, "Aucun organizer trouvé", null, 404);
     }
 
@@ -213,17 +204,21 @@ class OrganizerController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    public function destroy($id)
+    public function destroy($id, $eventId)
     {
 
         $organizer = Organizer::find($id);
+        $event = Event::find($eventId);
         if ($organizer) {
             $organizer->delete();
-            if (Storage::disk('public')->exists('public' . $organizer->logo)) {
-                Storage::disk('public')->delete('public' . $organizer->logo);
-            }
-            if (Storage::disk('local')->exists('public' . $organizer->logo)) {
-                Storage::disk('local')->delete('public' . $organizer->logo);
+            $organizerPath = $event->user->_id . '/' . self::STORAGE_EVENT . '/' . $event->_id . '/' . self::STORAGE_ORGANIZER . '/' . self::STORAGE_ORGANIZER_LOGO;
+            if (Storage::disk('public')->exists($organizerPath)) {
+                $directoryPath = storage_path('app/public/' . $organizerPath); // Construct the full directory path
+
+                if (File::isDirectory($directoryPath)) {
+                    File::deleteDirectory($directoryPath);
+                } else {
+                }
             }
             return JsonResponse::send(false, "L'organizer de l'évènement a été supprimé");
         } else {

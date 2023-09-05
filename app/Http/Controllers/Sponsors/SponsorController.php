@@ -3,26 +3,30 @@
 namespace App\Http\Controllers\Sponsors;
 
 use Illuminate\Support\Str;
+use App\Models\Events\Event;
 use Illuminate\Http\Request;
+use App\Models\Sponsors\Sponsor;
 use App\Components\Api\JsonResponse;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\Sponsors\SponsorsRessource;
-use App\Models\Events\Event;
-use App\Models\Sponsors\Sponsor;
 use App\Models\Sponsors\SponsorType;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Sponsors\SponsorActivitySector;
+use App\Http\Resources\Sponsors\SponsorsRessource;
 
 class SponsorController extends Controller
 {
     //
 
-
+    const STORAGE_EVENT = "events";
+    const STORAGE_SPONSOR_LOGO = "logo";
     const STORAGE_SPONSOR = "sponsors";
     const STORAGE_FORMATS = ["221_x_170", "399_x_311", "311_x_208", "599_x_311"];
+
+
     private static function rules()
     {
         return [
@@ -48,6 +52,38 @@ class SponsorController extends Controller
         ];
     }
 
+    private function uploadFile(Request $request, String $fileAttribut, String $userId, String $eventId, String $fileSlug, String $storeDir): array
+    {
+        $fileNames = [];
+
+        if ($request->hasFile($fileAttribut)) {
+            $logo = $request->file($fileAttribut);
+
+            $organizerPath = $userId . '/' . self::STORAGE_EVENT . '/' . $eventId . '/' . self::STORAGE_SPONSOR . '/' . $storeDir;
+            $eventResizePath = $organizerPath . '/' . 'resize';
+            Storage::disk('public')->makeDirectory($organizerPath);
+            Storage::disk('public')->makeDirectory($eventResizePath);
+
+
+            $filename = uniqid() . '-' . $fileSlug . '.' . $logo->getClientOriginalExtension();
+            $logo->storeAs($organizerPath, $filename, ['disk' => 'public']);
+
+            #resize upload
+            foreach (self::STORAGE_FORMATS as $format) {
+                $width = Str::of($format)->before('_x_');
+                $height = Str::of($format)->after('_x_');
+                $pathResize = storage_path('app/public/' . $eventResizePath . '/' . $format . '-' . $filename);
+                $save = Image::make($logo)->resize($width, $height);
+                // $save = Image::make($photo)->resize($width,$height, function($constraint) {
+                //     $constraint->aspectRatio();
+                // });
+                $save->save($pathResize);
+            }
+
+            $fileNames[] = $filename;
+        }
+        return $fileNames;
+    }
 
     /**
      * Store a newly created sponsor in storage.
@@ -82,39 +118,18 @@ class SponsorController extends Controller
 
 
 
-        if ($request->hasFile("logo")) {
-
-            $logo = $request->file("logo");
-            $fileLink = '';
-
-            $filename = uniqid() . $link_slug . '.' . $logo->getClientOriginalExtension();
-            $logo->storeAs(
-                'public/' . Auth::id() . "/" . self::STORAGE_SPONSOR,
-                $filename,
-                ['disk' => 'local']
-            );
-            $fileLink = Auth::id() . "/" . self::STORAGE_SPONSOR . "/" . $filename;
-            //resize file for each format using resize image
-            foreach (self::STORAGE_FORMATS as $FORMAT) {
-                $width = Str::of($FORMAT)->before('_x_');
-                $height = Str::of($FORMAT)->after('_x_');
-                $photoResized = Image::make($logo)->resize($width, $height);
-                Storage::put(
-                    'public/' . Auth::id() . "/" . self::STORAGE_SPONSOR . "/" . $FORMAT . "/" . $filename,
-                    $photoResized,
-                    'public'
-                );
-            }
-
-            $data['logo'] = $fileLink;
-        } else {
-            $data['logo'] = [];
-        }
-
         $event = Event::find($data['event']);
-        $sponsor =  $event->sponsors()->create($data);
-        if ($sponsor) {
-            return JsonResponse::send(false, "Votre sponsor a été créer !", $sponsor);
+        if ($event) {
+
+            $userID = $event->user->_id;
+
+            $logo = $this->uploadFile($request, 'logo', $userID, $event->_id, $link_slug, self::STORAGE_SPONSOR_LOGO);
+
+            $data['logo'] = $logo;
+        }
+        $sponsors =  $event->sponsors()->create($data);
+        if ($sponsors) {
+            return JsonResponse::send(false, "Votre sponsor a été créer !", $sponsors);
         } else {
             return JsonResponse::send(true, "Le sponsor n'a pas pu être crée");
         }
@@ -172,7 +187,7 @@ class SponsorController extends Controller
      */
 
 
-    public function update(Request $request, $id)
+    public function update(Request $request, $id , $eventId)
     {
 
         $data = $request->all();
@@ -197,58 +212,26 @@ class SponsorController extends Controller
         $link_slug =  Str::slug($data['name'], '-', 'fr');
 
 
+        $sponsors = Sponsor::find($id);
+        $event = Event::find($eventId);
+        if ($sponsors) {
+            $organizerPath = $event->user->_id . '/' . self::STORAGE_EVENT . '/' . $event->_id . '/' . self::STORAGE_SPONSOR . '/' . self::STORAGE_SPONSOR_LOGO;
+            if (Storage::disk('public')->exists($organizerPath)) {
+                $directoryPath = storage_path('app/public/' . $organizerPath); // Construct the full directory path
 
-        if ($request->hasFile("logo")) {
-
-
-            $sponsor = Sponsor::find($id);
-            if ($sponsor) {
-
-                if (Storage::disk('public')->exists('public' . $sponsor->logo)) {
-                    Storage::disk('public')->delete('public' . $sponsor->logo);
-                }
-                if (Storage::disk('local')->exists('public' . $sponsor->logo)) {
-                    Storage::disk('local')->delete('public' . $sponsor->logo);
+                if (File::isDirectory($directoryPath)) {
+                    File::deleteDirectory($directoryPath);
+                } else {
                 }
             }
+            $userID = $event->user->_id;
 
+            $logo = $this->uploadFile($request, 'logo', $userID, $event->_id, $link_slug, self::STORAGE_SPONSOR_LOGO);
 
-            $logo = $request->file("logo");
-            $fileLink = '';
+            $data['logo'] = $logo;
 
-            $filename = uniqid() . $link_slug . '.' . $logo->getClientOriginalExtension();
-            $logo->storeAs(
-                'public/' . Auth::id() . "/" . self::STORAGE_SPONSOR,
-                $filename,
-                ['disk' => 'local']
-            );
-            $fileLink = Auth::id() . "/" . self::STORAGE_SPONSOR . "/" . $filename;
-            //resize file for each format using resize image
-            foreach (self::STORAGE_FORMATS as $FORMAT) {
-                $width = Str::of($FORMAT)->before('_x_');
-                $height = Str::of($FORMAT)->after('_x_');
-                $photoResized = Image::make($logo)->resize($width, $height);
-                Storage::put(
-                    'public/' . Auth::id() . "/" . self::STORAGE_SPONSOR . "/" . $FORMAT . "/" . $filename,
-                    $photoResized,
-                    'public'
-                );
-            }
-
-
-            $data['logo'] = $fileLink;
-        } else {
-            $data['logo'] = [];
-        }
-
-        $sponsor = Sponsor::find($id);
-
-
-        if ($sponsor) {
-            $sponsor = $sponsor->update($data);
-            return JsonResponse::send(false, "Votre sponsor a été modifié !", $sponsor);
-        } else {
-            return JsonResponse::send(true, "Votre sponsor est introuvable !",);
+            $sponsors =  $sponsors->update($data);
+            return JsonResponse::send(false, "Votre sponsor a été modifié !", $sponsors);
         }
     }
 
@@ -261,21 +244,26 @@ class SponsorController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    public function destroy($id)
+    public function destroy($id , $eventId)
     {
 
         $sponsor = Sponsor::find($id);
+        $event = Event::find($eventId);
         if ($sponsor) {
             $sponsor->delete();
-            if (Storage::disk('public')->exists('public' . $sponsor->logo)) {
-                Storage::disk('public')->delete('public' . $sponsor->logo);
-            }
-            if (Storage::disk('local')->exists('public' . $sponsor->logo)) {
-                Storage::disk('local')->delete('public' . $sponsor->logo);
+            $organizerPath = $event->user->_id . '/' . self::STORAGE_EVENT . '/' . $event->_id . '/' . self::STORAGE_SPONSOR . '/' . self::STORAGE_SPONSOR_LOGO;
+            if (Storage::disk('public')->exists($organizerPath)) {
+                $directoryPath = storage_path('app/public/' . $organizerPath); // Construct the full directory path
+
+                if (File::isDirectory($directoryPath)) {
+                    File::deleteDirectory($directoryPath);
+                } else {
+                }
             }
             return JsonResponse::send(false, "Le sponsor de l'évènement a été supprimé");
         } else {
             return JsonResponse::send(true, "Le sponsor est introuvable !", null, 404);
         }
+
     }
 }
