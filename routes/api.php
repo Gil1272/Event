@@ -7,9 +7,10 @@ use App\Http\Middleware\Api\CorsConfig;
 use App\Http\Controllers\Auths\AuthController;
 use App\Http\Controllers\Utils\UtilsController;
 use App\Http\Controllers\Events\EventController;
-use App\Http\Controllers\Organizers\OrganizerController;
-use App\Http\Controllers\Sponsors\SponsorController;
+use App\Http\Controllers\QrCode\qrCodeController;
 use App\Http\Controllers\Tickets\TicketController;
+use App\Http\Controllers\Sponsors\SponsorController;
+use App\Http\Controllers\Organizers\OrganizerController;
 
 /*
 |--------------------------------------------------------------------------
@@ -83,4 +84,11 @@ Route::prefix("sponsor")->group(function(){
     Route::get("{id_event:id_event}",[SponsorController::class,"getEventAllSponsors"])->where(["id_event" => "[a-z0-9]{24}"]);
     Route::post("",[SponsorController::class,"store"]);
    Route::get("specificsponsor/{id:id}",[SponsorController::class,"show"])->where(["id" => "[a-z0-9]{24}"]);
+});
+
+
+Route::prefix("qrCode")->group(function(){
+    Route::post("event/{eventId:eventId}",[qrCodeController::class,"generateEventQrCode"]);
+    Route::get("event/{eventId:eventId}",[qrCodeController::class,"getQRCode"]);
+    Route::post("ticket/{ticketId:ticketId}",[qrCodeController::class,"createTicketQrCode"]);
 });
