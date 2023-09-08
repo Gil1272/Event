@@ -22,7 +22,7 @@ class qrCodeController extends Controller
 
         $event = Event::find($eventId);
 
-        $qrCode = QrCode::size(200)->format('png')->generate($event);
+        $qrCode = QrCode::size(200)->format('png')->generate($event->_id);
 
         $qrCodePath = 'public/' . $event->user->_id . '/events/' . $eventId . '/qrCode/';
 
@@ -43,7 +43,7 @@ class qrCodeController extends Controller
 
 
 
-    public function getEventQRCode($eventId){
+    public static function getEventQRCode($eventId){
 
         $event = Event::find($eventId);
 
@@ -56,11 +56,8 @@ class qrCodeController extends Controller
             $qrCodePath = $qrCodePath.$eventId.'_event_qrcode.png';
             $qrCode['qr_code'] = asset(Storage::url($qrCodePath));
 
-            return JsonResponse::send(
-                false,
-                "Qr code ",
-                $qrCode,
-            );
+            return  $qrCode;
+
         }
 
         return $qrCode;
@@ -94,7 +91,7 @@ class qrCodeController extends Controller
 
     }
 
-    public function getTicketQRCode($ticketId){
+    public static function getTicketQRCode($ticketId){
 
         $ticket = Ticket::find($ticketId);
         $user = $ticket->user();
@@ -108,11 +105,7 @@ class qrCodeController extends Controller
             $qrCodePath = $qrCodePath.$ticket->event->_id.'_ticket_qrcode.png';
             $qrCode['qr_code'] = asset(Storage::url($qrCodePath));
 
-            return JsonResponse::send(
-                false,
-                "Qr code ",
-                $qrCode,
-            );
+            return  $qrCode;
         }
 
         return $qrCode;
