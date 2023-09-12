@@ -26,7 +26,6 @@ class AuthController extends UserController
             'phone_number.required' => 'Votre numero n\'est pas valide',
             'email.required' => 'Invalide mail',
             'name.required' => 'Votre prénom est obligatoire',
-            'civility.required' => 'Votre civilité est obligatoire',
             'country.required' => 'Votre pays  est obligatoire',
             'firstname.required' => 'Votre nom est obligatoire',
             'password.required' => 'Votre mot de passe est obligatoire',
@@ -40,7 +39,6 @@ class AuthController extends UserController
             'name' => 'required',
             'firstname' => 'required',
             'password' => 'required',
-            "civility" => "required",
             "country" => "required",
             'email' => "required|unique:users,email",
         ];
