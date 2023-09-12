@@ -51,6 +51,7 @@ class qrCodeController extends Controller
 
         $qrCodePath = $event->user->_id . '/events/' . $eventId . '/qrCode/';
 
+
         if(Storage::disk('public')->exists($qrCodePath)){
 
             $qrCodePath = $qrCodePath.$eventId.'_event_qrcode.png';
