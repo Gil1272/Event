@@ -89,7 +89,5 @@ Route::prefix("sponsor")->group(function(){
 
 Route::prefix("qrCode")->group(function(){
     Route::post("event/{eventId:eventId}",[qrCodeController::class,"generateEventQrCode"]);
-    Route::get("event/{eventId:eventId}",[qrCodeController::class,"getEventQRCode"]);
     Route::post("ticket/{ticketId:ticketId}",[qrCodeController::class,"generateTicketQrCode"]);
-    Route::get("ticket/{ticketId:ticketId}",[qrCodeController::class,"getTicketQRCode"]);
 });
