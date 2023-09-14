@@ -168,3 +168,5 @@ make phpstan
 make phpinsights
 
 ```
+
+simplesoftwareio/simple-qrcode

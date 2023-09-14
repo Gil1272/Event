@@ -15,7 +15,7 @@
         "laravel/sanctum": "^2.11",
         "laravel/tinker": "^2.5",
         "monarobase/country-list": "^3.4",
-        "simplesoftwareio/simple-qrcode": "~4",
+        "simplesoftwareio/simple-qrcode": "^4.2",
         "tymon/jwt-auth": "^1.0@dev"
     },
     "require-dev": {
