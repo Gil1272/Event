@@ -40,7 +40,6 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y \
     && docker-php-ext-configure pdo_mysql --with-pdo-mysql=mysqlnd \
     && docker-php-ext-configure intl \
     && docker-php-ext-install \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && pecl install imagick \
 	&& docker-php-ext-enable imagick \
       pdo_mysql \
