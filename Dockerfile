@@ -41,7 +41,7 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y \
     && docker-php-ext-configure intl \
     && docker-php-ext-install \
     && pecl install imagick \
-	&& docker-php-ext-install imagick \
+	# && docker-php-ext-install imagick \
       pdo_mysql \
       sockets \
       intl \
