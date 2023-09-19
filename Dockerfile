@@ -24,7 +24,6 @@ RUN if [ "$BUILD_ARGUMENT_ENV" = "default" ]; then echo "Set BUILD_ARGUMENT_ENV 
 # install all the dependencies and enable PHP modules
 RUN apt-get update && apt-get upgrade -y && apt-get install -y \
       procps \
-      libmagickwand-dev --no-install-recommends \
       nano \
       git \
       unzip \
@@ -37,11 +36,12 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y \
       cron \
       sudo \
       libzip-dev \
+      libmagickwand-dev \
+    && pecl install imagick \
+    && docker-php-ext-enable imagick \
     && docker-php-ext-configure pdo_mysql --with-pdo-mysql=mysqlnd \
     && docker-php-ext-configure intl \
     && docker-php-ext-install \
-    # && pecl install imagick \
-	&& docker-php-ext-install imagick \
       pdo_mysql \
       sockets \
       intl \
