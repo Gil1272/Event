@@ -31,7 +31,7 @@ class qrCodeController extends Controller
 
 
 
-    public function generateTicketQrCode($ticketId)
+    public static function generateTicketQrCode($ticketId)
     {
         $ticket = Ticket::find($ticketId);
         $user = $ticket->user();

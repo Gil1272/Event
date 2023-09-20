@@ -7,6 +7,7 @@ use App\Models\Tickets\Ticket;
 use App\Models\Tickets\TicketType;
 use Illuminate\Http\Request;
 use App\Components\Api\JsonResponse;
+use App\Http\Controllers\QrCode\qrCodeController;
 use App\Models\Events\Event;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -97,7 +98,7 @@ class TicketController extends Controller
                     $filename,
                     ['disk' => 'local']
                 );
-                $fileLink[] = Auth::id()."/".self::STORAGE_EVENT."/".self::STORAGE_TICKET."/".$filename;
+                $fileLink[] = Auth::id()."/".self::STORAGE_EVENT."/".$event->_id."/".self::STORAGE_TICKET."/".$filename;
             }
             $data['photos'] = $fileLink;
         }
@@ -162,7 +163,7 @@ class TicketController extends Controller
         //
         $ticket = Ticket::find($id);
         if($ticket)
-            return JsonResponse::send(false,null,["ticket"=>$ticket]);
+            return JsonResponse::send(false,null,["ticket"=>$ticket , "qrCode" => qrCodeController::generateTicketQrCode(Ticket::find($id))]);
         return JsonResponse::send(true,"Aucun ticket trouvé",null,404);
     }
 
@@ -232,7 +233,7 @@ class TicketController extends Controller
                     $filename,
                     ['disk' => 'local']
                 );
-                $fileLink[] = Auth::id()."/".self::STORAGE_EVENT."/".self::STORAGE_TICKET."/".$filename;
+                $fileLink[] = Auth::id()."/".self::STORAGE_EVENT."/".$event->_id."/".self::STORAGE_TICKET."/".$filename;
             }
             $data['photos'] = $fileLink;
         }else
