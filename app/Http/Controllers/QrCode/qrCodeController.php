@@ -36,7 +36,8 @@ class qrCodeController extends Controller
         $ticket = Ticket::find($ticketId);
 
 
-        $qrCode = QrCode::size(200)->format('png')->generate($ticket);
+        $qrCode = QrCode::size(200)->generate($ticket);
+
 
 
 
