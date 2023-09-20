@@ -23,13 +23,10 @@ class qrCodeController extends Controller
         $qrCode = QrCode::size(200)->format('png')->generate($event->_id);
 
         // Return the QR code as a response with appropriate headers
-        $base64Image = base64_encode($qrCode);
-
-        return 'data:image/png;base64,' . $base64Image;
-       /*  return Response::make($qrCode, 200, [
+        return Response::make($qrCode, 200, [
             'Content-Type' => 'image/png',
             'Content-Disposition' => 'inline; filename="event_qrcode.png"',
-        ]); */
+        ]);
     }
 
 
@@ -41,10 +38,10 @@ class qrCodeController extends Controller
 
         $qrCode = QrCode::size(200)->format('png')->generate($ticket);
 
-        // Return the QR code as a response with appropriate headers
-        return Response::make($qrCode, 200, [
-            'Content-Type' => 'image/png',
-            'Content-Disposition' => 'inline; filename="ticket_qrcode.png"',
-        ]);
+        $base64Image = base64_encode($qrCode);
+
+        return 'data:image/png;base64,' . $base64Image;
     }
+
+
 }
