@@ -39,9 +39,9 @@ class qrCodeController extends Controller
         $qrCode = QrCode::size(200)->generate($ticket);
 
 
+        $base64Image = base64_encode($qrCode);
 
-
-        return $qrCode;
+        return $base64Image;
     }
 
 
