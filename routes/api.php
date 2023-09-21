@@ -3,12 +3,14 @@
 use Illuminate\Http\Request;
 use App\Http\Middleware\Api\Jwt;
 use Illuminate\Support\Facades\Route;
+use App\Http\Middleware\CheckUserRole;
 use App\Http\Middleware\Api\CorsConfig;
 use App\Http\Controllers\Auths\AuthController;
 use App\Http\Controllers\Utils\UtilsController;
 use App\Http\Controllers\Events\EventController;
 use App\Http\Controllers\QrCode\qrCodeController;
 use App\Http\Controllers\Tickets\TicketController;
+use App\Http\Controllers\Admin\AdminEventController;
 use App\Http\Controllers\Sponsors\SponsorController;
 use App\Http\Controllers\Organizers\OrganizerController;
 
@@ -89,4 +91,11 @@ Route::prefix("sponsor")->group(function () {
 
 Route::prefix("qrCode")->group(function () {
     Route::get("event/{eventId:eventId}", [qrCodeController::class, "generateEventQrCode"]);
+});
+
+
+Route::prefix("admin")->middleware([CheckUserRole::class])->group(function () {
+
+    Route::get('/events', [AdminEventController::class, 'index']);
+    Route::get('/events/filter', [AdminEventController::class, 'filter']);
 });
