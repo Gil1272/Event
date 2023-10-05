@@ -20,7 +20,6 @@ class UserController extends Controller
     public function confirmAccount(int $user_id, string $token)
     {
         $userVerify = UserVerify::where("user_id", $user_id)->where("token", $token)->firstOrFail();
-        $mobileAppDeepLink = 'eventvote://login';
 
         if ($userVerify) {
             $data['token'] = null;
@@ -29,7 +28,7 @@ class UserController extends Controller
 
             // Assuming you have a deep link or custom URL scheme for your mobile app,
             // you can redirect to it like this
-            $mobileAppDeepLink = "yourapp://login"; // Replace with your app's actual deep link
+            $mobileAppDeepLink = 'eventvote://login'; // Replace with your app's actual deep link
             return redirect()->away($mobileAppDeepLink);
         }
     }
