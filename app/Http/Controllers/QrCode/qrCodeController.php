@@ -31,18 +31,16 @@ class qrCodeController extends Controller
 
 
 
-    public function generateTicketQrCode($ticketId)
+    public static function generateTicketQrCode($ticketId)
     {
         $ticket = Ticket::find($ticketId);
-        $user = $ticket->user();
+
 
         $qrCode = QrCode::size(200)->format('png')->generate($ticket);
 
-        // Return the QR code as a response with appropriate headers
-        return Response::make($qrCode, 200, [
-            'Content-Type' => 'image/png',
-            'Content-Disposition' => 'inline; filename="ticket_qrcode.png"',
-        ]);
+        $base64Image = base64_encode($qrCode);
+
+        return 'data:image/png;base64,' . $base64Image;
     }
 
 

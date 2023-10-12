@@ -19,21 +19,20 @@ class UserController extends Controller
 
     public function confirmAccount(int $user_id, string $token)
     {
-
         $userVerify = UserVerify::where("user_id", $user_id)->where("token", $token)->firstOrFail();
+
         if ($userVerify) {
             $data['token'] = null;
             $user = User::find($user_id);
             $userVerify->update($data);
-            // Mail::to($user->email)->send(new RegisterMail([
-            //     "header" => "Salut ! ".$user->name." ".$user->firstname,
-            //     "message" => "Votre compte ".env("APP_NAME")." vient d'être activer ! Merci de vous connecter",
-            //     "link" => route("Auth#Login"),
-            //     "linkText" => "Se connecter",
-            // ]));
-            return Redirect::route('Auth#Login');
+
+            // Assuming you have a deep link or custom URL scheme for your mobile app,
+            // you can redirect to it like this
+            $mobileAppDeepLink = 'eventvote://login'; // Replace with your app's actual deep link
+            return redirect()->away($mobileAppDeepLink);
         }
     }
+
 
 
     public function password(Request $request)

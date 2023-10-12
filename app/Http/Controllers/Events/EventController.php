@@ -203,7 +203,7 @@ class EventController extends Controller
 
         $user = User::find($userID);
 
-        $event = $user->events()->create($data);
+        $event = $user->events();
 
         if ($event) {
 
@@ -233,16 +233,12 @@ class EventController extends Controller
                 'banners' => $banners,
             ]);
 
-            if ($eventUpdate) {
-                return JsonResponse::send(false, "Votre évènement a été créer !", $event);
-            }
         }
 
-        return JsonResponse::send(true, "L'évènement n'a pas pu être crée", null, 400);
 
         $event = $event->update($data);
 
-        return JsonResponse::send(false, "Votre évènement a été modifié !", $event);
+        return JsonResponse::send(false, "Votre évènement a été modifié.", $event);
     }
 
 
