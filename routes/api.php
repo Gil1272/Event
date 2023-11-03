@@ -57,7 +57,7 @@ Route::prefix("auth")->middleware([CorsConfig::class, Jwt::class])->group(functi
 Route::prefix("event/")->middleware([CorsConfig::class, Jwt::class])->group(function () {
 
     Route::post("", [EventController::class, "store"]);
-    Route::get("me", [EventController::class, "getMyEvents"]);
+    Route::get("", [EventController::class, "getMyEvents"]);
     Route::get("{id:id}", [EventController::class, "show"])->where(["id" => "[a-z0-9]{24}"]);
     Route::post("{id:id}", [EventController::class, "update"])->where(["id" => "[a-z0-9]{24}"]);
     // Route::put("status/{id:id}/{state:state}",[EventController::class,"changeStatus"]);
