@@ -6,6 +6,7 @@ use App\Models\Organizers\Organizer;
 use App\Models\Sponsors\Sponsor;
 use App\Models\Tickets\Ticket;
 use App\Models\Users\User;
+use App\Models\Votes\Vote;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Jenssegers\Mongodb\Eloquent\Model;
 
@@ -31,7 +32,7 @@ class Event extends Model
         "verify",
         "link",
         "banners",
-        "photos",
+        "photos"
     ];
 
     //Événement Transport Conférences et formations ,Sport
@@ -49,6 +50,10 @@ class Event extends Model
 
     public function organizers(){
         return $this->hasMany(Organizer::class);
+    }
+
+    public function votes(){
+        return $this->hasMany(Vote::class);
     }
 
 }

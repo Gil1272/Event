@@ -1,10 +1,10 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use Jenssegers\Mongodb\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Jenssegers\Mongodb\Schema\Blueprint;
 
-class CreateEventsTable extends Migration
+class CreateVotesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,13 @@ class CreateEventsTable extends Migration
      */
     public function up()
     {
-        Schema::create('events', function (Blueprint $collection) {
+        Schema::create('votes', function (Blueprint $collection) {
             $collection->id();
+            $collection->foreign('eventId')->references('id')->on('events')->onDelete('cascade');
+            $collection->string('description');
             $collection->timestamps();
         });
-
-    
     }
-    
-
 
     /**
      * Reverse the migrations.
@@ -30,6 +28,6 @@ class CreateEventsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('events');
+        Schema::dropIfExists('votes');
     }
 }

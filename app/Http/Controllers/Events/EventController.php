@@ -74,73 +74,126 @@ class EventController extends Controller
         }
         return $fileNames;
     }
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
 
-    public function store(Request $request)
-    {
-        $data = $request->all();
+   /**
+ * Store a newly created resource in storage.
+ *
+ * @param  \Illuminate\Http\Request  $request
+ * @return \Illuminate\Http\Response
+ *
+ * @bodyParam name string required The name of the event.
+ * @bodyParam type string required The type of the event.
+ * @bodyParam status string required The status of the event.
+ * @bodyParam description string required The description of the event.
+ * @bodyParam place string required The place of the event.
+ * @bodyParam country string required The country of the event.
+ * @bodyParam start_date string required The start date of the event (YYYY-MM-DD format).
+ * @bodyParam end_date string required The end date of the event (YYYY-MM-DD format).
+ * @bodyParam time_end string required The end time of the event (HH:MM format).
+ *
+ * @response {
+ *    "error": false,
+ *    "message": "Your event has been created!",
+ *    "data": {
+ *        "id": 1,
+ *        "name": "Example Event",
+ *        ...
+ *    }
+ * }
+ * @response 400 {
+ *    "error": true,
+ *    "message": "Your data is invalid",
+ *    "errors": {
+ *        "name": ["The name field is required."],
+ *        ...
+ *    }
+ * }
+ *
+ * @param  \Illuminate\Http\Request  $request
+ * @return \Illuminate\Http\Response
+ */
+public function store(Request $request)
+{
+    $data = $request->all();
 
-        $validator =  Validator::make($data, EventController::rules());
-        $errorMessage = "vos donnés sont invalides";
+    $validator = Validator::make($data, self::rules()); // Utilisation de self::rules() pour appeler la méthode rules() statique
+    $errorMessage = "Your data is invalid"; // Correction de la variable d'erreur
 
-        if ($validator->fails()) {
-            return JsonResponse::send(true, $errorMessage, $validator->errors()->messages(), 400);
-        }
-
-        if (!array_key_exists($request->country, CountryListFacade::getList())) {
-            return JsonResponse::send(true, $errorMessage, ["country" => "Code pays invalide"], 400);
-        }
-
-        if (!EventType::key_exists($request->type)) {
-            return JsonResponse::send(true, $errorMessage, ["type" => "Le type d'évènement n'existe pas"], 400);
-        }
-        $data['type'] = EventType::get_value($request->type);
-
-        if (!EventStatus::key_exists($request->status)) {
-            return JsonResponse::send(true, $errorMessage, ["status" => "Le status de l'évènement n'existe pas"], 400);
-        }
-        $data['status'] = EventStatus::get_value($request->status);
-
-        $link_slug =  Str::slug($data['name'], '-', 'fr');
-        $data['link'] = uniqid() . "-" . $link_slug;
-        $data["published"] = false;
-        $data["private"] = false;
-        $data["verify"] = false;
-
-        $userID = Auth::id();
-        $baseDirectory = $userID;
-
-        $user = User::find($userID);
-
-        $event = $user->events()->create($data);
-
-        if ($event) {
-            if (!Storage::disk('public')->exists($baseDirectory)) {
-                Storage::disk('public')->makeDirectory($userID);
-            }
-
-            $photos = $this->uploadFile($request, 'photos', $userID, $event->id, $link_slug, self::STORAGE_EVENT_PHOTOS);
-            $banners = $this->uploadFile($request, 'banners', $userID, $event->id, $link_slug, self::STORAGE_EVENT_BANNERS);
-
-            $eventUpdate = $event->update([
-                'photos' => $photos,
-                'banners' => $banners,
-            ]);
-
-            if ($eventUpdate) {
-                return JsonResponse::send(false, "Votre évènement a été créer !", $event);
-            }
-        }
-
-        return JsonResponse::send(true, "L'évènement n'a pas pu être crée", null, 400);
+    if ($validator->fails()) {
+        return JsonResponse::send(true, $errorMessage, $validator->errors()->messages(), 400);
     }
 
+    if (!array_key_exists($request->country, CountryListFacade::getList())) {
+        return JsonResponse::send(true, $errorMessage, ["country" => "Invalid country code"], 400);
+    }
 
+    if (!EventType::key_exists($request->type)) {
+        return JsonResponse::send(true, $errorMessage, ["type" => "Event type does not exist"], 400);
+    }
+    $data['type'] = EventType::get_value($request->type);
+
+    if (!EventStatus::key_exists($request->status)) {
+        return JsonResponse::send(true, $errorMessage, ["status" => "Event status does not exist"], 400);
+    }
+    $data['status'] = EventStatus::get_value($request->status);
+
+    $link_slug = Str::slug($data['name'], '-', 'fr');
+    $data['link'] = uniqid() . "-" . $link_slug;
+    $data["published"] = false;
+    $data["private"] = false;
+    $data["verify"] = false;
+
+    $userID = Auth::id();
+    $baseDirectory = $userID;
+
+    $user = User::find($userID);
+
+    $event = $user->events()->create($data);
+
+    if ($event) {
+        if (!Storage::disk('public')->exists($baseDirectory)) {
+            Storage::disk('public')->makeDirectory($userID);
+        }
+
+        $photos = $this->uploadFile($request, 'photos', $userID, $event->id, $link_slug, self::STORAGE_EVENT_PHOTOS);
+        $banners = $this->uploadFile($request, 'banners', $userID, $event->id, $link_slug, self::STORAGE_EVENT_BANNERS);
+
+        $eventUpdate = $event->update([
+            'photos' => $photos,
+            'banners' => $banners,
+        ]);
+
+        if ($eventUpdate) {
+            return JsonResponse::send(false, "Your event has been created!", $event);
+        }
+    }
+
+    return JsonResponse::send(true, "Failed to create the event", null, 400);
+}
+
+
+    /**
+     * Get all events of the authenticated user.
+     *
+     * @authenticated
+     *
+     * @response {
+     *    "error": false,
+     *    "message": "List of my events",
+     *    "data": {
+     *        "events": [
+     *            {
+     *                "id": 1,
+     *                "name": "Example Event",
+     *                ...
+     *            },
+     *            ...
+     *        ]
+     *    }
+     * }
+     *
+     * @return \Illuminate\Http\Response
+     */
 
     public function getMyEvents()
     {
@@ -159,7 +212,29 @@ class EventController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-
+    /**
+     * Display the specified event.
+     *
+     * @urlParam id integer required The ID of the event.
+     *
+     * @response {
+     *    "error": false,
+     *    "data": {
+     *        "event": {
+     *            "id": 1,
+     *            "name": "Example Event",
+     *            ...
+     *        }
+     *    }
+     * }
+     * @response 404 {
+     *    "error": true,
+     *    "message": "Event not found"
+     * }
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
     public function show($id)
     {
         $event =  Event::find($id);
@@ -241,7 +316,33 @@ class EventController extends Controller
         return JsonResponse::send(false, "Votre évènement a été modifié.", $event);
     }
 
-
+     
+    /**
+ * Duplicate the specified event.
+ *
+ * @urlParam id integer required The ID of the event.
+ *
+ * @response {
+ *    "error": false,
+ *    "message": "Event duplicated successfully!",
+ *    "data": {
+ *        "id": 2,
+ *        "name": "Duplicated Event",
+ *        ...
+ *    }
+ * }
+ * @response 400 {
+ *    "error": true,
+ *    "message": "Failed to duplicate event",
+ * }
+ * @response 404 {
+ *    "error": true,
+ *    "message": "Event not found"
+ * }
+ *
+ * @param  int  $id
+ * @return \Illuminate\Http\Response
+ */
 
 
     public function duplicate($id)
@@ -291,7 +392,23 @@ class EventController extends Controller
      */
 
 
-
+    /**
+ * Delete the specified event.
+ *
+ * @urlParam id integer required The ID of the event.
+ *
+ * @response {
+ *    "error": false,
+ *    "message": "Event deleted successfully!"
+ * }
+ * @response 404 {
+ *    "error": true,
+ *    "message": "Event not found"
+ * }
+ *
+ * @param  int  $id
+ * @return \Illuminate\Http\Response
+ */
 
     public function destroy($id)
     {
@@ -330,4 +447,15 @@ class EventController extends Controller
 
         return JsonResponse::send(true, "L'évènement est introuvable !", null, 404);
     }
+
+
+
+/**
+ * Add a vote to an existing event.
+ *
+ * @param  \Illuminate\Http\Request  $request
+ * @param  int  $eventId
+ * @return \Illuminate\Http\Response
+ */
+
 }
