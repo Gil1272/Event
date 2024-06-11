@@ -15,7 +15,8 @@ class CreateVotesTable extends Migration
     {
         Schema::create('votes', function (Blueprint $collection) {
             $collection->id();
-            $collection->foreign('eventId')->references('id')->on('events')->onDelete('cascade');
+            $collection->foreign('event_id')->references('id')->on('events')->onDelete('cascade');
+            $collection->string('name');
             $collection->string('description');
             $collection->timestamps();
         });

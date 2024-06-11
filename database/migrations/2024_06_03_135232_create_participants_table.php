@@ -15,7 +15,9 @@ class CreateParticipantsTable extends Migration
     {
         Schema::create('participants', function (Blueprint $collection) {
             $collection->id();
-            $collection->foreign('voteId')->references('id')->on('votes')->onDelete('cascade');
+            $collection->foreign('vote_id')->references('id')->on('votes')->onDelete('cascade');
+            $collection->string('name');
+            $collection->string('image');
             $collection->string('detail');
             $collection->timestamps();
         });

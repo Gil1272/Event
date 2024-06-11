@@ -1,20 +1,18 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Votes;
 use App\Models\Events\Event;
 use App\Models\Participants\Participant;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Jenssegers\Mongodb\Eloquent\Model as Eloquent;
+use Jenssegers\Mongodb\Eloquent\Model;
 
-class Vote extends Eloquent
+class Vote extends Model
 {
     use HasFactory;
 
     protected $primaryKey = '_id';
 
     protected $fillable = [
-            'eventId',
             'name',
             'description'
     ];

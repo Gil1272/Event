@@ -1,12 +1,11 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Participants;
 use App\Models\Votes\Vote;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Jenssegers\Mongodb\Eloquent\Model as Eloquent;
+use Jenssegers\Mongodb\Eloquent\Model;
 
-class Participant extends Eloquent
+class Participant extends Model
 {
     use HasFactory;
 
@@ -14,10 +13,10 @@ class Participant extends Eloquent
 
 
     protected $fillable=[
-        'voteId',
         'name',
         'image',
-        'detail'
+        'detail',
+        'vote_id'
     ];
 
     public function vote(){

@@ -53,7 +53,7 @@ Route::prefix('node')->middleware([CorsConfig::class])->group(function () {
 // Event Routes
 Route::prefix('event')->middleware([CorsConfig::class, Jwt::class])->group(function () {
     Route::post('', [EventController::class, 'store']);
-    Route::post('{eventId}/votes', [EventController::class, 'addVote']);
+    Route::post('{id}/vote', [EventController::class, 'addVote']);
     Route::get('', [EventController::class, 'getMyEvents']);
     Route::get('{id}', [EventController::class, 'show'])->where(['id' => '[a-z0-9]{24}']);
     Route::post('{id}', [EventController::class, 'update'])->where(['id' => '[a-z0-9]{24}']);
@@ -99,11 +99,6 @@ Route::prefix('admin')->middleware([CheckUserRole::class])->group(function () {
 });
 
 // Vote Routes
-Route::prefix('votes')->group(function () {
-    Route::post('{voteId}/vote', [VoteController::class, 'addVote']);
-});
-
-// Participant Routes
-Route::prefix('participants')->group(function () {
-    Route::post('{voteId}/participant', [ParticipantController::class, 'addParti']);
+Route::prefix('vote')->group(function () {
+    Route::post('{id}/participants', [VoteController::class, 'addParticipants']);
 });

@@ -16,7 +16,7 @@ class CreateEventsTable extends Migration
         Schema::create('events', function (Blueprint $collection) {
             $collection->id();
             $collection->timestamps();
-        });
+        });    
 
     
     }
