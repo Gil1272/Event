@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Events;
+
 use cebe\openapi\Reader;
 use cebe\openapi\spec\OpenApi;
 use App\Models\Users\User;
@@ -497,37 +498,26 @@ public function destroy($id)
  */
 public function addVote(Request $request, $id)
 {
-    // Récupérer toutes les données de la requête
-    $data = $request->all();
+       // Récupérer toutes les données de la requête
+       $data = $request->all();
 
-    // Définir les règles de validation
-    $validator = Validator::make($data, [
-        'name' => 'required|string',
-        'description' => 'required|string'
-    ]);
-    $errorMessage = "Les données fournies sont invalides";
-
+       // Définir les règles de validation
+       $validator = Validator::make($data, [
+           'name' => 'required|string',
+           'description' => 'required|string'
+       ]);
+       
+       $errorMessage = "Les données fournies sont invalides";
+       
     // Vérifier si la validation échoue
     if ($validator->fails()) {
-        return response()->json([
-            'error' => true,
-            'message' => $errorMessage,
-            'errors' => $validator->errors()->messages()
-        ], 400);
+        return JsonResponse::send(true,$errorMessage,$validator->errors()->messages(),400);
     }
-
+    
     // Trouver l'événement par ID
     $event = Event::find($id);
-
-    // Vérifier si l'événement existe
-    if (!$event) {
-        return response()->json([
-            'error' => true,
-            'message' => "L'événement n'existe pas",
-        ], 404);
-    }
-
-    // Créer un nouveau vote
+    if($event){
+      // Créer un nouveau vote
     $vote = new Vote([
         'name' => $data['name'],
         'description' => $data['description']
@@ -537,11 +527,20 @@ public function addVote(Request $request, $id)
     $event->votes()->save($vote);
 
     // Retourner une réponse JSON de succès
-    return response()->json([
-        'error' => false,
-        'message' => "Le vote a été ajouté avec succès",
-        'data' => $vote
-    ]);
+    return JsonResponse::send(
+        false,
+        "Le vote a été ajouté avec succès",
+        $vote
+    );
+    }
+    else{
+        return JsonResponse::send(
+             true,
+            "L'événement n'existe pas",
+             null,
+             404);
+    }
+
 }
 
 

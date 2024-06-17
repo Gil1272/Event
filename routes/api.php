@@ -26,6 +26,10 @@ use App\Http\Controllers\Votes\VoteController;
 |
 */
 
+Route::post('vote/x', [VoteController::class, 'store']);
+
+
+
 // Auth Routes
 Route::prefix('auth')->middleware([CorsConfig::class])->group(function () {
     Route::get('/confirm/{user_id}/{token}', [AuthController::class, 'confirm'])->name('auth.confirm');

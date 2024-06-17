@@ -7,9 +7,12 @@ use App\Models\Votes\Vote;
 use App\Models\Participants\Participant;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
+use App\Components\Api\JsonResponse;
 
 class VoteController extends Controller
 {
+
+    
 /**
  * Ajoute des participants à un vote existant.
  *
@@ -80,6 +83,7 @@ public function addParticipants(Request $request, $id)
     // Définir les règles de validation
     $validator = Validator::make($data, [
         'participants' => 'required|array',
+        'participants.*.id' => 'required|integer',
         'participants.*.name' => 'required|string',
         'participants.*.detail' => 'required|string'
     ]);
@@ -87,11 +91,11 @@ public function addParticipants(Request $request, $id)
 
     // Vérifier si la validation échoue
     if ($validator->fails()) {
-        return response()->json([
-            'error' => true,
-            'message' => $errorMessage,
-            'errors' => $validator->errors()->messages()
-        ], 400);
+        return JsonResponse::send(
+             true,
+            $errorMessage,
+            $validator->errors()->messages(),
+            400);
     }
 
     // Trouver le vote par ID
@@ -99,16 +103,18 @@ public function addParticipants(Request $request, $id)
 
     // Vérifier si le vote existe
     if (!$vote) {
-        return response()->json([
-            'error' => true,
-            'message' => "Le vote n'existe pas",
-        ], 404);
+        return JsonResponse::send(
+            true,
+            "Le vote n'existe pas",
+            null,
+            404);
     }
 
     // Ajouter les participants
     $participants = [];
     foreach ($data['participants'] as $participantData) {
         $participant = new Participant([
+            'id' => $participantData['id'],
             'name' => $participantData['name'],
             'detail' => $participantData['detail'],
             'vote_id' => $vote->id
@@ -118,11 +124,11 @@ public function addParticipants(Request $request, $id)
     }
 
     // Retourner une réponse JSON de succès
-    return response()->json([
-        'error' => false,
-        'message' => "Les participants ont été ajoutés avec succès",
-        'data' => $participants
-    ]);
+    return JsonResponse::send(
+        false,
+        "Les participants ont été ajoutés avec succès",
+        $participants
+    );
 }
 
 }

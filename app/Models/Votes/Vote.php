@@ -14,8 +14,10 @@ class Vote extends Model
 
     protected $fillable = [
             'name',
-            'description'
+            'description',
+            'event_id'
     ];
+
     public function event(){
         return $this->belongsTo(Event::class);
     }
